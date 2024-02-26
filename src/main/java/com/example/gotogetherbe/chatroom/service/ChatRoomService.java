@@ -1,5 +1,5 @@
 package com.example.gotogetherbe.chatroom.service;
 
-public class ChatRoomService {
+public interface ChatRoomService {
 
 }
