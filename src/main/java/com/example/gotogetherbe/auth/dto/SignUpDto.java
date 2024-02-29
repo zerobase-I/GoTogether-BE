@@ -10,6 +10,7 @@ import com.example.gotogetherbe.member.entitiy.type.MemberRoleType;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,10 +40,10 @@ public class SignUpDto {
   @NotBlank
   private String address;
 
-  @NotBlank
+  @NotNull
   private Integer age;
 
-  @NotBlank
+  @NotNull
   private MemberGender gender;
 
   private MultipartFile profileImage;
