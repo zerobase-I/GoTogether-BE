@@ -25,7 +25,7 @@ public enum ErrorCode {
   POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 글이 없습니다."),
   POST_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 글 카테고리가 없습니다."),
   COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."),
-
+  PROFILE_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "프로필 이미지 업로드 중 오류가 발생했습니다."),
 
   /**
    * 401 Unauthorized

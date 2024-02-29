@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Slf4j
@@ -36,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
 
   private static final String REFRESH_TOKEN_PREFIX = "RT: ";
 
+  @Transactional
   @Override
   public SignUpDto signUp(SignUpDto request) {
     if (memberRepository.existsByEmail(request.getEmail())) {
@@ -48,7 +50,12 @@ public class AuthServiceImpl implements AuthService {
     // 프로필 이미지가 제공되었을 경우 S3에 업로드하고 그 URL을 가져옴
     String profileImageUrl = null; // 기본값은 null
     if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
-      profileImageUrl = awsS3Service.uploadProfileImage(request.getProfileImage());
+      // 이미지 업로드 시도
+      try {
+        profileImageUrl = awsS3Service.uploadProfileImage(request.getProfileImage());
+      } catch (Exception e) { // 이미지 업로드 중 오류 발생 시 예외 처리
+        throw new GlobalException(PROFILE_IMAGE_UPLOAD_ERROR);
+      }
     }
 
     Member memberToSave = SignUpDto.signUpForm(request, encodedPasswordEncoder);
