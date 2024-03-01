@@ -40,12 +40,18 @@ public enum ErrorCode {
   WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 형식의 토큰입니다."),
   EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료되었습니다. 재발급이 필요합니다."),
 
+  /**
+   * 403 Forbidden
+   */
+
+  USER_MISMATCH(HttpStatus.FORBIDDEN, "다른 사용자의 요청을 승인할 수 없습니다."),
 
   /**
    * 404 Not Found
    */
 
-  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "이메일에 해당되는 사용자가 없습니다."),
+  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+  ACCOMPANY_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "동행 요청을 찾을 수 없습니다."),
 
   /**
    * 409 conflict
@@ -53,6 +59,8 @@ public enum ErrorCode {
 
   // User error
   DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
+  DUPLICATE_ACCOMPANY_REQUEST(HttpStatus.CONFLICT, "동일한 요청이 존재합니다."),
+  DUPLICATE_REVIEW(HttpStatus.CONFLICT, "이미 리뷰를 작성하셨습니다."),
 
   /**
    * 500 Internal Server Error

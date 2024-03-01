@@ -1,0 +1,31 @@
+package com.example.gotogetherbe.accompany.review.controller;
+
+import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
+import com.example.gotogetherbe.accompany.review.service.ReviewService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/accompany/review")
+public class AccompanyReviewController {
+
+    private final ReviewService reviewService;
+
+    @PostMapping("")
+    public ResponseEntity<?> writeReview(@RequestBody ReviewWriteDto reviewWriteDto) {
+        return ResponseEntity.ok().body(reviewService.writeReview(reviewWriteDto));
+    }
+
+    @GetMapping("{memberId}")
+    public ResponseEntity<?> getReviews(@PathVariable Long memberId) {
+        return ResponseEntity.ok().body(reviewService.getReviews(memberId));
+    }
+
+}
