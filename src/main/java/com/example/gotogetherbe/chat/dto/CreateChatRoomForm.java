@@ -1,4 +1,4 @@
-package com.example.gotogetherbe.chatroom.dto;
+package com.example.gotogetherbe.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.example.gotogetherbe.chatroom.service;
+package com.example.gotogetherbe.chat.service;
 
-import com.example.gotogetherbe.chatroom.dto.ChatRoomDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomDto;
 import java.util.List;
 
 public interface ChatRoomService {

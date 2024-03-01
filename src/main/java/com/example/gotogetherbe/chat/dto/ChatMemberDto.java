@@ -1,6 +1,6 @@
-package com.example.gotogetherbe.chatmember.dto;
+package com.example.gotogetherbe.chat.dto;
 
-import com.example.gotogetherbe.chatmember.entity.ChatMember;
+import com.example.gotogetherbe.chat.entity.ChatMember;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

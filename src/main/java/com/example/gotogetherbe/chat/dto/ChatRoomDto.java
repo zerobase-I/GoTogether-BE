@@ -1,7 +1,7 @@
-package com.example.gotogetherbe.chatroom.dto;
+package com.example.gotogetherbe.chat.dto;
 
-import com.example.gotogetherbe.chatroom.entity.ChatRoom;
-import com.example.gotogetherbe.chatroom.type.ChatRoomStatus;
+import com.example.gotogetherbe.chat.entity.ChatRoom;
+import com.example.gotogetherbe.chat.type.ChatRoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

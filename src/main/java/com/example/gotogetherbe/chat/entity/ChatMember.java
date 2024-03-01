@@ -1,6 +1,7 @@
-package com.example.gotogetherbe.chatmember.entity;
+package com.example.gotogetherbe.chat.entity;
 
-import com.example.gotogetherbe.chatroom.entity.ChatRoom;
+import com.example.gotogetherbe.chat.entity.ChatRoom;
+import com.example.gotogetherbe.member.entitiy.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

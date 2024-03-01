@@ -1,6 +1,8 @@
-package com.example.gotogetherbe.chatroom.entity;
+package com.example.gotogetherbe.chat.entity;
 
-import com.example.gotogetherbe.chatroom.type.ChatRoomStatus;
+import com.example.gotogetherbe.chat.type.ChatRoomStatus;
+import com.example.gotogetherbe.global.entity.BaseEntity;
+import com.example.gotogetherbe.post.entity.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,11 +21,10 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChatRoom { // BaseEntity
+public class ChatRoom extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

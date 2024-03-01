@@ -1,8 +1,10 @@
-package com.example.gotogetherbe.chatmember.controller;
+package com.example.gotogetherbe.chat.controller;
 
-import com.example.gotogetherbe.chatmember.service.impl.ChatMemberServiceImpl;
+import com.example.gotogetherbe.chat.service.impl.ChatMemberServiceImpl;
+import com.example.gotogetherbe.global.util.jwt.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +17,9 @@ public class ChatMemberController {
   // 채팅방 참여자 목록 조회
   @GetMapping("/api/chat-member/list/{chatRoomId}")
   public ResponseEntity<?> getChatMemberList(
-      /* 회원인증 */
+      @AuthenticationPrincipal JwtUserDetails userDetails,
       @PathVariable Long chatRoomId
   ) {
-    return ResponseEntity.ok(chatMemberService.getChatMemberList(chatRoomId));
+    return ResponseEntity.ok(chatMemberService.getChatMemberList(userDetails.getUsername(),chatRoomId));
   }
 }

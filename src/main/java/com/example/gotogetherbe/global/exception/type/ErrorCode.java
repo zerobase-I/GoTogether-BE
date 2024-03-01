@@ -26,6 +26,13 @@ public enum ErrorCode {
   POST_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 글 카테고리가 없습니다."),
   COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."),
   PROFILE_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "프로필 이미지 업로드 중 오류가 발생했습니다."),
+  ALREADY_DELETED_CHATROOM(HttpStatus.BAD_REQUEST, "삭제된 채팅방입니다."),
+  ALREADY_CREATED_CHATROOM(HttpStatus.BAD_REQUEST, "이미 생성된 채팅방입니다."),
+  CHATROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅방을 찾을 수 없습니다."),
+  CHAT_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅 참여회원을 찾을 수 없습니다."),
+  CHATROOM_IS_EMPTY(HttpStatus.BAD_REQUEST, "참여중인 회원이 없습니다."),
+  NOT_BELONG_TO_CHAT_MEMBER(HttpStatus.BAD_REQUEST, "채팅방의 참여중인 회원이 아닙니다."),
+
 
   /**
    * 401 Unauthorized
@@ -40,12 +47,16 @@ public enum ErrorCode {
   WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 형식의 토큰입니다."),
   EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료되었습니다. 재발급이 필요합니다."),
 
+  /**
+   * 406 Forbidden
+   */
 
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),
   /**
    * 404 Not Found
    */
 
-  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "이메일에 해당되는 사용자가 없습니다."),
+  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 없습니다."),
 
   /**
    * 409 conflict
@@ -53,6 +64,8 @@ public enum ErrorCode {
 
   // User error
   DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
+  MEMBER_POST_INCORRECT(HttpStatus.CONFLICT, "회원의 게시글이 아닙니다."),
+  ALREADY_PARTICIPANT_MEMBER(HttpStatus.CONFLICT, "이미 참여중인 회원입니다."),
 
   /**
    * 500 Internal Server Error
