@@ -1,7 +1,7 @@
 package com.example.gotogetherbe.chat.controller;
 
 import com.example.gotogetherbe.chat.dto.CreateChatRoomForm;
-import com.example.gotogetherbe.chat.service.impl.ChatRoomServiceImpl;
+import com.example.gotogetherbe.chat.service.ChatRoomService;
 import com.example.gotogetherbe.global.util.jwt.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/chat-room")
 public class ChatRoomController {
-  private final ChatRoomServiceImpl chatRoomService;
+  private final ChatRoomService chatRoomService;
 
   // 채팅방 생성
   @PostMapping("/{postId}")

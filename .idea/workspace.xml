@@ -4,32 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="Feat. ChatMember 조회&#10;&#10;- 채팅방에 참여중인 멤버 조회">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompErrorHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.5/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.5/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.5/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/checksums/sha1-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatmember/controller/ChatMemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatMemberController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatmember/dto/ChatMemberDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/dto/ChatMemberDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatmember/entity/ChatMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/entity/ChatMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatmember/repository/ChatMemberRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/repository/ChatMemberRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatmember/service/ChatMemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatMemberService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatmember/service/impl/ChatMemberServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/impl/ChatMemberServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/controller/ChatRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatRoomController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/dto/ChatRoomDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/dto/ChatRoomDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/dto/CreateChatRoomForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/dto/CreateChatRoomForm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/entity/ChatRoom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/entity/ChatRoom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/repository/ChatRoomRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/repository/ChatRoomRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/service/ChatRoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatRoomService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/service/impl/ChatRoomServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/impl/ChatRoomServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chatroom/type/ChatRoomStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/type/ChatRoomStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/exception/type/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/exception/type/ErrorCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,6 +112,8 @@
       <workItem from="1709129796444" duration="4651000" />
       <workItem from="1709199674350" duration="3873000" />
       <workItem from="1709221475834" duration="11336000" />
+      <workItem from="1709273841875" duration="4295000" />
+      <workItem from="1709380241756" duration="142000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -168,7 +147,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709136859308</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가">
+      <option name="closed" value="true" />
+      <created>1709274069668</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1709274069668</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,6 +177,7 @@
     <MESSAGE value="Feat. ChatRoom 작성, ChatMember 초기세팅&#10;&#10;- ChatRoom Entity 작성&#10;- ChatRoom Controller 초안 작성&#10;- ChatMember 초기세팅" />
     <MESSAGE value="Feat. ChatRoom 구현&#10;&#10;- ChatRoom 생성, 조회, 입장, 퇴장 구현" />
     <MESSAGE value="Feat. ChatMember 조회&#10;&#10;- 채팅방에 참여중인 멤버 조회" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat. ChatMember 조회&#10;&#10;- 채팅방에 참여중인 멤버 조회" />
+    <MESSAGE value="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가" />
   </component>
 </project>

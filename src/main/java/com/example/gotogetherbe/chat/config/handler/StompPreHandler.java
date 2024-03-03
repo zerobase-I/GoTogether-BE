@@ -1,7 +1,5 @@
 package com.example.gotogetherbe.chat.config.handler;
 
-import static com.example.gotogetherbe.global.exception.type.ErrorCode.ALREADY_DELETED_CHATROOM;
-import static org.springframework.security.access.AccessDecisionVoter.ACCESS_DENIED;
 
 import com.example.gotogetherbe.auth.service.AuthServiceImpl;
 import com.example.gotogetherbe.chat.entity.ChatMember;
@@ -88,7 +86,7 @@ public class StompPreHandler implements ChannelInterceptor {
         .orElseThrow(() -> new GlobalException(ErrorCode.ACCESS_DENIED));
 
     if (chatMember.getChatRoom().getStatus() == ChatRoomStatus.DELETED) {
-      throw new GlobalException(ALREADY_DELETED_CHATROOM);
+      throw new GlobalException(ErrorCode.ALREADY_DELETED_CHATROOM);
     }
   }
 
