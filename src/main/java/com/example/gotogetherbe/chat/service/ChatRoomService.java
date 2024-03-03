@@ -1,5 +1,6 @@
 package com.example.gotogetherbe.chat.service;
 
+import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.entity.ChatMember;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
 import com.example.gotogetherbe.chat.dto.ChatRoomDto;
@@ -64,7 +65,7 @@ public class ChatRoomService {
   }
 
   @Transactional
-  public String enterChatRoom(String email, Long chatRoomId) {
+  public ChatMemberDto enterChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
@@ -82,11 +83,11 @@ public class ChatRoomService {
         .member(member)
         .build());
 
-    return enterChatMember.getMember().getNickname() + "님이 " + enterChatMember.getChatRoom().getName() + "에 참여하였습니다.";
+    return ChatMemberDto.from(enterChatMember);
   }
 
   @Transactional
-  public String exitChatRoom(String email, Long chatRoomId) {
+  public ChatMemberDto exitChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
@@ -104,6 +105,6 @@ public class ChatRoomService {
       chatRoomRepository.delete(chatRoom);
     }
 
-    return chatMember.getMember().getNickname() + "님이 퇴장하였습니다.";
+    return ChatMemberDto.from(chatMember);
   }
 }

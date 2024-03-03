@@ -18,8 +18,8 @@ public class ChatMemberDto {
   public static ChatMemberDto from(ChatMember chatMember) {
     return ChatMemberDto.builder()
         .memberId(chatMember.getMember().getId())
-        .nickName(chatMember.getMember().getNickName())
-        .profileUrl(chatMember.getMember().getProfileUrl())
-        .build()
+        .nickName(chatMember.getMember().getNickname())
+        .profileUrl(chatMember.getMember().getProfileImageUrl())
+        .build();
   }
 }
