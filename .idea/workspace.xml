@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" afterDir="false" />
-    </list>
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. service interface 삭제" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -114,6 +111,7 @@
       <workItem from="1709221475834" duration="11336000" />
       <workItem from="1709273841875" duration="4295000" />
       <workItem from="1709380241756" duration="142000" />
+      <workItem from="1709455525654" duration="304000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -155,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709274069668</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fix. service interface 삭제">
+      <option name="closed" value="true" />
+      <created>1709455726995</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1709455726995</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,6 +184,7 @@
     <MESSAGE value="Feat. ChatRoom 구현&#10;&#10;- ChatRoom 생성, 조회, 입장, 퇴장 구현" />
     <MESSAGE value="Feat. ChatMember 조회&#10;&#10;- 채팅방에 참여중인 멤버 조회" />
     <MESSAGE value="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가" />
+    <MESSAGE value="fix. service interface 삭제" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix. service interface 삭제" />
   </component>
 </project>

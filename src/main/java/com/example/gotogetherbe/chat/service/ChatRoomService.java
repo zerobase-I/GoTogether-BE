@@ -27,9 +27,8 @@ public class ChatRoomService {
   private final MemberRepository memberRepository;
   private final PostRepository postRepository;
 
-  @Override
   @Transactional
-  public ChatRoomDto createChatRoom(String email, Long postId, String name) {
+  public ChatRoomDto createChatRoom(String email, Long postId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
@@ -46,14 +45,13 @@ public class ChatRoomService {
 
     ChatRoom createdChatRoom = chatRoomRepository.save(ChatRoom.builder()
             .post(post)
-            .name(name)
+            .name(post.getTitle())
             .status(ChatRoomStatus.ACTIVE)
             .build());
 
     return ChatRoomDto.from(createdChatRoom);
   }
 
-  @Override
   public List<ChatRoomDto> getChatRoomList(String email) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
@@ -65,7 +63,6 @@ public class ChatRoomService {
     return chatRoomList.stream().map(ChatRoomDto::from).collect(Collectors.toList());
   }
 
-  @Override
   @Transactional
   public String enterChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
@@ -88,7 +85,6 @@ public class ChatRoomService {
     return enterChatMember.getMember().getNickname() + "님이 " + enterChatMember.getChatRoom().getName() + "에 참여하였습니다.";
   }
 
-  @Override
   @Transactional
   public String exitChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)

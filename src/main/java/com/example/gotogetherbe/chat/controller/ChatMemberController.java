@@ -1,5 +1,6 @@
 package com.example.gotogetherbe.chat.controller;
 
+import com.example.gotogetherbe.auth.config.LoginUser;
 import com.example.gotogetherbe.chat.service.ChatMemberService;
 import com.example.gotogetherbe.global.util.jwt.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,9 @@ public class ChatMemberController {
   // 채팅방 참여자 목록 조회
   @GetMapping("/api/chat-member/list/{chatRoomId}")
   public ResponseEntity<?> getChatMemberList(
-      @AuthenticationPrincipal JwtUserDetails userDetails,
+      @LoginUser String username,
       @PathVariable Long chatRoomId
   ) {
-    return ResponseEntity.ok(chatMemberService.getChatMemberList(userDetails.getUsername(),chatRoomId));
+    return ResponseEntity.ok(chatMemberService.getChatMemberList(username,chatRoomId));
   }
 }
