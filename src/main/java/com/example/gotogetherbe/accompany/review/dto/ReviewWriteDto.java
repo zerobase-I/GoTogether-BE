@@ -12,20 +12,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewWriteDto {
 
-    private Long reviewerId;
     private Long targetMemberId;
-    private Long postId;
-    private Double score;
-    private String content;
 
-    public Review toEntity() {
-        return Review.builder()
-            .reviewerId(reviewerId)
-            .targetMemberId(targetMemberId)
-            .postId(postId)
-            .score(score)
-            .content(content)
-            .build();
-    }
+    private Long postId;
+
+    private Double score;
+
+    private String content;
 
 }

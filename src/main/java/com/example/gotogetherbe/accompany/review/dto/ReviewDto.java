@@ -30,9 +30,9 @@ public class ReviewDto {
     public static ReviewDto from(Review review) {
         return ReviewDto.builder()
             .id(review.getId())
-            .reviewerId(review.getReviewerId())
-            .targetMemberId(review.getTargetMemberId())
-            .postId(review.getPostId())
+            .reviewerId(review.getReviewer().getId())
+            .targetMemberId(review.getTargetMember().getId())
+            .postId(review.getPost().getId())
             .score(review.getScore())
             .content(review.getContent())
             .createdAt(review.getCreatedAt())
