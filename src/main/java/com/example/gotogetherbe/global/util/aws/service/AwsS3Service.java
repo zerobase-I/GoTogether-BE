@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 
 
 import com.example.gotogetherbe.global.exception.GlobalException;
+import com.example.gotogetherbe.global.util.aws.dto.S3ImageDto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -30,13 +31,44 @@ public class AwsS3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
 
+  /**
+   * 게시물 이미지를 AWS S3에 업로드하고 그에 대한 정보를 반환.
+   *
+   * @param multipartFile 업로드할 이미지 파일
+   * @return 업로드된 이미지의 S3 URL, 파일 이름, 파일 크기를 포함한 S3ImageDto 객체
+   */
+  public S3ImageDto uploadPostImage(MultipartFile multipartFile) {
+    log.info("[uploadPostImage] start");
 
+    String fileName = generateFileName(multipartFile);
+    uploadToS3(multipartFile, fileName);
 
+    return new S3ImageDto(getUrl(fileName), fileName, multipartFile.getSize());
+  }
+
+  /**
+   * 프로필 이미지를 AWS S3에 업로드하고 그에 대한 URL 을 반환.
+   *
+   * @param multipartFile 업로드할 이미지 파일
+   * @return 업로드된 이미지의 S3 URL
+   */
   public String uploadProfileImage(MultipartFile multipartFile) {
     log.info("[uploadProfileImage] start");
 
     String fileName = generateFileName(multipartFile);
+    uploadToS3(multipartFile, fileName);
 
+    return getUrl(fileName);
+  }
+
+
+  /**
+   * AWS S3에 파일을 업로드.
+   *
+   * @param multipartFile 업로드할 파일
+   * @param fileName 파일 이름
+   */
+  private void uploadToS3(MultipartFile multipartFile, String fileName) {
     try (InputStream inputStream = multipartFile.getInputStream()) {
       amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream,
           getObjectMetadata(multipartFile))
@@ -45,10 +77,7 @@ public class AwsS3Service {
       log.error("IOException is occurred", e);
       throw new GlobalException(INTERNAL_SERVER_ERROR);
     }
-
-    return getUrl(fileName);
   }
-
 
   private String getUrl(String fileName) {
     return amazonS3.getUrl(bucketName, fileName).toString();

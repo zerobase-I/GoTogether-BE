@@ -1,10 +1,11 @@
 package com.example.gotogetherbe.post.entity;
 
 import com.example.gotogetherbe.global.entity.BaseEntity;
-import com.example.gotogetherbe.global.util.aws.entity.Image;
+import com.example.gotogetherbe.global.util.aws.entity.PostImage;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.post.entity.type.PostCategory;
 import com.example.gotogetherbe.post.entity.type.PostGenderType;
+import com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,7 +45,8 @@ public class Post extends BaseEntity {
   private Member member;
 
   @Column(nullable = false)
-  private Boolean recruitmentStatus;
+  @Enumerated(EnumType.STRING)
+  private PostRecruitmentStatus recruitmentStatus;
 
   @Column(nullable = false, length = 20)
   private String travelCountry;
@@ -56,7 +58,7 @@ public class Post extends BaseEntity {
   private LocalDateTime startDate;
 
   @Column(nullable = false)
-  private LocalDateTime finishDate;
+  private LocalDateTime endDate;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
@@ -89,9 +91,9 @@ public class Post extends BaseEntity {
 
   @Builder.Default
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Image> images = new ArrayList<>();
+  private List<PostImage> images = new ArrayList<>();
 
-  public void addImage(Image image){
+  public void addImage(PostImage image){
     this.images.add(image);
     image.mappingPost(this);
   }
