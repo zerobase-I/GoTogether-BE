@@ -22,10 +22,11 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
+    private final TravelScoreService travelScoreService;
 
     /**
      * 리뷰 작성
-     * @param email 로그인한 사용자 이메일
+     * @param email     로그인한 사용자 이메일
      * @param reviewDto 리뷰 작성 정보
      * @return 작성된 리뷰 정보
      */
@@ -47,13 +48,14 @@ public class ReviewService {
             .content(reviewDto.getContent())
             .build();
 
-        //TODO 스코어 업데이트
+        travelScoreService.updateTravelScore(targetMember, reviewDto.getScore());
 
         return ReviewDto.from(reviewRepository.save(review));
     }
 
     /**
      * 로그인 한 사용자의 리뷰 조회
+     *
      * @param email 로그인한 사용자 이메일
      * @return 로그인한 사용자의 리뷰 리스트
      */
@@ -66,6 +68,7 @@ public class ReviewService {
 
     /**
      * 특정 사용자의 리뷰 조회
+     *
      * @param memberId 사용자 id
      * @return 특정 사용자의 리뷰 리스트
      */
@@ -79,10 +82,10 @@ public class ReviewService {
 
     /**
      * 리뷰 중복 확인(리뷰어, 타겟 멤버, postId 세가지 항목 동시 일치 여부)
-     * @param reviewer 리뷰 작성자
+     *
+     * @param reviewer     리뷰 작성자
      * @param targetMember 리뷰 대상자
-     * @param post 게시글
-     * 중복이 발생하면 GlobalException 발생
+     * @param post         게시글 중복이 발생하면 GlobalException 발생
      */
     private void checkDuplication(Member reviewer, Member targetMember, Post post) {
         if (reviewRepository.existByReviewerAndTargetMemberAndPost(reviewer, targetMember, post)) {
@@ -92,6 +95,7 @@ public class ReviewService {
 
     /**
      * 이메일로 사용자 조회
+     *
      * @param email 사용자 이메일
      * @return member
      */
