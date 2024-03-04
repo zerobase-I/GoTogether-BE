@@ -15,7 +15,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +59,19 @@ public class ReviewService {
      */
     public List<ReviewDto> getMyReviews(String email) {
         Member member = getMemberByEmail(email);
+        List<Review> reviews = reviewRepository.findAllByTargetMember(member);
+
+        return reviews.stream().map(ReviewDto::from).toList();
+    }
+
+    /**
+     * 특정 사용자의 리뷰 조회
+     * @param memberId 사용자 id
+     * @return 특정 사용자의 리뷰 리스트
+     */
+    public List<ReviewDto> getReviews(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
         List<Review> reviews = reviewRepository.findAllByTargetMember(member);
 
         return reviews.stream().map(ReviewDto::from).toList();
