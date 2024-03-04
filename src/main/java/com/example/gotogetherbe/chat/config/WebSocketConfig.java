@@ -22,11 +22,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   @Value("${spring.rabbitmq.host}")
   private String host;
 
+  // 엔드포인트 등록
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.setErrorHandler(stompErrorHandler)
-        .addEndpoint("/ws")
-        .setAllowedOrigins("*");
+    registry
+        .addEndpoint("/api/chat")
+        .setAllowedOriginPatterns("*")
+        .withSockJS();
+    registry
+        .setErrorHandler(stompErrorHandler);
   }
 
   @Override

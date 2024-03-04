@@ -2,16 +2,17 @@ package com.example.gotogetherbe.chat.config.handler;
 
 
 import com.example.gotogetherbe.auth.service.AuthServiceImpl;
-import com.example.gotogetherbe.chat.entity.ChatMember;
+import com.example.gotogetherbe.chat.dto.ChatRoomSessionDto;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
 import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
-import com.example.gotogetherbe.chat.type.ChatRoomStatus;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
+import com.example.gotogetherbe.global.service.RedisService;
 import com.example.gotogetherbe.global.util.jwt.TokenProvider;
-import java.security.Principal;
-import java.util.Map;
+import com.example.gotogetherbe.member.entitiy.Member;
+import com.example.gotogetherbe.member.repository.MemberRepository;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -20,19 +21,23 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class StompPreHandler implements ChannelInterceptor {
 
+  private static final String ACCESS_TOKEN_PREFIX = "Bearer ";
+  private static final String CHATROOM_SESSION = "CHATROOM_SESSION";
   private final TokenProvider tokenProvider;
+  private final MemberRepository memberRepository;
   private final ChatRoomRepository chatRoomRepository;
   private final ChatMemberRepository chatMemberRepository;
   private final AuthServiceImpl authService;
+
+  private final RedisService redisService;
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -40,68 +45,88 @@ public class StompPreHandler implements ChannelInterceptor {
 
     assert accessor != null;
 
-    if (StompCommand.CONNECT.equals(accessor.getCommand())) { // 연결 인증 처리
-      String accessToken = accessor.getFirstNativeHeader("Authorization");
+    if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+      String token = resolveToken(accessor.getFirstNativeHeader("Authorization"));
+      log.info("[preSend] stomp connection token : {}", token);
 
-      if (tokenProvider.validateToken(accessToken)) {
-        setAuthentication(accessToken, accessor);
-      } else {
-        // TODO : refresh Token
+      accessor.setUser(tokenProvider.getAuthentication(token));
 
-        setAuthentication(accessToken, accessor);
+      log.info("[preSend] stomp connection => user : {}, sessionId : {}",
+          Objects.requireNonNull(accessor.getUser()).getName(),
+          accessor.getSessionId());
+    } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+      log.info("[preSend] stomp subscribe. destination: {}, user: {}, sessionId : {}",
+          accessor.getDestination(),
+          Objects.requireNonNull(accessor.getUser()).getName(),
+          accessor.getSessionId());
+
+      String sessionId = accessor.getSessionId();
+
+      Member member = memberRepository.findByEmail(accessor.getUser().getName())
+          .orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
+
+      Long chatRoomId = getRoomIdFromDestination(Objects.requireNonNull(accessor.getDestination()));
+      ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+          .orElseThrow(() -> new GlobalException(ErrorCode.CHATROOM_NOT_FOUND));
+
+      saveSession(chatRoom.getId(), member.getId(), sessionId);
+      log.info("[preSend] stomp subscribe redis 구독 저장 완료");
+    } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+      String sessionId = accessor.getSessionId();
+      assert sessionId != null;
+
+      ChatRoomSessionDto sessionDto = redisService.getChatRoomHashKey(CHATROOM_SESSION, sessionId);
+      if (sessionDto == null) {
+        return message;
       }
 
-      log.info("[WS] connection successful");
-    } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) { // 채팅방 구독 권한 확인
-      Long memberId = getMemberId(accessor.getUser());
-      Long roomId = parseRoomId(accessor.getDestination());
+      try {
+        ChatRoom chatRoom = chatRoomRepository.findById(sessionDto.chatRoomId())
+            .orElseThrow(() -> new GlobalException(ErrorCode.CHATROOM_NOT_FOUND));
 
-      validateChatRoom(roomId);
+        Member member = memberRepository.findById(sessionDto.memberId())
+            .orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
 
-      checkAccessChatRoom(roomId, memberId);
+        //채팅방 뒤로 가기 진행 시에 마지막 메시지 ID 업데이트 진행
+        chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId())
+            .ifPresent(p ->
+                chatMessageRepository.findTopByChatRoomIdOrderBySendAtDesc(chatRoom.getId())
+                    .ifPresent(chatMessage -> {
+                      p.updateLastReadId(chatMessage.getId());
+                      chatMemberRepository.save(p);
+                      log.info("[preSend] stomp disconnect 마지막 메시지 저장 완료");
+                    })
+            );
 
-      // 현재 구독한 채팅방으로만 메세지 전송
-      Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-      sessionAttributes.put("roomId", roomId);
+        redisService.deleteHashKey(CHATROOM_SESSION, sessionId);
+        log.info("[preSend] stomp disconnect deleteHashKey 완료");
 
-      log.info("[WS] subscribed chat room [{}]", roomId);
+      } catch (Exception e) {
+        log.error("[preSend] stomp disconnect is occurred : {}", e.getMessage());
+      }
+
     }
 
     return message;
   }
 
-  private void setAuthentication(String accessToken, StompHeaderAccessor accessor) {
-    Authentication authentication = tokenProvider.getAuthentication(accessToken);
-    accessor.setUser(authentication);
+  private String resolveToken(String token) {
+    if (StringUtils.hasText(token) && token.startsWith(ACCESS_TOKEN_PREFIX)) {
+      return token.substring(ACCESS_TOKEN_PREFIX.length());
+    }
+    throw new GlobalException(ErrorCode.UNSUPPORTED_TOKEN);
   }
 
-  private void validateChatRoom(Long roomId) {
-    if (!chatRoomRepository.existsById(roomId)) {
-      throw new GlobalException(ErrorCode.CHATROOM_NOT_FOUND);
-    }
+  private Long getRoomIdFromDestination(String destination) {
+    return Long.parseLong(destination.substring(destination.lastIndexOf("/") + 1));
   }
 
-  private void checkAccessChatRoom(Long chatRoomId, Long memberId) {
-    ChatMember chatMember = chatMemberRepository.findByChatRoomIdAndMemberId(chatRoomId, memberId)
-        .orElseThrow(() -> new GlobalException(ErrorCode.ACCESS_DENIED));
+  private void saveSession(Long chatRoomId, Long memberId, String sessionId) {
+    ChatRoomSessionDto sessionDto = ChatRoomSessionDto.builder()
+        .chatRoomId(chatRoomId)
+        .memberId(memberId)
+        .build();
 
-    if (chatMember.getChatRoom().getStatus() == ChatRoomStatus.DELETED) {
-      throw new GlobalException(ErrorCode.ALREADY_DELETED_CHATROOM);
-    }
-  }
-
-  private Long getMemberId(Principal user) {
-    if (ObjectUtils.isEmpty(user)) {
-      throw new GlobalException(ErrorCode.USER_NOT_FOUND);
-    }
-    return Long.parseLong(user.getName());
-  }
-
-  private Long parseRoomId(String destination) {
-    if (ObjectUtils.isEmpty(destination) || !destination.startsWith(CHAT_ROOM) ||
-        destination.length() == CHAT_ROOM.length()) {
-      throw new GlobalException(ErrorCode.USER_NOT_FOUND); // 잘못된 구독 경로
-    }
-    return Long.parseLong(destination.substring(CHAT_ROOM.length()));
+    redisService.updateToHash(CHATROOM_SESSION, sessionId, sessionDto);
   }
 }
