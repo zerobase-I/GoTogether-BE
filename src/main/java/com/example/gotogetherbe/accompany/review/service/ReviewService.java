@@ -24,11 +24,15 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 리뷰 작성
+     * @param email 로그인한 사용자 이메일
+     * @param reviewDto 리뷰 작성 정보
+     * @return 작성된 리뷰 정보
+     */
     @Transactional
     public ReviewDto writeReview(String email, ReviewWriteDto reviewDto) {
-        Member reviewer = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
-
+        Member reviewer = getMemberByEmail(email);
         Member targetMember = memberRepository.findById(reviewDto.getTargetMemberId())
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
 
@@ -49,9 +53,14 @@ public class ReviewService {
         return ReviewDto.from(reviewRepository.save(review));
     }
 
-    public List<ReviewDto> getReviews(Long memberId) {
-        existMember(memberId);
-        List<Review> reviews = reviewRepository.findAllByTargetMemberId(memberId);
+    /**
+     * 로그인 한 사용자의 리뷰 조회
+     * @param email 로그인한 사용자 이메일
+     * @return 로그인한 사용자의 리뷰 리스트
+     */
+    public List<ReviewDto> getMyReviews(String email) {
+        Member member = getMemberByEmail(email);
+        List<Review> reviews = reviewRepository.findAllByTargetMember(member);
 
         return reviews.stream().map(ReviewDto::from).toList();
     }
@@ -61,10 +70,21 @@ public class ReviewService {
      * @param reviewer 리뷰 작성자
      * @param targetMember 리뷰 대상자
      * @param post 게시글
+     * 중복이 발생하면 GlobalException 발생
      */
     private void checkDuplication(Member reviewer, Member targetMember, Post post) {
         if (reviewRepository.existByReviewerAndTargetMemberAndPost(reviewer, targetMember, post)) {
             throw new GlobalException(DUPLICATE_REVIEW);
         }
+    }
+
+    /**
+     * 이메일로 사용자 조회
+     * @param email 사용자 이메일
+     * @return member
+     */
+    private Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
     }
 }

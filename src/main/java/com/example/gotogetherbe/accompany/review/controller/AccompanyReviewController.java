@@ -26,9 +26,9 @@ public class AccompanyReviewController {
         return ResponseEntity.ok().body(reviewService.writeReview(username, reviewWriteDto));
     }
 
-    @GetMapping("{memberId}")
-    public ResponseEntity<?> getReviews(@PathVariable Long memberId) {
-        return ResponseEntity.ok().body(reviewService.getReviews(memberId));
+    @GetMapping("")
+    public ResponseEntity<?> getMyReviews(@LoginUser String username) {
+        return ResponseEntity.ok().body(reviewService.getMyReviews(username));
     }
 
 }
