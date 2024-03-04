@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. AuthenticationPrincipal -&gt; LoginUser 변경" />
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. enterChatRoom, exitChatRoom return 값 Dto로 변경">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,7 +113,7 @@
       <workItem from="1709221475834" duration="11336000" />
       <workItem from="1709273841875" duration="4295000" />
       <workItem from="1709380241756" duration="142000" />
-      <workItem from="1709455525654" duration="613000" />
+      <workItem from="1709455525654" duration="1822000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -169,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709456131884</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fix. enterChatRoom, exitChatRoom return 값 Dto로 변경">
+      <option name="closed" value="true" />
+      <created>1709456417476</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1709456417476</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -194,6 +204,7 @@
     <MESSAGE value="Feat. StompHandler 작성&#10;&#10;- 디렉터리 구조 변경&#10;- StompHandler 작성&#10;- ErrorCode 추가" />
     <MESSAGE value="fix. service interface 삭제" />
     <MESSAGE value="fix. AuthenticationPrincipal -&gt; LoginUser 변경" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix. AuthenticationPrincipal -&gt; LoginUser 변경" />
+    <MESSAGE value="fix. enterChatRoom, exitChatRoom return 값 Dto로 변경" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix. enterChatRoom, exitChatRoom return 값 Dto로 변경" />
   </component>
 </project>

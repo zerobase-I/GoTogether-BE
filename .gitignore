@@ -36,4 +36,11 @@ out/
 ### VS Code ###
 .vscode/
 
-application-API-KEY.properties
+# Lock files for dependency management
+*.lock
+
+# Binary files from compilation
+*.bin
+
+##
+src/main/resources/application.yml
