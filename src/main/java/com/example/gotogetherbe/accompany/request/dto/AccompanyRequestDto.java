@@ -26,12 +26,12 @@ public class AccompanyRequestDto {
 
     public static AccompanyRequestDto from(AccompanyRequest accompanyRequest) {
         return AccompanyRequestDto.builder()
-                .id(accompanyRequest.getId())
-                .requestMemberId(accompanyRequest.getRequestMemberId())
-                .requestedMemberId(accompanyRequest.getRequestedMemberId())
-                .postId(accompanyRequest.getPostId())
-                .requestStatus(accompanyRequest.getRequestStatus().name())
-                .createdAt(accompanyRequest.getCreatedAt().toString())
-                .build();
+            .id(accompanyRequest.getId())
+            .requestMemberId(accompanyRequest.getRequestMember().getId())
+            .requestedMemberId(accompanyRequest.getRequestedMember().getId())
+            .postId(accompanyRequest.getPost().getId())
+            .requestStatus(accompanyRequest.getRequestStatus().name())
+            .createdAt(accompanyRequest.getCreatedAt().toString())
+            .build();
     }
 }

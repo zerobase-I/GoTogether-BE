@@ -1,8 +1,8 @@
 package com.example.gotogetherbe.accompany.request.controller;
 
 import com.example.gotogetherbe.accompany.request.dto.AccompanyRequestSendDto;
-import com.example.gotogetherbe.accompany.request.dto.RequestConfirmDto;
 import com.example.gotogetherbe.accompany.request.service.AccompanyRequestService;
+import com.example.gotogetherbe.auth.config.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,36 +16,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/accompany/request")
 public class AccompanyRequestController {
+
     private final AccompanyRequestService accompanyRequestService;
+
     @PostMapping("/send")
     public ResponseEntity<?> sendAccompanyRequest(
-        @RequestBody AccompanyRequestSendDto accompanyRequestSendDto) {
+        @LoginUser String username,
+        @RequestBody AccompanyRequestSendDto accompanyRequestSendDto
+    ) {
         return ResponseEntity.ok()
-            .body(accompanyRequestService.sendAccompanyRequest(accompanyRequestSendDto));
+            .body(accompanyRequestService.sendAccompanyRequest(username, accompanyRequestSendDto));
     }
 
-    @GetMapping("/send/{memberId}")
-    public ResponseEntity<?> sentAccompanyRequest(@PathVariable Long memberId) {
-        return ResponseEntity.ok().body(accompanyRequestService.getSentAccompanyRequests(memberId));
+    @GetMapping("/send")
+    public ResponseEntity<?> sentAccompanyRequest(@LoginUser String username) {
+        return ResponseEntity.ok().body(accompanyRequestService.getSentAccompanyRequests(username));
     }
 
-    @GetMapping("/receive/{memberId}")
-    public ResponseEntity<?> receivedAccompanyRequest(@PathVariable Long memberId) {
-        return ResponseEntity.ok().body(accompanyRequestService.getReceivedAccompanyRequests(memberId));
+    @GetMapping("/receive")
+    public ResponseEntity<?> receivedAccompanyRequest(@LoginUser String username) {
+        return ResponseEntity.ok()
+            .body(accompanyRequestService.getReceivedAccompanyRequests(username));
     }
 
-    @PostMapping("/approve")
+    @PostMapping("/approve/{requestId}")
     public ResponseEntity<?> approveAccompanyRequest(
-        @RequestBody RequestConfirmDto requestConfirmDto) {
+        @LoginUser String username,
+        @PathVariable Long requestId
+    ) {
         return ResponseEntity.ok()
-            .body(accompanyRequestService.approveAccompanyRequest(requestConfirmDto));
+            .body(accompanyRequestService.approveAccompanyRequest(username, requestId));
     }
 
-    @PostMapping("/reject")
+    @PostMapping("/reject/{requestId}")
     public ResponseEntity<?> rejectAccompanyRequest(
-        @RequestBody RequestConfirmDto requestConfirmDto) {
+        @LoginUser String username,
+        @PathVariable Long requestId
+    ) {
         return ResponseEntity.ok()
-            .body(accompanyRequestService.rejectAccompanyRequest(requestConfirmDto));
+            .body(accompanyRequestService.rejectAccompanyRequest(username, requestId));
     }
 
 }
