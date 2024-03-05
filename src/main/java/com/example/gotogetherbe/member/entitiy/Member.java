@@ -107,4 +107,9 @@ public class Member extends BaseEntity {
     post.setMember(this);
   }
 
+  public void removePost(Post post){
+    this.posts.remove(post);
+    post.setMember(null);
+  }
+
 }

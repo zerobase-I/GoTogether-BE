@@ -97,6 +97,9 @@ public class Post extends BaseEntity {
     this.images.add(image);
     image.mappingPost(this);
   }
+  public void removeImage(PostImage image){
+    this.images.remove(image);
+  }
 
 
 }
