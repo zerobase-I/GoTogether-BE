@@ -5,6 +5,7 @@ package com.example.gotogetherbe.global.util.aws.service;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.*;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -75,6 +76,14 @@ public class AwsS3Service {
           .withCannedAcl(CannedAccessControlList.PublicRead));
     } catch (IOException e) {
       log.error("IOException is occurred", e);
+      throw new GlobalException(INTERNAL_SERVER_ERROR);
+    }
+  }
+  public void deleteFile(String fileName) {
+    try {
+      amazonS3.deleteObject(bucketName, fileName);
+    } catch (AmazonS3Exception e) {
+      log.error("AmazonS3Exception is occurred", e);
       throw new GlobalException(INTERNAL_SERVER_ERROR);
     }
   }
