@@ -1,10 +1,12 @@
 package com.example.gotogetherbe.post.dto;
 
+import com.example.gotogetherbe.global.util.aws.entity.PostImage;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.entity.type.PostCategory;
 import com.example.gotogetherbe.post.entity.type.PostGenderType;
 import com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,8 +38,12 @@ public class PostResponse {
 
   private String title;
   private String content;
+  private List<String> imageUrls;
 
   public static PostResponse fromEntity(Post post){
+    List<String> imageUrls = post.getImages().stream()  // Post에 연결된 PostImage들의 URL을 모두 불러옴.
+        .map(PostImage::getUrl)
+        .toList();
     return PostResponse.builder()
         .id(post.getId())
         .userEmail(post.getMember().getEmail())
@@ -55,6 +61,7 @@ public class PostResponse {
         .createdAt(post.getCreatedAt())
         .title(post.getTitle())
         .content(post.getContent())
+        .imageUrls(imageUrls)
         .build();
   }
 }

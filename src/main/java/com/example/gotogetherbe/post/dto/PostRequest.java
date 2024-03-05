@@ -58,4 +58,19 @@ public class PostRequest {
         .content(content)
         .build();
   }
+
+  public void updatePostEntity(Post post) {
+    post.setTravelCountry(this.getTravelCountry());
+    post.setTravelCity(this.getTravelCity());
+    post.setGender(this.getPostGenderType());
+    post.setCategory(this.getPostCategory());
+    post.setRecruitsPeople(this.getRecruitsPeople());
+    post.setEstimatedTravelExpense(this.getEstimatedTravelExpense());
+    post.setMinimumAge(this.getMinimumAge());
+    post.setMaximumAge(this.getMaximumAge());
+    post.setStartDate(this.getStartDate());
+    post.setEndDate(this.getEndDate());
+    post.setTitle(this.getTitle());
+    post.setContent(this.getContent());
+  }
 }
