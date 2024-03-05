@@ -1,17 +1,22 @@
 package com.example.gotogetherbe.member.entitiy;
 
+import com.example.gotogetherbe.accompany.review.entity.TravelScore;
 import com.example.gotogetherbe.global.entity.BaseEntity;
 import com.example.gotogetherbe.member.entitiy.type.MemberLoginType;
 import com.example.gotogetherbe.member.entitiy.type.MemberGender;
 import com.example.gotogetherbe.member.entitiy.type.MemberMbti;
 import com.example.gotogetherbe.member.entitiy.type.MemberRoleType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -69,8 +74,9 @@ public class Member extends BaseEntity {
   @Column
   private String description;
 
-  @Column(nullable = false)
-  private Integer travelScore;
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "travel_score_id", nullable = true)
+  private TravelScore travelScore;
 
   @Column(nullable = false)
   private Boolean certificationMark;
