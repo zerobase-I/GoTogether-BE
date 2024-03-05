@@ -4,14 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. gitignore 수정">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/dto/ChatRoomSessionDto.java" afterDir="false" />
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. chat config 수정, RedisService 메소드 추가">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatMessageController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/dto/ChatMessageDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/entity/ChatMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/repository/ChatMessageRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatMessageService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/type/ChatConstant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompErrorHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompErrorHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/exception/type/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/exception/type/ErrorCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/service/RedisService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/service/RedisService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/entity/ChatMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/entity/ChatMember.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,7 +126,8 @@
       <workItem from="1709380241756" duration="142000" />
       <workItem from="1709455525654" duration="1822000" />
       <workItem from="1709536747322" duration="856000" />
-      <workItem from="1709551192497" duration="12147000" />
+      <workItem from="1709551192497" duration="17204000" />
+      <workItem from="1709644834590" duration="4396000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -196,7 +201,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709536878448</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="fix. chat config 수정, RedisService 메소드 추가">
+      <option name="closed" value="true" />
+      <created>1709574829852</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1709574829852</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -223,6 +236,7 @@
     <MESSAGE value="fix. AuthenticationPrincipal -&gt; LoginUser 변경" />
     <MESSAGE value="fix. enterChatRoom, exitChatRoom return 값 Dto로 변경" />
     <MESSAGE value="fix. gitignore 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix. gitignore 수정" />
+    <MESSAGE value="fix. chat config 수정, RedisService 메소드 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix. chat config 수정, RedisService 메소드 추가" />
   </component>
 </project>

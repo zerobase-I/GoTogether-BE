@@ -1,7 +1,7 @@
 package com.example.gotogetherbe.chat.entity;
 
-import com.example.gotogetherbe.chat.entity.ChatRoom;
-import com.example.gotogetherbe.member.entitiy.Member;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -9,35 +9,42 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMember { // baseentity x
+public class ChatMessage {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "chat_room_id")
+  @JoinColumn(name = "chatRoom_id")
   private ChatRoom chatRoom;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id")
-  private Member member;
+  @ManyToOne
+  @JoinColumn(name = "chat_member_id")
+  private ChatMember chatMember;
 
-  @Builder.Default
-  private Long lastChatId = null;
+  @Column(columnDefinition = "TEXT")
+  private String content;
 
-  public void updateLastChatId(Long lastChatId) {
-    this.lastChatId = lastChatId;
+  @Column(nullable = false)
+  private LocalDateTime createdAt;
+
+  public void updateChatRoom(ChatRoom chatRoom) {
+    this.chatRoom = chatRoom;
+  }
+
+  public void updateChatMember(ChatMember chatMember) {
+    this.chatMember = chatMember;
   }
 }

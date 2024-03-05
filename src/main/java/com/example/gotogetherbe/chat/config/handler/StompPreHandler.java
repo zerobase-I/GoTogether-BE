@@ -1,11 +1,12 @@
 package com.example.gotogetherbe.chat.config.handler;
 
 
-import com.example.gotogetherbe.auth.service.AuthServiceImpl;
 import com.example.gotogetherbe.chat.dto.ChatRoomSessionDto;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
+import com.example.gotogetherbe.chat.repository.ChatMessageRepository;
 import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
+import com.example.gotogetherbe.chat.type.ChatConstant;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import com.example.gotogetherbe.global.service.RedisService;
@@ -30,12 +31,13 @@ import org.springframework.util.StringUtils;
 public class StompPreHandler implements ChannelInterceptor {
 
   private static final String ACCESS_TOKEN_PREFIX = "Bearer ";
-  private static final String CHATROOM_SESSION = "CHATROOM_SESSION";
+
   private final TokenProvider tokenProvider;
+
   private final MemberRepository memberRepository;
   private final ChatRoomRepository chatRoomRepository;
   private final ChatMemberRepository chatMemberRepository;
-  private final AuthServiceImpl authService;
+  private final ChatMessageRepository chatMessageRepository;
 
   private final RedisService redisService;
 
@@ -75,7 +77,7 @@ public class StompPreHandler implements ChannelInterceptor {
       String sessionId = accessor.getSessionId();
       assert sessionId != null;
 
-      ChatRoomSessionDto sessionDto = redisService.getChatRoomHashKey(CHATROOM_SESSION, sessionId);
+      ChatRoomSessionDto sessionDto = redisService.getChatRoomHashKey(ChatConstant.CHATROOM_SESSION, sessionId);
       if (sessionDto == null) {
         return message;
       }
@@ -90,15 +92,15 @@ public class StompPreHandler implements ChannelInterceptor {
         //채팅방 뒤로 가기 진행 시에 마지막 메시지 ID 업데이트 진행
         chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId())
             .ifPresent(p ->
-                chatMessageRepository.findTopByChatRoomIdOrderBySendAtDesc(chatRoom.getId())
+                chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
                     .ifPresent(chatMessage -> {
-                      p.updateLastReadId(chatMessage.getId());
+                      p.updateLastChatId(chatMessage.getId());
                       chatMemberRepository.save(p);
                       log.info("[preSend] stomp disconnect 마지막 메시지 저장 완료");
                     })
             );
 
-        redisService.deleteHashKey(CHATROOM_SESSION, sessionId);
+        redisService.deleteHashKey(ChatConstant.CHATROOM_SESSION, sessionId);
         log.info("[preSend] stomp disconnect deleteHashKey 완료");
 
       } catch (Exception e) {
