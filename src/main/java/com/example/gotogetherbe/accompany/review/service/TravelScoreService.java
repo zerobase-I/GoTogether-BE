@@ -21,21 +21,8 @@ public class TravelScoreService {
      */
     @Transactional
     public void updateTravelScore(Member member, Double score) {
-        //targetMember의 travelScore가 null이면 기본값으로 설정된 travelScore를 생성, set
-        if (member.getTravelScore() == null) {
-            member.setTravelScore(
-                TravelScore.builder()
-                    .totalScore(0.0)
-                    .totalReviewCount(0)
-                    .rating(0.0)
-                    .build()
-            );
-        }
-
-        //점수 계산 후 업데이트 된 member객체 반환
         Member updatedMember = updateRating(member, score);
 
-        //업데이트된 member객체로 travelScore 업데이트, cascade 설정으로 travelScore도 업데이트
         memberRepository.save(updatedMember);
     }
 
