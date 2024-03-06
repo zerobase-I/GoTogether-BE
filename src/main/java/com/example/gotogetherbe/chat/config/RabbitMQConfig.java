@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 @Configuration
 @RequiredArgsConstructor
-public class RabbitConfig {
+public class RabbitMQConfig {
 
   /**
    * Queue 등록

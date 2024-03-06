@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. chat config 수정, RedisService 메소드 추가">
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. ChatRoomController URL 수정">
+      <change afterPath="$PROJECT_DIR$/src/test/AuthTest.http" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/ChatMemberTest.http" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/ChatRoomTest.http" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/member/entitiy/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/member/entitiy/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitMQConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -147,7 +147,7 @@
       <workItem from="1709536747322" duration="856000" />
       <workItem from="1709551192497" duration="17204000" />
       <workItem from="1709644834590" duration="4396000" />
-      <workItem from="1709746961766" duration="634000" />
+      <workItem from="1709746961766" duration="1418000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -229,7 +229,23 @@
       <option name="project" value="LOCAL" />
       <updated>1709574829852</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fix. WebSocketConfig, RabbitConfig 수정">
+      <option name="closed" value="true" />
+      <created>1709747744549</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1709747744549</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix. ChatRoomController URL 수정">
+      <option name="closed" value="true" />
+      <created>1709747870372</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1709747870372</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -257,6 +273,8 @@
     <MESSAGE value="fix. enterChatRoom, exitChatRoom return 값 Dto로 변경" />
     <MESSAGE value="fix. gitignore 수정" />
     <MESSAGE value="fix. chat config 수정, RedisService 메소드 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix. chat config 수정, RedisService 메소드 추가" />
+    <MESSAGE value="fix. WebSocketConfig, RabbitConfig 수정" />
+    <MESSAGE value="fix. ChatRoomController URL 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix. ChatRoomController URL 수정" />
   </component>
 </project>
