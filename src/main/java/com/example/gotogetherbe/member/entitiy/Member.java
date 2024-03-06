@@ -24,6 +24,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -95,8 +98,22 @@ public class Member extends BaseEntity {
   @Builder.Default
   private boolean emailAuth = false;
 
+  @Builder.Default
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Post> posts = new ArrayList<>();
+
   public void changeEmailAuth() {
     this.emailAuth = true;
+  }
+
+  public void addPost(Post post){
+    this.posts.add(post);
+    post.setMember(this);
+  }
+
+  public void removePost(Post post){
+    this.posts.remove(post);
+    post.setMember(null);
   }
 
 }

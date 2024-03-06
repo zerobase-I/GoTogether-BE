@@ -12,6 +12,7 @@ import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import com.example.gotogetherbe.post.entity.Post;
+import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
