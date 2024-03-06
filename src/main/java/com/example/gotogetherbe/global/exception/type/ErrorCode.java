@@ -32,6 +32,8 @@ public enum ErrorCode {
   CHAT_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅 참여회원을 찾을 수 없습니다."),
   CHATROOM_IS_EMPTY(HttpStatus.BAD_REQUEST, "참여중인 회원이 없습니다."),
   NOT_BELONG_TO_CHAT_MEMBER(HttpStatus.BAD_REQUEST, "채팅방의 참여중인 회원이 아닙니다."),
+  UNCOMPLETED_ACCOMPANY(HttpStatus.BAD_REQUEST, "완료되지 않은 동행입니다."),
+  NOT_SAME_ACCOMPANY_MEMBER(HttpStatus.BAD_REQUEST, "같은 동행에 참여한 회원이 아닙니다."),
 
 
   /**
