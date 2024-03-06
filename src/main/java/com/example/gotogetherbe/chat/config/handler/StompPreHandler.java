@@ -129,6 +129,6 @@ public class StompPreHandler implements ChannelInterceptor {
         .memberId(memberId)
         .build();
 
-    redisService.updateToHash(CHATROOM_SESSION, sessionId, sessionDto);
+    redisService.updateToHash(ChatConstant.CHATROOM_SESSION, sessionId, sessionDto);
   }
 }

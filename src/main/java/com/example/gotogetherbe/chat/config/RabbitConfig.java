@@ -34,7 +34,7 @@ public class RabbitConfig {
   }
 
   /**
-   * excange 등록
+   * exchange 등록
    */
   @Bean
   public TopicExchange topicExchange() {

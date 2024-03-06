@@ -3,7 +3,6 @@ package com.example.gotogetherbe.chat.config;
 import com.example.gotogetherbe.chat.config.handler.StompErrorHandler;
 import com.example.gotogetherbe.chat.config.handler.StompPreHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -19,25 +18,29 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   private final StompErrorHandler stompErrorHandler;
   private final StompPreHandler stompPreHandler;
 
-  @Value("${spring.rabbitmq.host}")
-  private String host;
-
   // 엔드포인트 등록
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry
-        .addEndpoint("/chat")
-        .setAllowedOriginPatterns("*")
-        .withSockJS();
+        .addEndpoint("/ws")
+        .setAllowedOriginPatterns("*");
+        //.withSockJS();
     registry
         .setErrorHandler(stompErrorHandler);
   }
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
+    // 메세지 발행 url
     registry.setApplicationDestinationPrefixes("/pub");
+    // 메세지 구독 url
     registry.enableStompBrokerRelay("/sub")
-        .setRelayHost(host);
+        .setRelayHost("localhost")
+        .setRelayPort(61613)
+        .setClientLogin("guest")
+        .setClientPasscode("guest")
+        .setSystemLogin("guest")
+        .setSystemPasscode("guest");
   }
 
   @Override
