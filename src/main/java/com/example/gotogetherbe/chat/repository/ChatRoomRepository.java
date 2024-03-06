@@ -1,10 +1,15 @@
 package com.example.gotogetherbe.chat.repository;
 
 import com.example.gotogetherbe.chat.entity.ChatRoom;
+import com.example.gotogetherbe.post.entity.Post;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-  Boolean existsByPostId(Long postId);
+
+    Boolean existsByPostId(Long postId);
+
+    Optional<ChatRoom> findByPostId(Long postId);
 }
