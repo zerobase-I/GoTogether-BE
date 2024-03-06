@@ -33,7 +33,7 @@ public class ChatRoomController {
   }
 
   // 채팅방 입장
-  @PostMapping("/{chatRoomId}")
+  @PostMapping("/enter/{chatRoomId}")
   public ResponseEntity<?> enterChatRoom(
       @LoginUser String username,
       @PathVariable Long chatRoomId
@@ -42,7 +42,7 @@ public class ChatRoomController {
   }
 
   // 채팅방 퇴장
-  @DeleteMapping("/{chatRoomId}")
+  @DeleteMapping("/exit/{chatRoomId}")
   public ResponseEntity<?> exitChatRoom(
       @LoginUser String username,
       @PathVariable Long chatRoomId
