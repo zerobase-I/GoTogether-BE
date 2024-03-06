@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    boolean existByReviewerAndTargetMemberAndPost(Member reviewer, Member targetMember, Post post);
+    boolean existsByReviewerAndTargetMemberAndPost(Member reviewer, Member targetMember, Post post);
 
     List<Review> findAllByTargetMember(Member targetMember);
 }

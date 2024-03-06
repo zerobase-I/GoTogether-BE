@@ -48,9 +48,11 @@ public class ReviewService {
             .content(reviewDto.getContent())
             .build();
 
-        travelScoreService.updateTravelScore(targetMember, reviewDto.getScore());
+        Review saved = reviewRepository.save(review);
 
-        return ReviewDto.from(reviewRepository.save(review));
+        travelScoreService.updateTravelScore(saved.getTargetMember(), saved.getScore());
+
+        return ReviewDto.from(saved);
     }
 
     /**
@@ -88,7 +90,7 @@ public class ReviewService {
      * @param post         게시글 중복이 발생하면 GlobalException 발생
      */
     private void checkDuplication(Member reviewer, Member targetMember, Post post) {
-        if (reviewRepository.existByReviewerAndTargetMemberAndPost(reviewer, targetMember, post)) {
+        if (reviewRepository.existsByReviewerAndTargetMemberAndPost(reviewer, targetMember, post)) {
             throw new GlobalException(DUPLICATE_REVIEW);
         }
     }

@@ -5,6 +5,7 @@ import static com.example.gotogetherbe.accompany.request.type.RequestStatus.REJE
 import static com.example.gotogetherbe.accompany.request.type.RequestStatus.WAITING;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.ACCOMPANY_REQUEST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_ACCOMPANY_REQUEST;
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
 
@@ -15,6 +16,8 @@ import com.example.gotogetherbe.accompany.request.repository.AccompanyRequestRep
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.post.entity.Post;
+import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -28,7 +31,7 @@ public class AccompanyRequestService {
 
     private final AccompanyRequestRepository accompanyRequestRepository;
     private final MemberRepository memberRepository;
-//  private final PostRepository postRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public AccompanyRequestDto sendAccompanyRequest(
@@ -37,17 +40,19 @@ public class AccompanyRequestService {
     ) {
         Member requestMember = getMemberByEmail(email);
 
-        Member requrestedMember = memberRepository
+        Member requestedMember = memberRepository
             .findById(accompanyRequestSendDto.getRequestedMemberId())
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
 
         // TODO post 조회
+        Post post = postRepository.findById(accompanyRequestSendDto.getPostId())
+            .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
-        checkDuplication(requestMember, accompanyRequestSendDto); // post, requestedMember로 파라미터 변경
+        checkDuplication(requestMember, requestedMember, post); // post, requestedMember로 파라미터 변경
         AccompanyRequest accompanyRequest = AccompanyRequest.builder()
             .requestMember(requestMember)
-            .requestedMember(requrestedMember)
-//          .post()
+            .requestedMember(requestedMember)
+            .post(post)
             .requestStatus(WAITING)
             .build();
 
@@ -102,15 +107,16 @@ public class AccompanyRequestService {
      */
     private void checkDuplication(
         Member requestMember,
-        AccompanyRequestSendDto accompanyRequestSendDto
+        Member requestedMember,
+        Post post
     ) {
         //TODO postRepository에서 postId에 대한 존재 여부 확인
 
         // 중복된 요청이 존재하는 경우 예외 발생
-        if (accompanyRequestRepository.existByRequestMemberAndRequestedMemberAndPost(
-            requestMember.getId(),
-            accompanyRequestSendDto.getRequestedMemberId(),
-            accompanyRequestSendDto.getPostId()
+        if (accompanyRequestRepository.existsByRequestMemberAndRequestedMemberAndPost(
+            requestMember,
+            requestedMember,
+            post
         )) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
         }
