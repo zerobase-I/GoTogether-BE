@@ -2,6 +2,7 @@ package com.example.gotogetherbe.accompany.review.controller;
 
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
 import com.example.gotogetherbe.accompany.review.service.ReviewService;
+import com.example.gotogetherbe.auth.config.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +20,18 @@ public class AccompanyReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("")
-    public ResponseEntity<?> writeReview(@RequestBody ReviewWriteDto reviewWriteDto) {
-        return ResponseEntity.ok().body(reviewService.writeReview(reviewWriteDto));
+    public ResponseEntity<?> writeReview(
+        @LoginUser String username,
+        @RequestBody ReviewWriteDto reviewWriteDto) {
+        return ResponseEntity.ok().body(reviewService.writeReview(username, reviewWriteDto));
     }
 
-    @GetMapping("{memberId}")
+    @GetMapping("")
+    public ResponseEntity<?> getMyReviews(@LoginUser String username) {
+        return ResponseEntity.ok().body(reviewService.getMyReviews(username));
+    }
+
+    @GetMapping("/{memberId}")
     public ResponseEntity<?> getReviews(@PathVariable Long memberId) {
         return ResponseEntity.ok().body(reviewService.getReviews(memberId));
     }
