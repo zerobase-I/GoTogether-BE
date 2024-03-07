@@ -29,7 +29,7 @@ public class ChatRoomController {
   // 참여중인 채팅방 목록 조회
   @GetMapping("/list")
   public ResponseEntity<?> getChatRoomList(@LoginUser String username) {
-    return ResponseEntity.ok(chatRoomService.getChatRoomList(username));
+    return ResponseEntity.ok(chatRoomService.getMyChatRoomList(username));
   }
 
   // 채팅방 입장

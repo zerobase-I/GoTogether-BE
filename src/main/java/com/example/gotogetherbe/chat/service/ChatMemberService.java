@@ -19,6 +19,13 @@ public class ChatMemberService {
   private final ChatMemberRepository chatMemberRepository;
   private final MemberRepository memberRepository;
 
+  /**
+   * 채팅방에 참여중인 멤버 조회
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId  채팅방 아이디
+   * @return 채팅방에 참여중인 멤버 목록
+   */
   public List<ChatMemberDto> getChatMemberList(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));

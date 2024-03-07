@@ -4,12 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. ChatRoomController URL 수정">
-      <change afterPath="$PROJECT_DIR$/src/test/AuthTest.http" afterDir="false" />
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="fix. RabbitMQConfig 이름 수정">
+      <change afterPath="$PROJECT_DIR$/src/test/BaseSettingTest.http" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/test/ChatMemberTest.http" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/test/ChatRoomTest.http" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.5/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.5/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitMQConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatMemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatMemberService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatMessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatMessageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatRoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/service/ChatRoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/member/entitiy/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/member/entitiy/Member.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -99,19 +106,28 @@
   }
 }</component>
   <component name="RunManager" selected="Spring Boot.GoTogetherBeApplication">
+    <configuration name="BaseSettingTest | 게시물 생성" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="7" requestIdentifier="게시물 생성" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="BaseSettingTest | 이메일 인증" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="2" requestIdentifier="이메일 인증" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="BaseSettingTest | 로그인" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="4" requestIdentifier="로그인" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="BaseSettingTest | 회원가입" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" requestIdentifier="회원가입" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="BaseSettingTest | 이메일 검증" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="3" requestIdentifier="이메일 검증" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
     <configuration name="member | 이메일 인증" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/member.http" index="2" requestIdentifier="이메일 인증" runType="단일 요청 실행">
-      <method v="2" />
-    </configuration>
-    <configuration name="member | 토큰 재발급" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/member.http" index="5" requestIdentifier="토큰 재발급" runType="단일 요청 실행">
-      <method v="2" />
-    </configuration>
-    <configuration name="member | 회원가입" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/member.http" requestIdentifier="회원가입" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
     <configuration name="member | 로그인" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/member.http" index="2" requestIdentifier="로그인" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
-    <configuration name="member | 이메일 검증" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/member.http" index="3" requestIdentifier="이메일 검증" runType="단일 요청 실행">
+    <configuration name="member | 토큰 재발급" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/member.http" index="5" requestIdentifier="토큰 재발급" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
     <configuration name="GoTogetherBeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
@@ -123,8 +139,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="HTTP 요청.member | 회원가입" />
-        <item itemvalue="HTTP 요청.member | 이메일 검증" />
+        <item itemvalue="HTTP 요청.BaseSettingTest | 로그인" />
       </list>
     </recent_temporary>
   </component>
@@ -147,7 +162,9 @@
       <workItem from="1709536747322" duration="856000" />
       <workItem from="1709551192497" duration="17204000" />
       <workItem from="1709644834590" duration="4396000" />
-      <workItem from="1709746961766" duration="1418000" />
+      <workItem from="1709746961766" duration="4212000" />
+      <workItem from="1709796225869" duration="14000" />
+      <workItem from="1709801945041" duration="1614000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -245,7 +262,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709747870372</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="fix. RabbitMQConfig 이름 수정">
+      <option name="closed" value="true" />
+      <created>1709748454529</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1709748454529</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -275,6 +300,7 @@
     <MESSAGE value="fix. chat config 수정, RedisService 메소드 추가" />
     <MESSAGE value="fix. WebSocketConfig, RabbitConfig 수정" />
     <MESSAGE value="fix. ChatRoomController URL 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix. ChatRoomController URL 수정" />
+    <MESSAGE value="fix. RabbitMQConfig 이름 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix. RabbitMQConfig 이름 수정" />
   </component>
 </project>
