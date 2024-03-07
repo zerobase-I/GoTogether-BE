@@ -5,6 +5,7 @@ import static com.example.gotogetherbe.accompany.request.type.RequestStatus.REJE
 import static com.example.gotogetherbe.accompany.request.type.RequestStatus.WAITING;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.ACCOMPANY_REQUEST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_ACCOMPANY_REQUEST;
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_AUTHOR_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
@@ -47,6 +48,10 @@ public class AccompanyRequestService {
         Post post = postRepository.findById(accompanyRequestSendDto.getPostId())
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
+        // requestedMember가 post 작성자와 일치하지 않을 경우 에러
+        if (!Objects.equals(requestedMember, post.getMember())) {
+            throw new GlobalException(POST_AUTHOR_MISMATCH);
+        }
         // 중복 요청 확인
         checkDuplication(requestMember, requestedMember, post);
 

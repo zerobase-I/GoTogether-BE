@@ -53,6 +53,7 @@ public enum ErrorCode {
    * 403 Forbidden
    */
   USER_MISMATCH(HttpStatus.FORBIDDEN, "다른 사용자의 요청을 승인할 수 없습니다."),
+  POST_AUTHOR_MISMATCH(HttpStatus.FORBIDDEN, "동행 게시글 작성자와 요청을 받는 사용자가 일치하지 않습니다."),
   
   /**
    * 404 Not Found
