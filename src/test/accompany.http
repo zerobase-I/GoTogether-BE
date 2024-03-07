@@ -1,0 +1,43 @@
+### 동행 요청 API
+POST http://localhost:8080/api/accompany/request/send
+Authorization: Bearer
+Content-Type: application/json
+
+{
+    "requestedMemberId" : 6,
+    "postId" : 3
+}
+
+### 보낸 동행 요청 조회
+GET http://localhost:8080/api/accompany/request/send
+Authorization: Bearer
+
+### 받은 동행 요청 조회
+GET http://localhost:8080/api/accompany/request/receive
+Authorization: Bearer
+
+### 동행 요청 승인
+POST http://localhost:8080/api/accompany/request/approve/3
+Authorization: Bearer
+
+### 동행 요청 거절
+POST http://localhost:8080/api/accompany/request/reject/3
+Authorization: Bearer
+
+### 리뷰 작성
+POST http://localhost:8080/api/accompany/review
+Authorization: Bearer
+
+{
+"targetMemberId" : 5,
+"postId" : 3,
+"score" : 4.5,
+"content" : "good"
+}
+
+### 내 리뷰 조회
+GET http://localhost:8080/api/accompany/review/
+Authorization: Bearer
+
+### 다른 사용자 리뷰 조회
+GET http://localhost:8080/api/accompany/review/5

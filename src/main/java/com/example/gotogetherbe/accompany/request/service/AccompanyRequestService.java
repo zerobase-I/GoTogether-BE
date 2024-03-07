@@ -5,6 +5,7 @@ import static com.example.gotogetherbe.accompany.request.type.RequestStatus.REJE
 import static com.example.gotogetherbe.accompany.request.type.RequestStatus.WAITING;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.ACCOMPANY_REQUEST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_ACCOMPANY_REQUEST;
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_AUTHOR_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
@@ -44,11 +45,16 @@ public class AccompanyRequestService {
             .findById(accompanyRequestSendDto.getRequestedMemberId())
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
 
-        // TODO post 조회
         Post post = postRepository.findById(accompanyRequestSendDto.getPostId())
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
-        checkDuplication(requestMember, requestedMember, post); // post, requestedMember로 파라미터 변경
+        // requestedMember가 post 작성자와 일치하지 않을 경우 에러
+        if (!Objects.equals(requestedMember, post.getMember())) {
+            throw new GlobalException(POST_AUTHOR_MISMATCH);
+        }
+        // 중복 요청 확인
+        checkDuplication(requestMember, requestedMember, post);
+
         AccompanyRequest accompanyRequest = AccompanyRequest.builder()
             .requestMember(requestMember)
             .requestedMember(requestedMember)
@@ -105,19 +111,9 @@ public class AccompanyRequestService {
     /**
      * 동일한 postId에 대해 중복되는 requestedMember & requestMember인지 체크(중복요청인지 확인)
      */
-    private void checkDuplication(
-        Member requestMember,
-        Member requestedMember,
-        Post post
-    ) {
-        //TODO postRepository에서 postId에 대한 존재 여부 확인
-
-        // 중복된 요청이 존재하는 경우 예외 발생
+    private void checkDuplication(Member requestMember, Member requestedMember, Post post) {
         if (accompanyRequestRepository.existsByRequestMemberAndRequestedMemberAndPost(
-            requestMember,
-            requestedMember,
-            post
-        )) {
+            requestMember, requestedMember, post)) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
         }
     }
