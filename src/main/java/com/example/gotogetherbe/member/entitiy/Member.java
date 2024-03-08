@@ -83,8 +83,8 @@ public class Member extends BaseEntity {
   @JoinColumn(name = "travel_score_id", nullable = true)
   private TravelScore travelScore;
 
-  @Column(nullable = false)
-  private Boolean certificationMark;
+  @Builder.Default
+  private Boolean certificationMark = false;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
@@ -94,8 +94,8 @@ public class Member extends BaseEntity {
   @Column(nullable = false, length = 10)
   private MemberRoleType roleType;
 
-  @Column(nullable = false)
-  private Boolean alarmStatus;
+  @Builder.Default
+  private Boolean alarmStatus = false;
 
   @Builder.Default
   private boolean emailAuth = false;

@@ -1,0 +1,58 @@
+### 회원가입
+POST http://localhost:8080/api/auth/signUp
+Content-Type: application/from-data
+
+{
+  "email": "test1234@gmail.com",
+  "password": "12345",
+  "name": "test",
+  "nickname": "abcd",
+  "phoneNumber": "010-1234-5678",
+  "address": "seoul",
+  "age": 25,
+  "gender": "MALE"
+}
+
+### 로그인
+POST http://localhost:8080/api/auth/signIn
+Content-Type: application/json
+
+{
+  "email": "test1234@gmail.com",
+  "password": "12345"
+}
+
+### 이메일 인증
+POST http://localhost:8080/api/auth/mail/certification
+Content-Type: application/json
+
+{
+  "email": "test1234@gmail.com"
+}
+
+### 이메일 검증
+POST http://localhost:8080/api/auth/mail/verify
+Content-Type: application/json
+
+{
+  "email": "test1234@gmail.com",
+  "code": "062955"
+}
+
+### 로그아웃
+POST http://localhost:8080/api/auth/logout
+Content-Type: application/json
+
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcwNzQ5MDg0MywiZXhwIjoxNzA3NDkyNjQzfQ.bD_2irVodHczNUnAnrvB1rlVMobeQ09f-pvvs-7f_ZE"
+}
+
+
+### 토큰 재발급
+POST http://localhost:8080/api/auth/reissue
+Content-Type: application/json
+
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcwOTgzNDA5OCwiZXhwIjoxNzA5ODM1ODk4fQ.M1ifSL-DrwQkF_hQCei1zr19AvWfGJGJvgk8wpNWPzE",
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyZWZyZXNoLXRva2VuIiwicm9sZXMiOiJST0xFX1VTRVIiLCJ1c2VySWQiOiJ0ZXN0MTIzNEBnbWFpbC5jb20iLCJpYXQiOjE3MDk4MzQwOTgsImV4cCI6MTcxMDI2NjA5OH0.RE3Rnpq7TkeSOFfZDAvGtC7PbtjSpybgKJLM9Xb3x7c"
+}
