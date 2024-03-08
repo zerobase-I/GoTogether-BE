@@ -16,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -30,6 +29,9 @@ public class SignUpDto {
 
   @NotBlank
   private String password;
+
+  @NotBlank
+  private String name;
 
   @NotBlank
   private String nickname;
@@ -46,13 +48,14 @@ public class SignUpDto {
   @NotNull
   private MemberGender gender;
 
-  private MultipartFile profileImage;
-
   private MemberMbti mbti;
 
   private String instagramId;
 
   private String description;
+
+  private String profileImageUrl;
+
 
   public static SignUpDto fromEntity(Member member){
     return SignUpDto.builder()
@@ -66,6 +69,7 @@ public class SignUpDto {
         .mbti(member.getMbti())
         .instagramId(member.getInstagramId())
         .description(member.getDescription())
+        .profileImageUrl(member.getProfileImageUrl())
         .build();
   }
 
@@ -73,6 +77,7 @@ public class SignUpDto {
     return Member.builder()
         .email(request.getEmail())
         .password(encodedPasswordEncoder)
+        .name(request.getName())
         .nickname(request.getNickname())
         .phoneNumber(request.getPhoneNumber())
         .address(request.getAddress())
@@ -83,6 +88,7 @@ public class SignUpDto {
         .description(request.getDescription())
         .roleType(MemberRoleType.USER)
         .loginType(MemberLoginType.EMAIL)
+        .profileImageUrl(request.getProfileImageUrl())  // 새로 추가
         .build();
   }
 
