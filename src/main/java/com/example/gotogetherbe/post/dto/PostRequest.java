@@ -1,11 +1,15 @@
 package com.example.gotogetherbe.post.dto;
 
+import com.example.gotogetherbe.global.util.aws.entity.PostImage;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.entity.type.PostCategory;
 import com.example.gotogetherbe.post.entity.type.PostGenderType;
+import com.example.gotogetherbe.post.entity.type.TravelCityType;
+import com.example.gotogetherbe.post.entity.type.TravelCountryType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +19,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class PostRequest {
-  @NotBlank(message = "여행국가를 입력해주세요.")
-  private String travelCountry;
-  @NotBlank(message = "여행도시를 입력해주세요.")
-  private String travelCity;
+  @NotNull(message = "여행국가를 입력해주세요.")
+  private TravelCountryType travelCountry;
+  @NotNull(message = "여행도시를 입력해주세요.")
+  private TravelCityType travelCity;
 
   @NotNull(message = "선호성별을 선택해주세요.")
   private PostGenderType postGenderType;
@@ -41,6 +45,8 @@ public class PostRequest {
   private String title;
   @NotBlank(message = "내용을 입력해주세요.")
   private String content;
+
+  private List<PostImage> images;
 
   public Post toEntity(){
     return Post.builder()
