@@ -29,6 +29,13 @@ public class ChatRoomService {
   private final MemberRepository memberRepository;
   private final PostRepository postRepository;
 
+  /**
+   * 채팅방 생성
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param postId 게시글에 해당하는 채팅방을 생성하기 위한 id
+   * @return 생성된 ChatRoom 정보
+   */
   @Transactional
   public ChatRoomDto createChatRoom(String email, Long postId) {
     Member member = memberRepository.findByEmail(email)
@@ -54,7 +61,13 @@ public class ChatRoomService {
     return ChatRoomDto.from(createdChatRoom);
   }
 
-  public List<ChatRoomDto> getChatRoomList(String email) {
+  /**
+   * 내가 참여중인 채팅방 목록 조회
+   *
+   * @param email  로그인한 사용자 이메일
+   * @return 내가 참여중인 채팅방 목록
+   */
+  public List<ChatRoomDto> getMyChatRoomList(String email) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
@@ -65,6 +78,13 @@ public class ChatRoomService {
     return chatRoomList.stream().map(ChatRoomDto::from).collect(Collectors.toList());
   }
 
+  /**
+   * 채팅방 입장
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId 참여하는 채팅방 아이디
+   * @return 참여한 회원 정보
+   */
   @Transactional
   public ChatMemberDto enterChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
@@ -87,6 +107,13 @@ public class ChatRoomService {
     return ChatMemberDto.from(enterChatMember);
   }
 
+  /**
+   * 채팅방 퇴장
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId 퇴장하는 채팅방 아이디
+   * @return 퇴장한 회원 정보
+   */
   @Transactional
   public ChatMemberDto exitChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
