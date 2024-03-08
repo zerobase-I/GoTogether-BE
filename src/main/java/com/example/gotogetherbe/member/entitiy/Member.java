@@ -6,6 +6,7 @@ import com.example.gotogetherbe.member.entitiy.type.MemberLoginType;
 import com.example.gotogetherbe.member.entitiy.type.MemberGender;
 import com.example.gotogetherbe.member.entitiy.type.MemberMbti;
 import com.example.gotogetherbe.member.entitiy.type.MemberRoleType;
+import com.example.gotogetherbe.post.entity.Post;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -81,8 +83,8 @@ public class Member extends BaseEntity {
   @JoinColumn(name = "travel_score_id", nullable = true)
   private TravelScore travelScore;
 
-  @Column(nullable = false)
-  private Boolean certificationMark;
+  @Builder.Default
+  private Boolean certificationMark = false;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
@@ -92,8 +94,8 @@ public class Member extends BaseEntity {
   @Column(nullable = false, length = 10)
   private MemberRoleType roleType;
 
-  @Column(nullable = false)
-  private Boolean alarmStatus;
+  @Builder.Default
+  private Boolean alarmStatus = false;
 
   @Builder.Default
   private boolean emailAuth = false;
