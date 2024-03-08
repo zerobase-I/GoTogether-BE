@@ -30,7 +30,7 @@ public class RabbitMQConfig {
    */
   @Bean
   public Queue queue() {
-    return new Queue(ChatConstant.CHAT_QUEUE_NAME);
+    return new Queue(ChatConstant.CHAT_QUEUE_NAME,true);
   }
 
   /**
@@ -38,7 +38,7 @@ public class RabbitMQConfig {
    */
   @Bean
   public TopicExchange topicExchange() {
-    return new TopicExchange(ChatConstant.CHAT_SUB_NAME, true, false);
+    return new TopicExchange(ChatConstant.CHAT_EXCHANGE_NAME, true, false);
   }
 
   /**
