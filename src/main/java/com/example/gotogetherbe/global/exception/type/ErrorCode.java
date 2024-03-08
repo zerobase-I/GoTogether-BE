@@ -27,6 +27,7 @@ public enum ErrorCode {
   POST_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 글 카테고리가 없습니다."),
   COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."),
   PROFILE_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "프로필 이미지 업로드 중 오류가 발생했습니다."),
+  POST_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "게시물 이미지 업로드 중 오류가 발생했습니다."),
   ALREADY_DELETED_CHATROOM(HttpStatus.BAD_REQUEST, "삭제된 채팅방입니다."),
   ALREADY_CREATED_CHATROOM(HttpStatus.BAD_REQUEST, "이미 생성된 채팅방입니다."),
   CHATROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅방을 찾을 수 없습니다."),
@@ -73,9 +74,11 @@ public enum ErrorCode {
 
   // User error
   DUPLICATE_USER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
+  DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다."),
   MEMBER_POST_INCORRECT(HttpStatus.CONFLICT, "회원의 게시글이 아닙니다."),
   ALREADY_PARTICIPANT_MEMBER(HttpStatus.CONFLICT, "이미 참여중인 회원입니다."),
   DUPLICATE_ACCOMPANY_REQUEST(HttpStatus.CONFLICT, "동일한 요청이 존재합니다."),
+
   DUPLICATE_REVIEW(HttpStatus.CONFLICT, "이미 리뷰를 작성하셨습니다."),
 
   /**

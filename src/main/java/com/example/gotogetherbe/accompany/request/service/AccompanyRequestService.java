@@ -54,7 +54,6 @@ public class AccompanyRequestService {
         }
         // 중복 요청 확인
         checkDuplication(requestMember, requestedMember, post);
-
         AccompanyRequest accompanyRequest = AccompanyRequest.builder()
             .requestMember(requestMember)
             .requestedMember(requestedMember)
@@ -108,7 +107,7 @@ public class AccompanyRequestService {
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
     }
 
-    /**
+  /**
      * 동일한 postId에 대해 중복되는 requestedMember & requestMember인지 체크(중복요청인지 확인)
      */
     private void checkDuplication(Member requestMember, Member requestedMember, Post post) {
@@ -116,6 +115,8 @@ public class AccompanyRequestService {
             requestMember, requestedMember, post)) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
         }
+    }
+
     }
 
     private List<AccompanyRequestDto> convert(List<AccompanyRequest> requests) {

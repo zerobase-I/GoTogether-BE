@@ -67,7 +67,7 @@ public class ReviewService {
             .build();
 
         Review saved = reviewRepository.save(review);
-        // 동행 점수 업데이트
+     // 동행 점수 업데이트
         travelScoreService.updateTravelScore(saved.getTargetMember(), saved.getScore());
 
         return ReviewDto.from(saved);

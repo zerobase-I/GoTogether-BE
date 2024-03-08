@@ -1,7 +1,6 @@
 package com.example.gotogetherbe.global.util.aws.service;
 
 
-
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.*;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -44,7 +43,11 @@ public class AwsS3Service {
     String fileName = generateFileName(multipartFile);
     uploadToS3(multipartFile, fileName);
 
-    return new S3ImageDto(getUrl(fileName), fileName, multipartFile.getSize());
+    return S3ImageDto.builder()
+        .url(getUrl(fileName))
+        .fileName(fileName)
+        .size(multipartFile.getSize())
+        .build();
   }
 
   /**
@@ -67,7 +70,7 @@ public class AwsS3Service {
    * AWS S3에 파일을 업로드.
    *
    * @param multipartFile 업로드할 파일
-   * @param fileName 파일 이름
+   * @param fileName      파일 이름
    */
   private void uploadToS3(MultipartFile multipartFile, String fileName) {
     try (InputStream inputStream = multipartFile.getInputStream()) {
@@ -79,6 +82,7 @@ public class AwsS3Service {
       throw new GlobalException(INTERNAL_SERVER_ERROR);
     }
   }
+
   public void deleteFile(String fileName) {
     try {
       amazonS3.deleteObject(bucketName, fileName);

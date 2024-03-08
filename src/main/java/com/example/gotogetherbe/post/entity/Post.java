@@ -6,6 +6,8 @@ import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.post.entity.type.PostCategory;
 import com.example.gotogetherbe.post.entity.type.PostGenderType;
 import com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus;
+import com.example.gotogetherbe.post.entity.type.TravelCityType;
+import com.example.gotogetherbe.post.entity.type.TravelCountryType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,13 +48,16 @@ public class Post extends BaseEntity {
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
-  private PostRecruitmentStatus recruitmentStatus;
+  @Builder.Default
+  private PostRecruitmentStatus recruitmentStatus = PostRecruitmentStatus.RECRUITING;
 
   @Column(nullable = false, length = 20)
-  private String travelCountry;
+  @Enumerated(EnumType.STRING)
+  private TravelCountryType travelCountry;
 
   @Column(nullable = false, length = 20)
-  private String travelCity;
+  @Enumerated(EnumType.STRING)
+  private TravelCityType travelCity;
 
   @Column(nullable = false)
   private LocalDateTime startDate;
@@ -73,8 +78,9 @@ public class Post extends BaseEntity {
   @Column(nullable = false)
   private Integer recruitsPeople;
 
+  @Builder.Default
   @Column(nullable = false)
-  private Integer currentPeople;
+  private Integer currentPeople = 0;
 
   @Column
   private Integer estimatedTravelExpense;
@@ -88,6 +94,10 @@ public class Post extends BaseEntity {
 
   @Column(nullable = false, columnDefinition = "TEXT")
   private String content;
+
+  @Column(nullable = false)
+  @Builder.Default
+  Boolean chatRoomExists = false;
 
   @Builder.Default
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

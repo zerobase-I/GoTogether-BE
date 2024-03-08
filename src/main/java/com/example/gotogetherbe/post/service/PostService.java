@@ -35,18 +35,21 @@ public class PostService {
    *
    * @param requestDto 생성할 게시물 정보
    * @param email      게시물을 생성하는 회원의 이메일
-   * @param files      업로드할 이미지 파일들
+   * @param images      업로드할 이미지 파일들
    * @return 생성된 게시물의 정보를 포함한 PostResponse 객체
    */
   @Transactional
   public PostResponse createPost(PostRequest requestDto, String email,
-      List<MultipartFile> files) {
+      List<MultipartFile> images) {
     log.info("[createPost] start");
 
     Member member = getMember(email);
+    Post post = requestDto.toEntity();
 
-    Post post = uploadS3Image(requestDto, files);
-
+    if (images != null && !images.isEmpty()) {
+      Post saveImagePost = uploadS3Image(requestDto, images);
+      saveImagePost.getImages().forEach(post::addImage);
+    }
     member.addPost(post);
 
     return PostResponse.fromEntity(postRepository.save(post));
@@ -101,6 +104,7 @@ public class PostService {
           .filter(image -> imageIdsToDelete.contains(image.getId()))
           .toList();
       imagesToDelete.forEach(image -> {
+        log.info("delete image: {}", image.getFileName());
         awsS3Service.deleteFile(image.getFileName());
         post.removeImage(image);
       });
