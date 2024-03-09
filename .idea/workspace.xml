@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="style. 서비스 설명 추가">
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거">
       <change afterPath="$PROJECT_DIR$/src/test/BaseSettingTest.http" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.5/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.5/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/fileHashes/fileHashes.lock" afterDir="false" />
@@ -13,10 +13,11 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/controller/AccompanyRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/controller/AccompanyRequestController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/service/AccompanyRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/service/AccompanyRequestService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/auth/service/AuthServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatMemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatMemberController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatRoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatRoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitMQConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitMQConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/type/ChatConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/type/ChatConstant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/util/jwt/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/util/jwt/TokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/ChatRoomTest.http" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/ChatRoomTest.http" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,7 +221,7 @@
       <workItem from="1709796225869" duration="14000" />
       <workItem from="1709801945041" duration="18301000" />
       <workItem from="1709878514725" duration="691000" />
-      <workItem from="1709981320941" duration="4032000" />
+      <workItem from="1709981320941" duration="6195000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -334,7 +335,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709803802437</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거">
+      <option name="closed" value="true" />
+      <created>1709985912320</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1709985912320</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -366,6 +375,7 @@
     <MESSAGE value="fix. ChatRoomController URL 수정" />
     <MESSAGE value="fix. RabbitMQConfig 이름 수정" />
     <MESSAGE value="style. 서비스 설명 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="style. 서비스 설명 추가" />
+    <MESSAGE value="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거" />
   </component>
 </project>

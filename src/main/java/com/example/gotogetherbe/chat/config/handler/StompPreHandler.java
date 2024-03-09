@@ -15,10 +15,9 @@ import com.example.gotogetherbe.global.util.jwt.TokenProvider;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import java.util.Map;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -35,7 +34,8 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class StompPreHandler implements ChannelInterceptor {
 
-  private static final String ACCESS_TOKEN_PREFIX = "Bearer ";
+  @Value("${spring.jwt.prefix}")
+  private String ACCESS_TOKEN_PREFIX;
 
   private final TokenProvider tokenProvider;
 
@@ -110,10 +110,10 @@ public class StompPreHandler implements ChannelInterceptor {
   }
 
   private Long parseRoomId(String destination) {
-    if (ObjectUtils.isEmpty(destination) || !destination.startsWith("/exchange/chat.exchange/room.") ||
-        destination.length() == "/exchange/chat.exchange/room.".length()) {
-      throw new RuntimeException("목적지 오류");
+    if (ObjectUtils.isEmpty(destination) || !destination.startsWith(ChatConstant.CHAT_ROOM) ||
+        destination.length() == ChatConstant.CHAT_ROOM.length()) {
+      throw new GlobalException(ErrorCode.WRONG_DESTINATION);
     }
-    return Long.parseLong(destination.substring("/exchange/chat.exchange/room.".length()));
+    return Long.parseLong(destination.substring(ChatConstant.CHAT_ROOM.length()));
   }
 }
