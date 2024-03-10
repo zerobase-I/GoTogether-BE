@@ -41,15 +41,6 @@ public class RabbitMQConfig {
   @Value("${spring.rabbitmq.password}")
   private String password;
 
-  @Value("${spring.rabbitmq.port}")
-  private int port;
-
-  @Value("${spring.rabbitmq.username}")
-  private String username;
-
-  @Value("${spring.rabbitmq.password}")
-  private String password;
-
   /**
    * Queue 등록
    */

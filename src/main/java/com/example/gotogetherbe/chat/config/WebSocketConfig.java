@@ -21,17 +21,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   private final StompErrorHandler stompErrorHandler;
   private final StompPreHandler stompPreHandler;
 
-  @Value("${spring.rabbitmq.host}")
-  private String host;
+  @Value("${relay.host}")
+  private String relayHost;
 
-  @Value("${spring.rabbitmq.port}")
-  private int port;
+  @Value("${relay.port}")
+  private int relayPort;
 
-  @Value("${spring.rabbitmq.username}")
-  private String username;
+  @Value("${relay.clientLogin}")
+  private String clientLogin;
 
-  @Value("${spring.rabbitmq.password}")
-  private String password;
+  @Value("${relay.clientPasscode}")
+  private String clientPasscode;
+
+  @Value("${relay.systemLogin}")
+  private String systemLogin;
+
+  @Value("${relay.systemPasscode}")
+  private String systemPasscode;
   // 엔드포인트 등록
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -49,12 +55,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     registry.setApplicationDestinationPrefixes("/pub");
     // 메세지 구독 url
     registry.enableStompBrokerRelay("/exchange")
-        .setRelayHost(host)
-        .setRelayPort(port)
-        .setClientLogin(username)
-        .setClientPasscode(password)
-        .setSystemLogin(username)
-        .setSystemPasscode(password);
+        .setRelayHost(relayHost)
+        .setRelayPort(relayPort)
+        .setClientLogin(clientLogin)
+        .setClientPasscode(clientPasscode)
+        .setSystemLogin(systemLogin)
+        .setSystemPasscode(systemPasscode);
 
   }
 

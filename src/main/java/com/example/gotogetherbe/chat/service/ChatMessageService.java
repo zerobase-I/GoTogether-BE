@@ -37,7 +37,7 @@ public class ChatMessageService {
         .chatRoomId(chatRoomId)
         .content(request.getContent())
         .createdAt(LocalDateTime.now())
-        .nickName(member.getNickname())
+        .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
         .build();
   }
@@ -60,7 +60,7 @@ public class ChatMessageService {
         .chatRoomId(chatRoomId)
         .content(content)
         .createdAt(LocalDateTime.now())
-        .nickName(member.getNickname())
+        .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
         .build();
   }
@@ -83,7 +83,7 @@ public class ChatMessageService {
         .chatRoomId(chatRoomId)
         .content(content)
         .createdAt(LocalDateTime.now())
-        .nickName(member.getNickname())
+        .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
         .build();
   }

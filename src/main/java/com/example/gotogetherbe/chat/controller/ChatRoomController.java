@@ -2,6 +2,7 @@ package com.example.gotogetherbe.chat.controller;
 
 import com.example.gotogetherbe.auth.config.LoginUser;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
+import com.example.gotogetherbe.chat.dto.ChatMessageDto;
 import com.example.gotogetherbe.chat.dto.ChatRoomDto;
 import com.example.gotogetherbe.chat.service.ChatRoomService;
 import java.util.List;
@@ -33,6 +34,14 @@ public class ChatRoomController {
   @GetMapping("/list")
   public ResponseEntity<List<ChatRoomDto>> getChatRoomList(@LoginUser String username) {
     return ResponseEntity.ok(chatRoomService.getMyChatRoomList(username));
+  }
+
+  // 채팅방 메세지 조회
+  @GetMapping("/message/{chatRoomId}")
+  public ResponseEntity<List<ChatMessageDto>> getChatRoomMessage(
+      @LoginUser String username,
+      @PathVariable Long chatRoomId) {
+    return ResponseEntity.ok(chatRoomService.getMyChatRoomMessage(username, chatRoomId));
   }
 
   // 채팅방 입장
