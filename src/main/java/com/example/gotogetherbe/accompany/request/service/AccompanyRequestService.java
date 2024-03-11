@@ -117,8 +117,6 @@ public class AccompanyRequestService {
         }
     }
 
-    }
-
     private List<AccompanyRequestDto> convert(List<AccompanyRequest> requests) {
         return requests.stream().map(AccompanyRequestDto::from).collect(Collectors.toList());
     }
