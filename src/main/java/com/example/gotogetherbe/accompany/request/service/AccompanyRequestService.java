@@ -14,15 +14,20 @@ import com.example.gotogetherbe.accompany.request.dto.AccompanyRequestDto;
 import com.example.gotogetherbe.accompany.request.dto.AccompanyRequestSendDto;
 import com.example.gotogetherbe.accompany.request.entity.AccompanyRequest;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRequestRepository;
+import com.example.gotogetherbe.global.component.NotificationEventHandler;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.notification.dto.NotificationInfoDto;
+import com.example.gotogetherbe.notification.type.NotificationStatus;
+import com.example.gotogetherbe.notification.type.NotificationType;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +38,7 @@ public class AccompanyRequestService {
     private final AccompanyRequestRepository accompanyRequestRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public AccompanyRequestDto sendAccompanyRequest(
@@ -60,6 +66,15 @@ public class AccompanyRequestService {
             .post(post)
             .requestStatus(WAITING)
             .build();
+
+        // 이벤트 발행
+        NotificationInfoDto notificationInfo = NotificationInfoDto.builder()
+            .member(requestedMember)
+            .postId(post.getId())
+            .status(NotificationStatus.UNREAD)
+            .type(NotificationType.ACCOMPANY_REQUEST)
+            .build();
+        applicationEventPublisher.publishEvent(notificationInfo);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(accompanyRequest));
     }
