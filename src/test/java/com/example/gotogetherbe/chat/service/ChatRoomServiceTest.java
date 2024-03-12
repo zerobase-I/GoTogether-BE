@@ -22,8 +22,6 @@ import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
 import com.example.gotogetherbe.chat.type.ChatRoomStatus;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
-import com.example.gotogetherbe.global.util.jwt.JwtUserDetailService;
-import com.example.gotogetherbe.global.util.jwt.JwtUserDetails;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.entitiy.type.MemberGender;
 import com.example.gotogetherbe.member.entitiy.type.MemberLoginType;
