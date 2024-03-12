@@ -79,10 +79,6 @@ public class Member extends BaseEntity {
   @Column
   private String description;
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "travel_score_id", nullable = true)
-  private TravelScore travelScore;
-
   @Builder.Default
   private Boolean certificationMark = false;
 
