@@ -5,7 +5,6 @@ import com.example.gotogetherbe.accompany.review.repository.TravelScoreRepositor
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import com.example.gotogetherbe.member.entitiy.Member;
-import com.example.gotogetherbe.member.repository.MemberRepository;
 import java.text.DecimalFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
