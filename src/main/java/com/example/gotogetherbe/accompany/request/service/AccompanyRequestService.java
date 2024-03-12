@@ -41,7 +41,7 @@ public class AccompanyRequestService {
         Member requestMember = getMemberByEmail(email);
 
         // 동행 요청을 받는 사용자가 게시글 작성자와 같은지 확인
-        Post post = postRepository.findByMemberIdAndPostId(
+        Post post = postRepository.findByMemberIdAndId(
                 accompanyRequestSendDto.getRequestedMemberId(), accompanyRequestSendDto.getPostId())
             .orElseThrow(() -> new GlobalException(POST_AUTHOR_MISMATCH));
 
