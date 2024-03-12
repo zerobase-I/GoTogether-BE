@@ -8,13 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccompanyRequestRepository extends JpaRepository<AccompanyRequest, Long> {
 
-    List<AccompanyRequest> findAllByRequestMember(Member member);
+    List<AccompanyRequest> findAllByRequestMember_Email(String email);
 
-    List<AccompanyRequest> findAllByRequestedMember(Member member);
+    List<AccompanyRequest> findAllByRequestedMember_Email(String email);
 
     boolean existsByRequestMemberAndRequestedMemberAndPost(
         Member requestMember, Member requestedMember, Post post);
-
-
 
 }

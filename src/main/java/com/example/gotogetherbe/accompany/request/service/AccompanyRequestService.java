@@ -6,7 +6,6 @@ import static com.example.gotogetherbe.accompany.request.type.RequestStatus.WAIT
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.ACCOMPANY_REQUEST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_ACCOMPANY_REQUEST;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_AUTHOR_MISMATCH;
-import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
 
@@ -41,22 +40,16 @@ public class AccompanyRequestService {
     ) {
         Member requestMember = getMemberByEmail(email);
 
-        Member requestedMember = memberRepository
-            .findById(accompanyRequestSendDto.getRequestedMemberId())
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+        // 동행 요청을 받는 사용자가 게시글 작성자와 같은지 확인
+        Post post = postRepository.findByMemberIdAndPostId(
+                accompanyRequestSendDto.getRequestedMemberId(), accompanyRequestSendDto.getPostId())
+            .orElseThrow(() -> new GlobalException(POST_AUTHOR_MISMATCH));
 
-        Post post = postRepository.findById(accompanyRequestSendDto.getPostId())
-            .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
-
-        // requestedMember가 post 작성자와 일치하지 않을 경우 에러
-        if (!Objects.equals(requestedMember, post.getMember())) {
-            throw new GlobalException(POST_AUTHOR_MISMATCH);
-        }
         // 중복 요청 확인
-        checkDuplication(requestMember, requestedMember, post);
+        checkDuplication(requestMember, post.getMember(), post);
         AccompanyRequest accompanyRequest = AccompanyRequest.builder()
             .requestMember(requestMember)
-            .requestedMember(requestedMember)
+            .requestedMember(post.getMember())
             .post(post)
             .requestStatus(WAITING)
             .build();
@@ -65,28 +58,22 @@ public class AccompanyRequestService {
     }
 
     public List<AccompanyRequestDto> getSentAccompanyRequests(String email) {
-        Member member = getMemberByEmail(email);
-
         List<AccompanyRequest> sentRequests =
-            accompanyRequestRepository.findAllByRequestMember(member);
+            accompanyRequestRepository.findAllByRequestMember_Email(email);
 
         return convert(sentRequests);
     }
 
     public List<AccompanyRequestDto> getReceivedAccompanyRequests(String email) {
-        Member member = getMemberByEmail(email);
-
         List<AccompanyRequest> receivedRequests =
-            accompanyRequestRepository.findAllByRequestedMember(member);
+            accompanyRequestRepository.findAllByRequestedMember_Email(email);
 
         return convert(receivedRequests);
     }
 
     @Transactional
     public AccompanyRequestDto approveAccompanyRequest(String email, Long requestId) {
-        Member member = getMemberByEmail(email);
-
-        AccompanyRequest request = getAccompanyRequest(member, requestId);
+        AccompanyRequest request = getAccompanyRequest(email, requestId);
         request.setRequestStatus(APPROVED);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
@@ -94,9 +81,7 @@ public class AccompanyRequestService {
 
     @Transactional
     public AccompanyRequestDto rejectAccompanyRequest(String email, Long requestId) {
-        Member member = getMemberByEmail(email);
-
-        AccompanyRequest request = getAccompanyRequest(member, requestId);
+        AccompanyRequest request = getAccompanyRequest(email, requestId);
         request.setRequestStatus(REJECTED);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
@@ -107,7 +92,7 @@ public class AccompanyRequestService {
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
     }
 
-  /**
+    /**
      * 동일한 postId에 대해 중복되는 requestedMember & requestMember인지 체크(중복요청인지 확인)
      */
     private void checkDuplication(Member requestMember, Member requestedMember, Post post) {
@@ -117,19 +102,17 @@ public class AccompanyRequestService {
         }
     }
 
-    }
-
     private List<AccompanyRequestDto> convert(List<AccompanyRequest> requests) {
         return requests.stream().map(AccompanyRequestDto::from).collect(Collectors.toList());
     }
 
-    private AccompanyRequest getAccompanyRequest(Member member, Long requestId) {
+    private AccompanyRequest getAccompanyRequest(String email, Long requestId) {
         AccompanyRequest accompanyRequest = accompanyRequestRepository
             .findById(requestId)
             .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
 
         // 승인 또는 거절하려는 사용자와 accompanyRequest에 저장된 요청을 받은 사용자가 일치하지 않으면 예외 발생
-        if (!Objects.equals(accompanyRequest.getRequestedMember(), member)) {
+        if (!Objects.equals(accompanyRequest.getRequestedMember().getEmail(), email)) {
             throw new GlobalException(USER_MISMATCH);
         }
 
