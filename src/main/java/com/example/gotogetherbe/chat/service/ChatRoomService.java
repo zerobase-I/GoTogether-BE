@@ -51,9 +51,11 @@ public class ChatRoomService {
     if (!Objects.equals(member.getId(), post.getMember().getId())) {
       throw new GlobalException(ErrorCode.MEMBER_POST_INCORRECT);
     }
-
-    if (chatRoomRepository.existsById(postId)) {
+    if (post.getChatRoomExists()) {
       throw new GlobalException(ErrorCode.ALREADY_CREATED_CHATROOM);
+    }
+    if (post.getCurrentPeople() < 2) {
+      throw new GlobalException(ErrorCode.NOT_ENOUGH_CURRENT_PEOPLE);
     }
 
     ChatRoom createdChatRoom = chatRoomRepository.save(ChatRoom.builder()
@@ -61,6 +63,9 @@ public class ChatRoomService {
             .name(post.getTitle())
             .status(ChatRoomStatus.ACTIVE)
             .build());
+
+    post.setChatRoomExists(true);
+    postRepository.save(post);
 
     return ChatRoomDto.from(createdChatRoom);
   }
@@ -89,7 +94,7 @@ public class ChatRoomService {
    * @param chatRoomId 채팅방 아이디
    * @return 내가 참여중인 채팅방 목록
    */
-  public List<ChatMessageDto> getMyChatRoomMessage(String email, Long chatRoomId) {
+  public List<ChatMessageDto> getChatRoomMessage(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 

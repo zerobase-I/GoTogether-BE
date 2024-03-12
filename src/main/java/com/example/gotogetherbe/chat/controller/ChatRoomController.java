@@ -41,7 +41,7 @@ public class ChatRoomController {
   public ResponseEntity<List<ChatMessageDto>> getChatRoomMessage(
       @LoginUser String username,
       @PathVariable Long chatRoomId) {
-    return ResponseEntity.ok(chatRoomService.getMyChatRoomMessage(username, chatRoomId));
+    return ResponseEntity.ok(chatRoomService.getChatRoomMessage(username, chatRoomId));
   }
 
   // 채팅방 입장
