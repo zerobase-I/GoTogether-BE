@@ -1,6 +1,7 @@
 package com.example.gotogetherbe.chat.config.handler;
 
 
+import com.example.gotogetherbe.chat.dto.ChatRoomSessionDto;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
 import com.example.gotogetherbe.chat.repository.ChatMessageRepository;
@@ -83,29 +84,36 @@ public class StompPreHandler implements ChannelInterceptor {
         throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
       }
 
-      Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-      sessionAttributes.put("chatRoomId", roomId);
+      String sessionId = accessor.getSessionId();
+
+      saveSession(roomId, member.getId(), sessionId);
 
       log.info("[WS] subscribed chat room [{}]", roomId);
     } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) { // 채팅방 나갈 시 마지막 메세지 ID 업데이트
-      String email = accessor.getUser().getName();
-      Long roomId = parseRoomId(accessor.getDestination());
+      String sessionId = accessor.getSessionId();
+      assert sessionId != null;
 
-      Member member = memberRepository.findByEmail(email)
-          .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
-
-      if (!chatRoomRepository.existsById(roomId)) {
-        throw new GlobalException(ErrorCode.CHATROOM_NOT_FOUND);
+      ChatRoomSessionDto sessionDto = redisService.getChatRoomHashKey(ChatConstant.CHATROOM_SESSION, sessionId);
+      if (sessionDto == null) {
+        return message;
       }
 
-      chatMemberRepository.findByChatRoomIdAndMemberId(roomId, member.getId()).ifPresent(
-          p -> chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(roomId)
+      Member member = memberRepository.findById(sessionDto.memberId())
+          .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+
+      ChatRoom chatRoom = chatRoomRepository.findById(sessionDto.chatRoomId())
+          .orElseThrow(() -> new GlobalException(ErrorCode.CHATROOM_NOT_FOUND));
+
+      chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId()).ifPresent(
+          p -> chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
               .ifPresent(chatMessage -> {
                 p.updateLastChatId(chatMessage.getId());
                 chatMemberRepository.save(p);
                 log.info("[WS] disconnect : Last Message save.");
               })
       );
+
+      redisService.deleteHashKey(ChatConstant.CHATROOM_SESSION, sessionId);
     }
 
     return message;
@@ -129,5 +137,14 @@ public class StompPreHandler implements ChannelInterceptor {
       throw new GlobalException(ErrorCode.WRONG_DESTINATION);
     }
     return Long.parseLong(destination.substring(ChatConstant.CHAT_ROOM.length()));
+  }
+
+  private void saveSession(Long chatRoomId, Long memberId, String sessionId) {
+    ChatRoomSessionDto sessionDto = ChatRoomSessionDto.builder()
+        .chatRoomId(chatRoomId)
+        .memberId(memberId)
+        .build();
+
+    redisService.updateToHash(ChatConstant.CHATROOM_SESSION, sessionId, sessionDto);
   }
 }

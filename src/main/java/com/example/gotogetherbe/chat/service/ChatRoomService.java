@@ -1,5 +1,6 @@
 package com.example.gotogetherbe.chat.service;
 
+import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.dto.ChatMessageDto;
 import com.example.gotogetherbe.chat.entity.ChatMember;
@@ -9,6 +10,7 @@ import com.example.gotogetherbe.chat.dto.ChatRoomDto;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMessageRepository;
 import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
+import com.example.gotogetherbe.chat.type.ChatConstant;
 import com.example.gotogetherbe.chat.type.ChatRoomStatus;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
@@ -21,6 +23,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,13 +80,13 @@ public class ChatRoomService {
    * @param email  로그인한 사용자 이메일
    * @return 내가 참여중인 채팅방 목록
    */
+  @Transactional(readOnly = true)
   public List<ChatRoomDto> getMyChatRoomList(String email) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
-    List<ChatMember> chatMemberList = chatMemberRepository.findAllByMemberId(member.getId());
-
-    List<ChatRoom> chatRoomList = chatMemberList.stream().map(ChatMember::getChatRoom).toList();
+    List<ChatRoom> chatRoomList = chatMemberRepository.findAllByMemberId(member.getId())
+        .stream().map(ChatMember::getChatRoom).toList();
 
     return chatRoomList.stream().map(ChatRoomDto::from).collect(Collectors.toList());
   }
@@ -94,6 +98,7 @@ public class ChatRoomService {
    * @param chatRoomId  채팅방 아이디
    * @return 채팅방에 참여중인 멤버 목록
    */
+  @Transactional(readOnly = true)
   public List<ChatMemberDto> getChatMemberList(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
@@ -118,7 +123,7 @@ public class ChatRoomService {
    * @param chatRoomId 채팅방 아이디
    * @return 내가 참여중인 채팅방 목록
    */
-  public List<ChatMessageDto> getChatRoomMessage(String email, Long chatRoomId) {
+  public Slice<ChatMessageDto> getChatRoomMessage(String email, ChatLastMessageRequest request, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
@@ -126,9 +131,11 @@ public class ChatRoomService {
       throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
     }
 
-    List<ChatMessage> chatMessages = chatMessageRepository.findAllByChatRoomId(chatRoomId);
+    Slice<ChatMessage> messages = chatMessageRepository.findChatRoomMessage(
+        request.lastMessageId(), chatRoomId,
+        Pageable.ofSize(request.limit() != 0 ? request.limit() : ChatConstant.CHAT_MESSAGE_PAGE_SIZE));
 
-    return chatMessages.stream().map(ChatMessageDto::from).collect(Collectors.toList());
+    return messages.map(ChatMessageDto::from);
   }
 
   /**

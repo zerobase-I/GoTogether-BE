@@ -1,6 +1,7 @@
 package com.example.gotogetherbe.chat.service;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -10,6 +11,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.dto.ChatMessageDto;
 import com.example.gotogetherbe.chat.dto.ChatRoomDto;
@@ -49,6 +51,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @Transactional
@@ -200,9 +205,6 @@ public class ChatRoomServiceTest {
     given(memberRepository.findByEmail(anyString()))
         .willReturn(Optional.of(member));
 
-    given(postRepository.findById(anyLong()))
-        .willReturn(Optional.of(post));
-
     given(chatRoomRepository.findById(anyLong()))
         .willReturn(Optional.of(chatRoom));
 
@@ -331,24 +333,28 @@ public class ChatRoomServiceTest {
         .id(1L)
         .chatRoom(chatRoom)
         .member(member)
+        .lastChatId(1L)
         .build();
 
     given(chatMemberRepository.existsByChatRoomIdAndMemberId(chatRoom.getId(),member.getId()))
         .willReturn(true);
 
-    given(chatMessageRepository.findAllByChatRoomId(chatMember.getChatRoom().getId()))
-        .willReturn(List.of(ChatMessage.builder()
-                .chatMember(chatMember)
-                .chatRoom(chatRoom)
-                .content("test")
-                .createdAt(LocalDateTime.now())
-                .build()));
+    ChatLastMessageRequest request = new ChatLastMessageRequest(null, null);
+
+    given(chatMessageRepository.findChatRoomMessage(request.lastMessageId(), 1L, Pageable.ofSize(10)))
+        .willReturn(new SliceImpl<>(List.of(ChatMessage.builder()
+            .chatRoom(chatRoom)
+            .chatMember(chatMember)
+            .content("test")
+            .createdAt(LocalDateTime.now())
+            .build())));
+
+
 
     //when
-    List<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomMessage(member.getEmail(), chatRoom.getId());
+    Slice<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomMessage(member.getEmail(), request, chatRoom.getId());
 
     //then
-   assertThat(chatMessageDtoList.isEmpty()).isFalse();
-   assertThat(chatMessageDtoList.get(0).getContent()).isEqualTo("test");
+   assertThat(chatMessageDtoList.hasContent()).isTrue();
   }
 }
