@@ -62,6 +62,7 @@ public enum ErrorCode {
    */
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 없습니다."),
   ACCOMPANY_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "동행 요청을 찾을 수 없습니다."),
+  TRAVEL_SCORE_NOT_FOUND(HttpStatus.NOT_FOUND, "동행 점수 정보를 찾을 수 없습니다."),
   
   /**
    * 406 Not Acceptable

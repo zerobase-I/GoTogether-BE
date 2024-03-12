@@ -1,8 +1,12 @@
 package com.example.gotogetherbe.accompany.review.service;
 
 import com.example.gotogetherbe.accompany.review.entity.TravelScore;
+import com.example.gotogetherbe.accompany.review.repository.TravelScoreRepository;
+import com.example.gotogetherbe.global.exception.GlobalException;
+import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import java.text.DecimalFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TravelScoreService {
 
-    private final MemberRepository memberRepository;
+    private final TravelScoreRepository travelScoreRepository;
 
     /**
      * 동행 평가 점수 업데이트
@@ -21,30 +25,31 @@ public class TravelScoreService {
      */
     @Transactional
     public void updateTravelScore(Member member, Double score) {
-        Member updatedMember = updateRating(member, score);
+        TravelScore travelScore = travelScoreRepository.findByMemberId(member.getId())
+            .orElseThrow(() -> new GlobalException(ErrorCode.TRAVEL_SCORE_NOT_FOUND));
 
-        memberRepository.save(updatedMember);
+        TravelScore updated = updateRating(travelScore, score);
+        travelScoreRepository.save(updated);
     }
 
     /**
-     * 평점 계산
+     * 평점 계산(역산)
      *
      * @param score  평가 점수
-     * @param member 평가 대상 멤버
-     * @return 평가 점수가 업데이트된 멤버 객체
+     * @param travelScore 평가 점수 객체
+     * @return 평가 점수가 업데이트된 객체
      */
-    private Member updateRating(Member member, Double score) {
-        TravelScore travelScore = member.getTravelScore();
+    private TravelScore updateRating(TravelScore travelScore, Double score) {
+        double totalScore = (travelScore.getRating() * travelScore.getTotalReviewCount() + score);
+        int newTotalReviewCount = travelScore.getTotalReviewCount() + 1;
 
-        Double newTotalScore = travelScore.getTotalScore() + score;
-        Integer newTotalReviewCount = travelScore.getTotalReviewCount() + 1;
-        Double newRating = (double) Math.round((newTotalScore / newTotalReviewCount) * 10) / 10;
+        DecimalFormat form = new DecimalFormat("#.#");
+        double newRating = Double.parseDouble(form.format(totalScore / newTotalReviewCount));
 
-        travelScore.setTotalScore(newTotalScore);
         travelScore.setTotalReviewCount(newTotalReviewCount);
         travelScore.setRating(newRating);
 
-        return member;
+        return travelScore;
     }
 
 
