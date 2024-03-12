@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>, CustomPostRepository {
-
-    Optional<Post> findByMemberIdAndPostId(Long memberId, Long postId);
-
+    Optional<Post> findByMemberIdAndId(Long memberId, Long postId);
 }

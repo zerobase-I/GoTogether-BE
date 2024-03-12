@@ -10,16 +10,17 @@ import lombok.RequiredArgsConstructor;
 public class CustomChatMemberRepositoryImpl implements CustomChatMemberRepository {
 
     private final JPAQueryFactory jpa;
+
     @Override
-    public boolean areUsersInSameChatRoom(Long reviewerId, Long targetMemberId, Long chatRoomId) {
+    public boolean isUsersInSameChatRoom(Long reviewerId, Long targetMemberId, Long chatRoomId) {
         QChatMember chatMember = QChatMember.chatMember;
         BooleanExpression condition = chatMember.chatRoom.id.eq(chatRoomId)
-                .and(chatMember.member.id.in(reviewerId, targetMemberId));
+            .and(chatMember.member.id.in(reviewerId, targetMemberId));
 
         Long count = jpa.select(chatMember.count())
-                .from(chatMember)
-                .where(condition)
-                .fetchOne();
+            .from(chatMember)
+            .where(condition)
+            .fetchOne();
 
         return count != null && count == 2L;
     }

@@ -6,7 +6,7 @@ import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOT_SAME_
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.UNCOMPLETED_ACCOMPANY;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
-import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.*;
+import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.COMPLETED;
 
 import com.example.gotogetherbe.accompany.review.dto.ReviewDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
@@ -67,7 +67,7 @@ public class ReviewService {
             .build();
 
         Review saved = reviewRepository.save(review);
-     // 동행 점수 업데이트
+        // 동행 점수 업데이트
         travelScoreService.updateTravelScore(saved.getTargetMember(), saved.getScore());
 
         return ReviewDto.from(saved);
@@ -86,7 +86,7 @@ public class ReviewService {
             .orElseThrow(() -> new GlobalException(CHATROOM_NOT_FOUND));
 
         if (!chatMemberRepository
-            .areUsersInSameChatRoom(reviewer.getId(), targetMember.getId(), chatRoom.getId())
+            .isUsersInSameChatRoom(reviewer.getId(), targetMember.getId(), chatRoom.getId())
         ) {
             throw new GlobalException(NOT_SAME_ACCOMPANY_MEMBER);
         }
@@ -104,8 +104,7 @@ public class ReviewService {
      * @return 로그인한 사용자의 리뷰 리스트
      */
     public List<ReviewDto> getMyReviews(String email) {
-        Member member = getMemberByEmail(email);
-        List<Review> reviews = reviewRepository.findAllByTargetMember(member);
+        List<Review> reviews = reviewRepository.findAllByTargetMember_Email(email);
 
         return reviews.stream().map(ReviewDto::from).toList();
     }
@@ -117,9 +116,7 @@ public class ReviewService {
      * @return 특정 사용자의 리뷰 리스트
      */
     public List<ReviewDto> getReviews(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
-        List<Review> reviews = reviewRepository.findAllByTargetMember(member);
+        List<Review> reviews = reviewRepository.findAllByTargetMember_Id(memberId);
 
         return reviews.stream().map(ReviewDto::from).toList();
     }
