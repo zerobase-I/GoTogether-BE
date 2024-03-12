@@ -88,6 +88,30 @@ public class ChatRoomService {
   }
 
   /**
+   * 채팅방에 참여중인 멤버 목록 조회
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId  채팅방 아이디
+   * @return 채팅방에 참여중인 멤버 목록
+   */
+  public List<ChatMemberDto> getChatMemberList(String email, Long chatRoomId) {
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+
+    List<ChatMember> chatMemberList = chatMemberRepository.findAllByChatRoomId(chatRoomId);
+
+    if(chatMemberList.stream().noneMatch(chatMember -> Objects.equals(
+        chatMember.getMember().getId(), member.getId()))) {
+      throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
+    }
+    if (chatMemberList.isEmpty()) {
+      throw new GlobalException(ErrorCode.CHATROOM_IS_EMPTY);
+    }
+
+    return chatMemberList.stream().map(ChatMemberDto::from).collect(Collectors.toList());
+  }
+
+  /**
    * 채팅방 메세지 조회
    *
    * @param email  로그인한 사용자 이메일

@@ -31,9 +31,18 @@ public class ChatRoomController {
   }
 
   // 참여중인 채팅방 목록 조회
-  @GetMapping("/list")
+  @GetMapping("/my-list")
   public ResponseEntity<List<ChatRoomDto>> getChatRoomList(@LoginUser String username) {
     return ResponseEntity.ok(chatRoomService.getMyChatRoomList(username));
+  }
+
+  // 채팅방에 참여중인 멤버 목록 조회
+  @GetMapping("/member-list/{chatRoomId}")
+  public ResponseEntity<List<ChatMemberDto>> getChatMemberList(
+      @LoginUser String username,
+      @PathVariable Long chatRoomId
+  ){
+    return ResponseEntity.ok(chatRoomService.getChatMemberList(username, chatRoomId));
   }
 
   // 채팅방 메세지 조회

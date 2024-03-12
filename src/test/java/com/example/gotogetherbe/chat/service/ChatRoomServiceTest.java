@@ -283,6 +283,37 @@ public class ChatRoomServiceTest {
   }
 
   @Test
+  @DisplayName("채팅방에 참여중인 멤버 목록 조회 성공")
+  void getChatMemberList_success() {
+    //given
+    given(memberRepository.findByEmail(anyString()))
+        .willReturn(Optional.of(member));
+
+    ChatRoom chatRoom = ChatRoom.builder()
+        .id(1L)
+        .post(post)
+        .name(post.getTitle())
+        .status(ChatRoomStatus.ACTIVE)
+        .build();
+
+    ChatMember chatMember = ChatMember.builder()
+        .id(1L)
+        .chatRoom(chatRoom)
+        .member(member)
+        .build();
+
+    given(chatMemberRepository.findAllByChatRoomId(chatRoom.getId()))
+        .willReturn(List.of(chatMember));
+
+    //when
+    List<ChatMemberDto> chatMemberDtoList = chatRoomService.getChatMemberList(member.getEmail(), chatRoom.getId());
+
+    //then
+    assertFalse(chatMemberDtoList.isEmpty());
+    assertThat(chatMemberDtoList.get(0).getMemberId()).isEqualTo(member.getId());
+  }
+
+  @Test
   @DisplayName("채팅방 메세지 조회")
   void getChatRoomMessage() {
     //given
