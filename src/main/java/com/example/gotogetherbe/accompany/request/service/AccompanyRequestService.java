@@ -6,6 +6,7 @@ import static com.example.gotogetherbe.accompany.request.type.RequestStatus.WAIT
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.ACCOMPANY_REQUEST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_ACCOMPANY_REQUEST;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_AUTHOR_MISMATCH;
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
 
@@ -75,6 +76,12 @@ public class AccompanyRequestService {
     public AccompanyRequestDto approveAccompanyRequest(String email, Long requestId) {
         AccompanyRequest request = getAccompanyRequest(email, requestId);
         request.setRequestStatus(APPROVED);
+
+        Post post = postRepository.findById(request.getPost().getId())
+            .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
+
+        post.setCurrentPeople(post.getCurrentPeople() + 1);
+        postRepository.save(post);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
     }
