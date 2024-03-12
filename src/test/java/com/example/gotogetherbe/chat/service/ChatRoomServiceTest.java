@@ -1,11 +1,9 @@
 package com.example.gotogetherbe.chat.service;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,12 +74,8 @@ public class ChatRoomServiceTest {
   @Mock
   PostRepository postRepository;
 
-  @Mock
-  JwtUserDetailService jwtUserDetailService;
-
   private Member member;
   private Post post;
-  private JwtUserDetails jwtUserDetails;
 
   @BeforeEach
   void setUp() {
