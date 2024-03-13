@@ -5,6 +5,7 @@ import com.example.gotogetherbe.auth.dto.ReissueDto;
 import com.example.gotogetherbe.auth.dto.SignInDto;
 import com.example.gotogetherbe.auth.dto.SignUpDto;
 import com.example.gotogetherbe.auth.service.AuthService;
+import com.example.gotogetherbe.global.util.jwt.dto.TokenDto;
 import com.example.gotogetherbe.global.util.mail.dto.SendMailRequest;
 import com.example.gotogetherbe.global.util.mail.dto.VerifyMailRequest;
 import com.example.gotogetherbe.global.util.mail.service.MailService;
@@ -35,7 +36,7 @@ public class AuthController {
   }
 
   @PostMapping("/signIn")
-  public ResponseEntity<?> signInUser(@RequestBody SignInDto request){
+  public ResponseEntity<TokenDto> signInUser(@RequestBody SignInDto request){
     return ResponseEntity.ok(authService.signIn(request));
   }
   @PostMapping("/logout")
