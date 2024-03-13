@@ -38,6 +38,7 @@ public enum ErrorCode {
   NOT_SAME_ACCOMPANY_MEMBER(HttpStatus.BAD_REQUEST, "같은 동행에 참여한 회원이 아닙니다."),
 
 
+
   /**
    * 401 Unauthorized
    */
@@ -62,6 +63,7 @@ public enum ErrorCode {
    */
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 없습니다."),
   ACCOMPANY_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "동행 요청을 찾을 수 없습니다."),
+  MAIN_SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "주요 일정을 찾을 수 없습니다."),
   
   /**
    * 406 Not Acceptable
@@ -78,6 +80,7 @@ public enum ErrorCode {
   MEMBER_POST_INCORRECT(HttpStatus.CONFLICT, "회원의 게시글이 아닙니다."),
   ALREADY_PARTICIPANT_MEMBER(HttpStatus.CONFLICT, "이미 참여중인 회원입니다."),
   DUPLICATE_ACCOMPANY_REQUEST(HttpStatus.CONFLICT, "동일한 요청이 존재합니다."),
+  MEMBER_AND_MAIN_SCHEDULE_INCORRECT(HttpStatus.CONFLICT, "회원이 작성한 주요일정이 아닙니다."),
 
   DUPLICATE_REVIEW(HttpStatus.CONFLICT, "이미 리뷰를 작성하셨습니다."),
 
