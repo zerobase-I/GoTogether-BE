@@ -2,15 +2,19 @@ package com.example.gotogetherbe.accompany.review.service;
 
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.CHATROOM_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_REVIEW;
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.MEMBER_ASSESSMENT_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOT_SAME_ACCOMPANY_MEMBER;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.UNCOMPLETED_ACCOMPANY;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
 import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.COMPLETED;
 
+import com.example.gotogetherbe.accompany.review.dto.MemberAssessmentDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
+import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.accompany.review.entity.Review;
+import com.example.gotogetherbe.accompany.review.repository.MemberAssessmentRepository;
 import com.example.gotogetherbe.accompany.review.repository.ReviewRepository;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
@@ -35,12 +39,13 @@ public class ReviewService {
     private final PostRepository postRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMemberRepository chatMemberRepository;
+    private final MemberAssessmentRepository memberAssessmentRepository;
     private final MemberAssessmentService memberAssessmentService;
 
     /**
      * 리뷰 작성
      *
-     * @param email      로그인한 사용자 이메일
+     * @param email           로그인한 사용자 이메일
      * @param reviewWriteDtos 리뷰 작성 정보
      * @return 작성된 리뷰 정보
      */
@@ -51,13 +56,26 @@ public class ReviewService {
         Post post = postRepository.findById(reviewWriteDtos.get(0).getPostId())
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
-        List<Review> reviews = getReviewDetail(reviewWriteDtos, post, reviewer);
+        List<Review> reviews = getAssessment(reviewWriteDtos, post, reviewer);
 
         List<Review> savedReviews = reviewRepository.saveAll(reviews);
 
         memberAssessmentService.updateMemberAssessment(savedReviews);
 
         return savedReviews.stream().map(ReviewDto::from).toList();
+    }
+
+    /**
+     * 사용자의 평가 조회
+     *
+     * @param memberId 사용자 id
+     * @return 사용자의 리뷰 상세
+     */
+    public MemberAssessmentDto getAssessment(Long memberId) {
+        MemberAssessment memberAssessment = memberAssessmentRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new GlobalException(MEMBER_ASSESSMENT_NOT_FOUND));
+
+        return MemberAssessmentDto.from(memberAssessment);
     }
 
     /**
@@ -85,26 +103,15 @@ public class ReviewService {
     }
 
     /**
-     * 사용자의 리뷰 조회
-     *
-     * @param memberId 사용자 id
-     * @return 사용자의 리뷰 상세
-     */
-    public List<ReviewDto> getReviewDetail(Long memberId) {
-        List<Review> reviews = reviewRepository.findAllByTargetMember_Id(memberId);
-
-        return reviews.stream().map(ReviewDto::from).toList();
-    }
-
-    /**
      * 리뷰 작성 정보로 리뷰 객체 생성
      *
-     * @param post           참여한 동행 게시글
+     * @param post            참여한 동행 게시글
      * @param reviewWriteDtos 리뷰 작성 정보
-     * @param reviewer       리뷰 작성자
+     * @param reviewer        리뷰 작성자
      * @return 작성된 리뷰 정보
      */
-    private List<Review> getReviewDetail(List<ReviewWriteDto> reviewWriteDtos, Post post, Member reviewer) {
+    private List<Review> getAssessment(List<ReviewWriteDto> reviewWriteDtos, Post post,
+        Member reviewer) {
         List<Review> reviews = new ArrayList<>();
 
         for (ReviewWriteDto reviewWriteDto : reviewWriteDtos) {

@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -34,19 +33,19 @@ public class MemberAssessment {
 
     private Double rating;
 
-    private long punctualityCount;
+    private Long punctualityCount;
 
-    private long responsivenessCount;
+    private Long responsivenessCount;
 
-    private long photographyCount;
+    private Long photographyCount;
 
-    private long mannerCount;
+    private Long mannerCount;
 
-    private long navigationCount;
+    private Long navigationCount;
 
-    private long humorCount;
+    private Long humorCount;
 
-    private long adaptabilityCount;
+    private Long adaptabilityCount;
 
     public void updateRatingAndTotalReviewCount(Double rating, Integer totalReviewCount) {
         this.rating = rating;
