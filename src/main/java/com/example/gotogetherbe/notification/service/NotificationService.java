@@ -66,6 +66,10 @@ public class NotificationService {
             notificationInfo.of()); //repository에 저장
         log.info("알림 저장 완료");
 
+        if (!notification.getMember().getAlarmStatus()) { // 알림 설정이 꺼져있으면 전송하지 않음
+            return;
+        }
+
         Map<String, SseEmitter> emitters = emitterRepository
             .findAllEmitterStartWithByEmail(
                 notification.getMember().getEmail() + "_"); // 연결된 emitter 조회
