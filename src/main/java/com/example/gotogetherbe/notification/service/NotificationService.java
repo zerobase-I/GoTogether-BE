@@ -1,7 +1,7 @@
 package com.example.gotogetherbe.notification.service;
 
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOTIFICATION_NOT_FOUND;
-import static com.example.gotogetherbe.notification.type.NotificationStatus.*;
+import static com.example.gotogetherbe.notification.type.NotificationStatus.READ;
 
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.notification.dto.NotificationDto;
@@ -9,7 +9,6 @@ import com.example.gotogetherbe.notification.dto.NotificationInfoDto;
 import com.example.gotogetherbe.notification.entity.Notification;
 import com.example.gotogetherbe.notification.repository.EmitterRepository;
 import com.example.gotogetherbe.notification.repository.NotificationRepository;
-import com.example.gotogetherbe.notification.type.NotificationStatus;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
