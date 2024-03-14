@@ -35,7 +35,7 @@ public class ReviewService {
     private final PostRepository postRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMemberRepository chatMemberRepository;
-    private final MemberAssessmentService travelScoreService;
+    private final MemberAssessmentService memberAssessmentService;
 
     /**
      * 리뷰 작성
@@ -51,13 +51,11 @@ public class ReviewService {
         Post post = postRepository.findById(reviewWriteDtos.get(0).getPostId())
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
-        List<Review> reviews = getReviews(reviewWriteDtos, post, reviewer);
+        List<Review> reviews = getReviewDetail(reviewWriteDtos, post, reviewer);
 
         List<Review> savedReviews = reviewRepository.saveAll(reviews);
 
-        for (Review saved : savedReviews) {
-            travelScoreService.updateMemberAssessment(saved.getTargetMember(), saved.getScore());
-        }
+        memberAssessmentService.updateMemberAssessment(savedReviews);
 
         return savedReviews.stream().map(ReviewDto::from).toList();
     }
@@ -87,26 +85,12 @@ public class ReviewService {
     }
 
     /**
-     * 로그인 한 사용자의 리뷰 조회
-     *
-     * @param email 로그인한 사용자 이메일
-     * @return 로그인한 사용자의 리뷰 리스트
-     */
-    public List<ReviewDto> getMyReviews(String email) {
-        Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
-        List<Review> reviews = reviewRepository.findAllByTargetMember_Id(member.getId());
-
-        return reviews.stream().map(ReviewDto::from).toList();
-    }
-
-    /**
-     * 특정 사용자의 리뷰 조회
+     * 사용자의 리뷰 조회
      *
      * @param memberId 사용자 id
-     * @return 특정 사용자의 리뷰 리스트
+     * @return 사용자의 리뷰 상세
      */
-    public List<ReviewDto> getReviews(Long memberId) {
+    public List<ReviewDto> getReviewDetail(Long memberId) {
         List<Review> reviews = reviewRepository.findAllByTargetMember_Id(memberId);
 
         return reviews.stream().map(ReviewDto::from).toList();
@@ -120,7 +104,7 @@ public class ReviewService {
      * @param reviewer       리뷰 작성자
      * @return 작성된 리뷰 정보
      */
-    private List<Review> getReviews(List<ReviewWriteDto> reviewWriteDtos, Post post, Member reviewer) {
+    private List<Review> getReviewDetail(List<ReviewWriteDto> reviewWriteDtos, Post post, Member reviewer) {
         List<Review> reviews = new ArrayList<>();
 
         for (ReviewWriteDto reviewWriteDto : reviewWriteDtos) {

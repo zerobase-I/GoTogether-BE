@@ -17,7 +17,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -49,4 +48,14 @@ public class MemberAssessment {
 
     private long adaptabilityCount;
 
+    public void updateRatingAndTotalReviewCount(Double rating, Integer totalReviewCount) {
+        this.rating = rating;
+        this.totalReviewCount = totalReviewCount;
+    }
+
+    public void updateAssessmentCount(boolean assessment) {
+        if (assessment) {
+            this.punctualityCount++;
+        }
+    }
 }

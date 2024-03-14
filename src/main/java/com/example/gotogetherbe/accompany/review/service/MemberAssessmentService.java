@@ -1,11 +1,15 @@
 package com.example.gotogetherbe.accompany.review.service;
 
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.MEMBER_ASSESSMENT_NOT_FOUND;
+
 import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
+import com.example.gotogetherbe.accompany.review.entity.Review;
 import com.example.gotogetherbe.accompany.review.repository.MemberAssessmentRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
-import com.example.gotogetherbe.member.entitiy.Member;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,42 +18,62 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberAssessmentService {
 
-    private final MemberAssessmentRepository travelScoreRepository;
+    private final MemberAssessmentRepository memberAssessmentRepository;
 
     /**
-     * 동행 평가 점수 업데이트
+     * 회원 평가 업데이트
      *
-     * @param member 평가 대상 멤버
-     * @param score  평가 점수
+     * @param reviews 리뷰 목록
      */
     @Transactional
-    public void updateMemberAssessment(Member member, Double score) {
-        MemberAssessment memberAssessment = travelScoreRepository.findByMemberId(member.getId())
-            .orElseThrow(() -> new GlobalException(ErrorCode.TRAVEL_SCORE_NOT_FOUND));
+    public void updateMemberAssessment(List<Review> reviews) {
+        List<MemberAssessment> memberAssessments = new ArrayList<>();
 
-        MemberAssessment updated = updateRating(memberAssessment, score);
-        travelScoreRepository.save(updated);
+        for (Review review : reviews) {
+            MemberAssessment memberAssessment = memberAssessmentRepository.findByMemberId(
+                    review.getTargetMember().getId())
+                .orElseThrow(() -> new GlobalException(MEMBER_ASSESSMENT_NOT_FOUND));
+
+            updateRating(memberAssessment, review.getScore());
+            updateMemberAssessmentCount(memberAssessment, review);
+            memberAssessments.add(memberAssessment);
+        }
+
+        memberAssessmentRepository.saveAll(memberAssessments);
     }
 
     /**
      * 평점 계산(역산)
      *
-     * @param score  평가 점수
+     * @param score            평가 점수
      * @param memberAssessment 평가 점수 객체
      * @return 평가 점수가 업데이트된 객체
      */
-    private MemberAssessment updateRating(MemberAssessment memberAssessment, Double score) {
-        double totalScore = (memberAssessment.getRating() * memberAssessment.getTotalReviewCount() + score);
+    private void updateRating(MemberAssessment memberAssessment, Double score) {
+        double totalScore = (memberAssessment.getRating() * memberAssessment.getTotalReviewCount()
+            + score);
         int newTotalReviewCount = memberAssessment.getTotalReviewCount() + 1;
 
         DecimalFormat form = new DecimalFormat("#.#");
         double newRating = Double.parseDouble(form.format(totalScore / newTotalReviewCount));
 
-        memberAssessment.setTotalReviewCount(newTotalReviewCount);
-        memberAssessment.setRating(newRating);
-
-        return memberAssessment;
+        memberAssessment.updateRatingAndTotalReviewCount(newRating, newTotalReviewCount);
     }
 
+    /**
+     * 회원 평가 수 업데이트
+     *
+     * @param memberAssessment 회원 평가 객체
+     * @param review           리뷰 객체
+     */
+    private void updateMemberAssessmentCount(MemberAssessment memberAssessment, Review review) {
+        memberAssessment.updateAssessmentCount(review.isPunctuality());
+        memberAssessment.updateAssessmentCount(review.isResponsiveness());
+        memberAssessment.updateAssessmentCount(review.isPhotography());
+        memberAssessment.updateAssessmentCount(review.isManner());
+        memberAssessment.updateAssessmentCount(review.isNavigation());
+        memberAssessment.updateAssessmentCount(review.isHumor());
+        memberAssessment.updateAssessmentCount(review.isAdaptability());
+    }
 
 }
