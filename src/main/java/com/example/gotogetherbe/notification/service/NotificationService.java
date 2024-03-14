@@ -3,7 +3,6 @@ package com.example.gotogetherbe.notification.service;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOTIFICATION_NOT_FOUND;
 
 import com.example.gotogetherbe.global.exception.GlobalException;
-import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import com.example.gotogetherbe.notification.dto.NotificationDto;
 import com.example.gotogetherbe.notification.dto.NotificationInfoDto;
 import com.example.gotogetherbe.notification.entity.Notification;

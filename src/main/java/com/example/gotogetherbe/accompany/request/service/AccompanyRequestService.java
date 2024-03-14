@@ -14,7 +14,6 @@ import com.example.gotogetherbe.accompany.request.dto.AccompanyRequestDto;
 import com.example.gotogetherbe.accompany.request.dto.AccompanyRequestSendDto;
 import com.example.gotogetherbe.accompany.request.entity.AccompanyRequest;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRequestRepository;
-import com.example.gotogetherbe.global.component.NotificationEventHandler;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
