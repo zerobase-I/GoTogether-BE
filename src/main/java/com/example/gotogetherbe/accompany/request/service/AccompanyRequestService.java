@@ -94,6 +94,18 @@ public class AccompanyRequestService {
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
     }
 
+    /**
+     * 동행 요청 취소
+     * @param requestId 요청 ID
+     */
+    @Transactional
+    public void cancelAccompanyRequest(Long requestId) {
+        AccompanyRequest accompanyRequest = accompanyRequestRepository.findById(requestId)
+            .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
+
+        accompanyRequestRepository.delete(accompanyRequest);
+    }
+
     private Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
@@ -125,4 +137,5 @@ public class AccompanyRequestService {
 
         return accompanyRequest;
     }
+
 }

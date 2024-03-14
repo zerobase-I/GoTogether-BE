@@ -30,6 +30,12 @@ public class AccompanyRequestController {
             .sendAccompanyRequest(username, accompanyRequestSendDto));
     }
 
+    @PostMapping("/cancel/{requestId}")
+    public ResponseEntity<String> cancelAccompanyRequest( @PathVariable Long requestId) {
+        accompanyRequestService.cancelAccompanyRequest(requestId);
+        return ResponseEntity.ok().body("Accompany request canceled successfully.");
+    }
+
     @GetMapping("/send")
     public ResponseEntity<List<AccompanyRequestDto>> sentAccompanyRequest(@LoginUser String username) {
         return ResponseEntity.ok(accompanyRequestService.getSentAccompanyRequests(username));
