@@ -13,7 +13,6 @@ import com.example.gotogetherbe.global.service.RedisService;
 import com.example.gotogetherbe.global.util.jwt.TokenProvider;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

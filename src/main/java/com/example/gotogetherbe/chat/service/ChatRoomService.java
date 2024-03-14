@@ -100,17 +100,11 @@ public class ChatRoomService {
    */
   @Transactional(readOnly = true)
   public List<ChatMemberDto> getChatMemberList(String email, Long chatRoomId) {
-    Member member = memberRepository.findByEmail(email)
-        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
-
     List<ChatMember> chatMemberList = chatMemberRepository.findAllByChatRoomId(chatRoomId);
 
     if(chatMemberList.stream().noneMatch(chatMember -> Objects.equals(
-        chatMember.getMember().getId(), member.getId()))) {
+        chatMember.getMember().getEmail(), email))) {
       throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
-    }
-    if (chatMemberList.isEmpty()) {
-      throw new GlobalException(ErrorCode.CHATROOM_IS_EMPTY);
     }
 
     return chatMemberList.stream().map(ChatMemberDto::from).collect(Collectors.toList());
