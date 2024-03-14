@@ -1,9 +1,7 @@
 package com.example.gotogetherbe.accompany.review.dto;
 
-import com.example.gotogetherbe.accompany.review.type.ReviewAspect;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

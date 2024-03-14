@@ -26,7 +26,7 @@ public class MemberAssessment {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id", nullable = true)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     private Integer totalReviewCount;

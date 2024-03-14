@@ -6,7 +6,6 @@ import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.accompany.review.entity.Review;
 import com.example.gotogetherbe.accompany.review.repository.MemberAssessmentRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
-import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,6 @@ public class MemberAssessmentService {
      *
      * @param score            평가 점수
      * @param memberAssessment 평가 점수 객체
-     * @return 평가 점수가 업데이트된 객체
      */
     private void updateRating(MemberAssessment memberAssessment, Double score) {
         double totalScore = (memberAssessment.getRating() * memberAssessment.getTotalReviewCount()
