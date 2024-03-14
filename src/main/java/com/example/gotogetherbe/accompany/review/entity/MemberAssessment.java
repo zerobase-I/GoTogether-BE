@@ -21,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TravelScore {
+public class MemberAssessment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +34,19 @@ public class TravelScore {
     private Integer totalReviewCount;
 
     private Double rating;
+
+    private long punctualityCount;
+
+    private long responsivenessCount;
+
+    private long photographyCount;
+
+    private long mannerCount;
+
+    private long navigationCount;
+
+    private long humorCount;
+
+    private long adaptabilityCount;
 
 }
