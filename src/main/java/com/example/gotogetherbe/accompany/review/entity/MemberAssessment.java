@@ -52,9 +52,31 @@ public class MemberAssessment {
         this.totalReviewCount = totalReviewCount;
     }
 
-    public void updateAssessmentCount(boolean assessment) {
+    public void updateAssessmentCount(boolean assessment, String assessmentType) {
         if (assessment) {
-            this.punctualityCount++;
+            switch (assessmentType) {
+                case "punctuality":
+                    this.punctualityCount++;
+                    break;
+                case "responsiveness":
+                    this.responsivenessCount++;
+                    break;
+                case "photography":
+                    this.photographyCount++;
+                    break;
+                case "manner":
+                    this.mannerCount++;
+                    break;
+                case "navigation":
+                    this.navigationCount++;
+                    break;
+                case "humor":
+                    this.humorCount++;
+                    break;
+                case "adaptability":
+                    this.adaptabilityCount++;
+                    break;
+            }
         }
     }
 }

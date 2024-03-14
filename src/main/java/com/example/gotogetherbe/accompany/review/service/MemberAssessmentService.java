@@ -65,13 +65,13 @@ public class MemberAssessmentService {
      * @param review           리뷰 객체
      */
     private void updateMemberAssessmentCount(MemberAssessment memberAssessment, Review review) {
-        memberAssessment.updateAssessmentCount(review.isPunctuality());
-        memberAssessment.updateAssessmentCount(review.isResponsiveness());
-        memberAssessment.updateAssessmentCount(review.isPhotography());
-        memberAssessment.updateAssessmentCount(review.isManner());
-        memberAssessment.updateAssessmentCount(review.isNavigation());
-        memberAssessment.updateAssessmentCount(review.isHumor());
-        memberAssessment.updateAssessmentCount(review.isAdaptability());
+        memberAssessment.updateAssessmentCount(review.isPunctuality(), "punctuality");
+        memberAssessment.updateAssessmentCount(review.isResponsiveness(), "responsiveness");
+        memberAssessment.updateAssessmentCount(review.isPhotography(), "photography");
+        memberAssessment.updateAssessmentCount(review.isManner(), "manner");
+        memberAssessment.updateAssessmentCount(review.isNavigation(), "navigation");
+        memberAssessment.updateAssessmentCount(review.isHumor(), "humor");
+        memberAssessment.updateAssessmentCount(review.isAdaptability(), "adaptability");
     }
 
 }
