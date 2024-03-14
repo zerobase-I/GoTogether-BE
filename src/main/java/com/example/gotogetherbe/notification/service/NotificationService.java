@@ -1,6 +1,7 @@
 package com.example.gotogetherbe.notification.service;
 
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOTIFICATION_NOT_FOUND;
+import static com.example.gotogetherbe.notification.type.NotificationStatus.*;
 
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.notification.dto.NotificationDto;
@@ -8,6 +9,7 @@ import com.example.gotogetherbe.notification.dto.NotificationInfoDto;
 import com.example.gotogetherbe.notification.entity.Notification;
 import com.example.gotogetherbe.notification.repository.EmitterRepository;
 import com.example.gotogetherbe.notification.repository.NotificationRepository;
+import com.example.gotogetherbe.notification.type.NotificationStatus;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
@@ -90,13 +93,17 @@ public class NotificationService {
     }
 
     /**
-     * 알림 확인
+     * 알림 확인, 상태 변경(unread -> read)
      * @param notificationId 알림 id
      * @return 알림 확인 시 이동할 url
      */
+    @Transactional
     public String readNotification(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
             .orElseThrow(() -> new GlobalException(NOTIFICATION_NOT_FOUND));
+
+        notification.updateStatus(READ);
+        notificationRepository.save(notification);
 
         return notification.getUrl();
     }
