@@ -34,10 +34,15 @@ public class AccompanyRequestService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
+    /**
+     * 동행 요청 보내기
+     * @param email 사용자 이메일
+     * @param accompanyRequestSendDto 동행 요청 정보
+     * @return 동행 요청 정보
+     */
     @Transactional
     public AccompanyRequestDto sendAccompanyRequest(
-        String email,
-        AccompanyRequestSendDto accompanyRequestSendDto
+        String email, AccompanyRequestSendDto accompanyRequestSendDto
     ) {
         Member requestMember = getMemberByEmail(email);
 
@@ -47,7 +52,7 @@ public class AccompanyRequestService {
             .orElseThrow(() -> new GlobalException(POST_AUTHOR_MISMATCH));
 
         // 중복 요청 확인
-        checkDuplication(requestMember, post.getMember(), post);
+        checkDuplication(requestMember.getId(), post.getMember().getId(), post.getId());
         AccompanyRequest accompanyRequest = AccompanyRequest.builder()
             .requestMember(requestMember)
             .requestedMember(post.getMember())
@@ -59,15 +64,17 @@ public class AccompanyRequestService {
     }
 
     public List<AccompanyRequestDto> getSentAccompanyRequests(String email) {
-        List<AccompanyRequest> sentRequests =
-            accompanyRequestRepository.findAllByRequestMember_Email(email);
+        Member member = getMemberByEmail(email);
+        List<AccompanyRequest> sentRequests = accompanyRequestRepository
+            .findAllByRequestMemberIdOrderByCreatedAtDesc(member.getId());
 
         return convert(sentRequests);
     }
 
     public List<AccompanyRequestDto> getReceivedAccompanyRequests(String email) {
-        List<AccompanyRequest> receivedRequests =
-            accompanyRequestRepository.findAllByRequestedMember_Email(email);
+        Member member = getMemberByEmail(email);
+        List<AccompanyRequest> receivedRequests = accompanyRequestRepository
+            .findAllByRequestedMemberIdOrderByCreatedAtDesc(member.getId());
 
         return convert(receivedRequests);
     }
@@ -75,12 +82,12 @@ public class AccompanyRequestService {
     @Transactional
     public AccompanyRequestDto approveAccompanyRequest(String email, Long requestId) {
         AccompanyRequest request = getAccompanyRequest(email, requestId);
-        request.setRequestStatus(APPROVED);
+        request.updateRequestStatus(APPROVED);
 
         Post post = postRepository.findById(request.getPost().getId())
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
-        post.setCurrentPeople(post.getCurrentPeople() + 1);
+        post.updateCurrentPeople();
         postRepository.save(post);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
@@ -89,7 +96,7 @@ public class AccompanyRequestService {
     @Transactional
     public AccompanyRequestDto rejectAccompanyRequest(String email, Long requestId) {
         AccompanyRequest request = getAccompanyRequest(email, requestId);
-        request.setRequestStatus(REJECTED);
+        request.updateRequestStatus(REJECTED);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
     }
@@ -114,9 +121,10 @@ public class AccompanyRequestService {
     /**
      * 동일한 postId에 대해 중복되는 requestedMember & requestMember인지 체크(중복요청인지 확인)
      */
-    private void checkDuplication(Member requestMember, Member requestedMember, Post post) {
-        if (accompanyRequestRepository.existsByRequestMemberAndRequestedMemberAndPost(
-            requestMember, requestedMember, post)) {
+    private void checkDuplication(Long requestMemberId, Long requestedMemberId, Long postId) {
+        if (accompanyRequestRepository.existsByRequestedMember_IdAndRequestedMember_IdAndPost_Id(
+            requestMemberId, requestedMemberId, postId)
+        ) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
         }
     }
