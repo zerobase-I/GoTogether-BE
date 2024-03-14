@@ -1,5 +1,6 @@
 package com.example.gotogetherbe.accompany.review.controller;
 
+import com.example.gotogetherbe.accompany.review.dto.MemberAssessmentDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
 import com.example.gotogetherbe.accompany.review.service.ReviewService;
@@ -29,7 +30,7 @@ public class AccompanyReviewController {
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<?> getReviewDetail(@PathVariable Long memberId) {
+    public ResponseEntity<MemberAssessmentDto> getReviewDetail(@PathVariable Long memberId) {
         return ResponseEntity.ok().body(reviewService.getAssessment(memberId));
     }
 
