@@ -20,6 +20,7 @@ import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,43 +35,31 @@ public class ReviewService {
     private final PostRepository postRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMemberRepository chatMemberRepository;
-    private final TravelScoreService travelScoreService;
+    private final MemberAssessmentService travelScoreService;
 
     /**
      * 리뷰 작성
      *
-     * @param email     로그인한 사용자 이메일
-     * @param reviewDto 리뷰 작성 정보
+     * @param email      로그인한 사용자 이메일
+     * @param reviewWriteDtos 리뷰 작성 정보
      * @return 작성된 리뷰 정보
      */
     @Transactional
-    public ReviewDto writeReview(String email, ReviewWriteDto reviewDto) {
+    public List<ReviewDto> writeReview(String email, List<ReviewWriteDto> reviewWriteDtos) {
         Member reviewer = getMemberByEmail(email);
 
-        Member targetMember = memberRepository.findById(reviewDto.getTargetMemberId())
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
-
-        Post post = postRepository.findById(reviewDto.getPostId())
+        Post post = postRepository.findById(reviewWriteDtos.get(0).getPostId())
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
-        // 리뷰 작성이 가능한 조건인지 확인(완료된 동행, 동행 참여자 확인)
-        checkAccompanyCondition(post, reviewer, targetMember);
-        // 리뷰 중복 확인
-        checkDuplication(reviewer, targetMember, post);
+        List<Review> reviews = getReviews(reviewWriteDtos, post, reviewer);
 
-        Review review = Review.builder()
-            .reviewer(reviewer)
-            .targetMember(targetMember)
-            .post(post)
-            .score(reviewDto.getScore())
-            .content(reviewDto.getContent())
-            .build();
+        List<Review> savedReviews = reviewRepository.saveAll(reviews);
 
-        Review saved = reviewRepository.save(review);
-        // 동행 점수 업데이트
-        travelScoreService.updateTravelScore(saved.getTargetMember(), saved.getScore());
+        for (Review saved : savedReviews) {
+            travelScoreService.updateMemberAssessment(saved.getTargetMember(), saved.getScore());
+        }
 
-        return ReviewDto.from(saved);
+        return savedReviews.stream().map(ReviewDto::from).toList();
     }
 
     /**
@@ -104,7 +93,9 @@ public class ReviewService {
      * @return 로그인한 사용자의 리뷰 리스트
      */
     public List<ReviewDto> getMyReviews(String email) {
-        List<Review> reviews = reviewRepository.findAllByTargetMember_Email(email);
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+        List<Review> reviews = reviewRepository.findAllByTargetMember_Id(member.getId());
 
         return reviews.stream().map(ReviewDto::from).toList();
     }
@@ -119,6 +110,47 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByTargetMember_Id(memberId);
 
         return reviews.stream().map(ReviewDto::from).toList();
+    }
+
+    /**
+     * 리뷰 작성 정보로 리뷰 객체 생성
+     *
+     * @param post           참여한 동행 게시글
+     * @param reviewWriteDtos 리뷰 작성 정보
+     * @param reviewer       리뷰 작성자
+     * @return 작성된 리뷰 정보
+     */
+    private List<Review> getReviews(List<ReviewWriteDto> reviewWriteDtos, Post post, Member reviewer) {
+        List<Review> reviews = new ArrayList<>();
+
+        for (ReviewWriteDto reviewWriteDto : reviewWriteDtos) {
+
+            Member targetMember = memberRepository.findById(reviewWriteDto.getTargetMemberId())
+                .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+
+            // 리뷰 작성이 가능한 조건인지 확인(완료된 동행, 동행 참여자 확인)
+            checkAccompanyCondition(post, reviewer, targetMember);
+
+            // 리뷰 중복 확인
+            checkDuplication(reviewer, targetMember, post);
+
+            Review review = Review.builder()
+                .reviewer(reviewer)
+                .targetMember(targetMember)
+                .post(post)
+                .score(reviewWriteDto.getScore())
+                .punctuality(reviewWriteDto.isPunctuality())
+                .responsiveness(reviewWriteDto.isResponsiveness())
+                .photography(reviewWriteDto.isPhotography())
+                .manner(reviewWriteDto.isManner())
+                .navigation(reviewWriteDto.isNavigation())
+                .humor(reviewWriteDto.isHumor())
+                .adaptability(reviewWriteDto.isAdaptability())
+                .build();
+
+            reviews.add(review);
+        }
+        return reviews;
     }
 
     /**
