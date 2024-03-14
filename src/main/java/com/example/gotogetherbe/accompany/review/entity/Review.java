@@ -2,7 +2,9 @@ package com.example.gotogetherbe.accompany.review.entity;
 
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.post.entity.Post;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -12,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,7 +51,26 @@ public class Review {
         @Column(nullable = false)
         private Double score;
 
-        private String content;
+        @Column(nullable = false)
+        private boolean punctuality;
+
+        @Column(nullable = false)
+        private boolean responsiveness;
+
+        @Column(nullable = false)
+        private boolean photography;
+
+        @Column(nullable = false)
+        private boolean manner;
+
+        @Column(nullable = false)
+        private boolean navigation;
+
+        @Column(nullable = false)
+        private boolean humor;
+
+        @Column(nullable = false)
+        private boolean adaptability;
 
         @CreatedDate
         private LocalDateTime createdAt;
