@@ -46,6 +46,8 @@ public class Notification {
 
     private NotificationStatus status;
 
+    private String url;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

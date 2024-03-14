@@ -40,6 +40,8 @@ public class AccompanyRequestService {
     private final PostRepository postRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    private static final String URL_PREFIX = "/api/accompany/request";
+
     @Transactional
     public AccompanyRequestDto sendAccompanyRequest(
         String email,
@@ -73,6 +75,7 @@ public class AccompanyRequestService {
             .postId(post.getId())
             .status(NotificationStatus.UNREAD)
             .type(NotificationType.ACCOMPANY_REQUEST)
+            .url(URL_PREFIX + "/receive") // 알림 클릭시 이동할 url
             .build();
         applicationEventPublisher.publishEvent(notificationInfo);
 

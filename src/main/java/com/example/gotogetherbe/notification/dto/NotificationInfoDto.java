@@ -23,12 +23,15 @@ public class NotificationInfoDto {
 
     private NotificationStatus status;
 
+    private String url;
+
     public Notification of() {
         return Notification.builder()
             .member(this.member)
             .type(this.type)
             .postId(this.postId)
             .status(this.status)
+            .url(this.url)
             .build();
     }
 
