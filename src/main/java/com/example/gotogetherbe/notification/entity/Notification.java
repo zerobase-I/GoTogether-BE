@@ -44,6 +44,7 @@ public class Notification {
 
     private Long postId;
 
+    @Enumerated(EnumType.STRING)
     private NotificationStatus status;
 
     private String url;
