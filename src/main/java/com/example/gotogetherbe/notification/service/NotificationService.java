@@ -1,10 +1,16 @@
 package com.example.gotogetherbe.notification.service;
 
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOTIFICATION_NOT_FOUND;
+
+import com.example.gotogetherbe.global.exception.GlobalException;
+import com.example.gotogetherbe.global.exception.type.ErrorCode;
+import com.example.gotogetherbe.notification.dto.NotificationDto;
 import com.example.gotogetherbe.notification.dto.NotificationInfoDto;
 import com.example.gotogetherbe.notification.entity.Notification;
 import com.example.gotogetherbe.notification.repository.EmitterRepository;
 import com.example.gotogetherbe.notification.repository.NotificationRepository;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -51,21 +57,50 @@ public class NotificationService {
 
     /**
      * 알림 전송
+     *
      * @param notificationInfo 알림 정보
      */
     public void send(NotificationInfoDto notificationInfo) {
-        Notification notification = notificationRepository.save(notificationInfo.of()); //repository에 저장
+        Notification notification = notificationRepository.save(
+            notificationInfo.of()); //repository에 저장
         log.info("알림 저장 완료");
 
         Map<String, SseEmitter> emitters = emitterRepository
-            .findAllEmitterStartWithByEmail(notification.getMember().getEmail() + "_"); // 연결된 emitter 조회
+            .findAllEmitterStartWithByEmail(
+                notification.getMember().getEmail() + "_"); // 연결된 emitter 조회
 
         emitters.forEach((key, emitter) -> {
-            emitterRepository.saveEventCache(key, notification.getId()); // event cache 저장(notification id만 저장)
+            emitterRepository.saveEventCache(key,
+                notification.getId()); // event cache 저장(notification id만 저장)
             sendToClient(emitter, key, "New Notification");
         });
     }
 
+    /**
+     * 알림 조회
+     * @param email 사용자 email
+     * @return 알림dto 리스트
+     */
+    public List<NotificationDto> getNotifications(String email) {
+        List<Notification> notifications =
+            notificationRepository.findAllByMember_EmailOrderByCreatedAtDesc(email);
+
+        return notifications.stream()
+            .map(NotificationDto::from)
+            .toList();
+    }
+
+    /**
+     * 알림 확인
+     * @param notificationId 알림 id
+     * @return 알림 확인 시 이동할 url
+     */
+    public String readNotification(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+            .orElseThrow(() -> new GlobalException(NOTIFICATION_NOT_FOUND));
+
+        return notification.getUrl();
+    }
 
     /**
      * 클라이언트로 데이터 전송
@@ -89,9 +124,10 @@ public class NotificationService {
 
     /**
      * 유실된 데이터 전송
-     * @param email 사용자 email
+     *
+     * @param email       사용자 email
      * @param lastEventId 마지막으로 수신한 이벤트 아이디
-     * @param emitter emitter
+     * @param emitter     emitter
      */
     private void sendLostData(String email, String lastEventId, SseEmitter emitter) {
         Map<String, Object> eventCache = emitterRepository
@@ -101,6 +137,4 @@ public class NotificationService {
                 entry -> lastEventId.compareTo(entry.getKey()) < 0) // lastEventId 이후 데이터만 전송
             .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
     }
-
-
 }
