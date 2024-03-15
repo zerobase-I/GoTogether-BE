@@ -72,7 +72,7 @@ public class AwsS3Service {
    * @param multipartFile 업로드할 파일
    * @param fileName      파일 이름
    */
-  private void uploadToS3(MultipartFile multipartFile, String fileName) {
+  public void uploadToS3(MultipartFile multipartFile, String fileName) {
     try (InputStream inputStream = multipartFile.getInputStream()) {
       amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream,
           getObjectMetadata(multipartFile))
@@ -92,19 +92,28 @@ public class AwsS3Service {
     }
   }
 
-  private String getUrl(String fileName) {
+  public String getUrl(String fileName) {
     return amazonS3.getUrl(bucketName, fileName).toString();
   }
 
 
-  private ObjectMetadata getObjectMetadata(MultipartFile multipartFile) {
+  public ObjectMetadata getObjectMetadata(MultipartFile multipartFile) {
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentType(multipartFile.getContentType());
     objectMetadata.setContentLength(multipartFile.getSize());
     return objectMetadata;
   }
 
-  private String generateFileName(MultipartFile multipartFile) {
+  public String generateFileName(MultipartFile multipartFile) {
     return UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+  }
+
+  // URL 을 사용하여 파일을 삭제하는 메서드
+  public void deleteFileUsingUrl(String fileUrl) {
+    String fileName = extractFileNameFromUrl(fileUrl);
+    deleteFile(fileName); // 기존에 작성한 deleteFile 메서드를 재사용
+  }
+  public String extractFileNameFromUrl(String fileUrl) {
+    return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
   }
 }
