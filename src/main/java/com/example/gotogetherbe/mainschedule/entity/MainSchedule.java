@@ -21,7 +21,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -41,4 +40,11 @@ public class MainSchedule extends BaseEntity {
   @Column(nullable = false)
   private String content;
 
+  public void updateScheduleDate(LocalDate scheduleDate) {
+    this.scheduleDate = scheduleDate;
+  }
+
+  public void updateContent(String content) {
+    this.content = content;
+  }
 }
