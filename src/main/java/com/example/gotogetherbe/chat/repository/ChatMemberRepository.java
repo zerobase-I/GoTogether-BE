@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface ChatMemberRepository extends JpaRepository<ChatMember, Long>, CustomChatMemberRepository {
   Optional<ChatMember> findByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
 
+  boolean existsByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
+
   List<ChatMember> findAllByChatRoomId(Long chatRoomId);
 
   List<ChatMember> findAllByMemberId(Long memberId);
