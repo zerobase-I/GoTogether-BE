@@ -37,7 +37,7 @@ public class AwsS3Service {
    * @param multipartFile 업로드할 이미지 파일
    * @return 업로드된 이미지의 S3 URL, 파일 이름, 파일 크기를 포함한 S3ImageDto 객체
    */
-  public S3ImageDto uploadPostImage(MultipartFile multipartFile) {
+  public S3ImageDto uploadImage(MultipartFile multipartFile) {
     log.info("[uploadPostImage] start");
 
     String fileName = generateFileName(multipartFile);
@@ -49,22 +49,6 @@ public class AwsS3Service {
         .size(multipartFile.getSize())
         .build();
   }
-
-  /**
-   * 프로필 이미지를 AWS S3에 업로드하고 그에 대한 URL 을 반환.
-   *
-   * @param multipartFile 업로드할 이미지 파일
-   * @return 업로드된 이미지의 S3 URL
-   */
-  public String uploadProfileImage(MultipartFile multipartFile) {
-    log.info("[uploadProfileImage] start");
-
-    String fileName = generateFileName(multipartFile);
-    uploadToS3(multipartFile, fileName);
-
-    return getUrl(fileName);
-  }
-
 
   /**
    * AWS S3에 파일을 업로드.
