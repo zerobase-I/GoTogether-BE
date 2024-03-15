@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatMemberDto {
   private Long memberId;
+  private Long chatRoomId;
   private String nickName;
   private String profileUrl;
 
   public static ChatMemberDto from(ChatMember chatMember) {
     return ChatMemberDto.builder()
         .memberId(chatMember.getMember().getId())
+        .chatRoomId(chatMember.getChatRoom().getId())
         .nickName(chatMember.getMember().getNickname())
         .profileUrl(chatMember.getMember().getProfileImageUrl())
         .build();

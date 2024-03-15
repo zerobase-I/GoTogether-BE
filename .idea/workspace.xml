@@ -4,23 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="style. 서비스 설명 추가">
+    <list default="true" id="ca1d72c7-e147-4f48-80ed-9b0ab262ca2f" name="Changes" comment="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거">
       <change afterPath="$PROJECT_DIR$/src/test/BaseSettingTest.http" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/ChatMemberTest.http" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/ChatRoomTest.http" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.5/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.5/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.5/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/controller/AccompanyRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/controller/AccompanyRequestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/service/AccompanyRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/accompany/request/service/AccompanyRequestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/auth/service/AuthServiceImpl.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitMQConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/RabbitMQConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/WebSocketConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/config/handler/StompPreHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatMessageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/controller/ChatMessageController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/type/ChatConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/chat/type/ChatConstant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/util/jwt/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/global/util/jwt/TokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/member/entitiy/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/member/entitiy/Member.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/post/entity/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/gotogetherbe/post/entity/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +61,16 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;state&quot;: &quot;OPEN&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
+}</component>
   <component name="GithubProjectSettings">
     <option name="branchProtectionPatterns">
       <list>
@@ -71,6 +78,17 @@
       </list>
     </option>
   </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="3d11121f-ec18-47df-befb-c5bc2274c1d3" />
+        <option name="url" value="https://github.com/zerobase-I/GoTogether-BE.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -85,29 +103,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat/chat&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/sukyungyang/Desktop/ZB_JAVA/project/GoTogether-BE&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.GoTogether 빌드.executor": "Run",
+    "HTTP 요청.BaseSettingTest | 로그인.executor": "Run",
+    "HTTP 요청.BaseSettingTest | 이메일 검증.executor": "Run",
+    "HTTP 요청.BaseSettingTest | 이메일 인증.executor": "Run",
+    "HTTP 요청.BaseSettingTest | 회원가입.executor": "Run",
+    "HTTP 요청.ChatRoomTest | 참여중인 채팅방 목록 조회.executor": "Run",
+    "HTTP 요청.ChatRoomTest | 채팅방 생성.executor": "Run",
+    "HTTP 요청.ChatRoomTest | 채팅방 입장.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.GoTogetherBeApplication.executor": "Debug",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "feat/chat",
+    "jdk.selected.JAVA_MODULE": "17",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/sukyungyang/Desktop/ZB_JAVA/project/GoTogether-BE",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "프로젝트",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -121,22 +150,28 @@
     <configuration name="BaseSettingTest | 이메일 인증" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="2" requestIdentifier="이메일 인증" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
-    <configuration name="BaseSettingTest | 로그인" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="4" requestIdentifier="로그인" runType="단일 요청 실행">
-      <method v="2" />
-    </configuration>
-    <configuration name="BaseSettingTest | 회원가입" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" requestIdentifier="회원가입" runType="단일 요청 실행">
-      <method v="2" />
-    </configuration>
     <configuration name="BaseSettingTest | 이메일 인증" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="2" requestIdentifier="이메일 인증" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
-    <configuration name="ChatRoomTest | 채팅방 생성" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/ChatRoomTest.http" requestIdentifier="채팅방 생성" runType="단일 요청 실행">
+    <configuration name="BaseSettingTest | 로그인" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="4" requestIdentifier="로그인" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="BaseSettingTest | 로그인" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/BaseSettingTest.http" index="4" requestIdentifier="로그인" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="ChatRoomTest | 참여중인 채팅방 목록 조회" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/ChatRoomTest.http" index="2" requestIdentifier="참여중인 채팅방 목록 조회" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
     <configuration name="ChatRoomTest | 채팅방 입장" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/ChatRoomTest.http" index="3" requestIdentifier="채팅방 입장" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
-    <configuration name="member | 이메일 인증" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/member.http" index="2" requestIdentifier="이메일 인증" runType="단일 요청 실행">
+    <configuration name="ChatRoomTest | 채팅방 입장" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/ChatRoomTest.http" index="3" requestIdentifier="채팅방 입장" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="ChatRoomTest | 채팅방 생성" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/ChatRoomTest.http" requestIdentifier="채팅방 생성" runType="단일 요청 실행">
+      <method v="2" />
+    </configuration>
+    <configuration name="ChatRoomTest | 채팅방 생성" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/src/test/ChatRoomTest.http" requestIdentifier="채팅방 생성" runType="단일 요청 실행">
       <method v="2" />
     </configuration>
     <configuration name="GoTogetherBeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
@@ -148,11 +183,20 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="HTTP 요청.ChatRoomTest | 참여중인 채팅방 목록 조회" />
         <item itemvalue="HTTP 요청.ChatRoomTest | 채팅방 입장" />
+        <item itemvalue="HTTP 요청.ChatRoomTest | 채팅방 생성" />
         <item itemvalue="HTTP 요청.BaseSettingTest | 로그인" />
-        <item itemvalue="HTTP 요청.BaseSettingTest | 이메일 인증" />
+        <item itemvalue="HTTP 요청.BaseSettingTest | 이메일 검증" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.9-temurin-17.0.9-4caba194b151-0a678b09" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -177,6 +221,7 @@
       <workItem from="1709796225869" duration="14000" />
       <workItem from="1709801945041" duration="18301000" />
       <workItem from="1709878514725" duration="691000" />
+      <workItem from="1709981320941" duration="6195000" />
     </task>
     <task id="LOCAL-00001" summary="Feat. ChatRoom 기본 세팅">
       <option name="closed" value="true" />
@@ -290,7 +335,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709803802437</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거">
+      <option name="closed" value="true" />
+      <created>1709985912320</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1709985912320</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -322,6 +375,7 @@
     <MESSAGE value="fix. ChatRoomController URL 수정" />
     <MESSAGE value="fix. RabbitMQConfig 이름 수정" />
     <MESSAGE value="style. 서비스 설명 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="style. 서비스 설명 추가" />
+    <MESSAGE value="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor. Chat 패키지 Controller ResponseEntity 와일드카드 제거" />
   </component>
 </project>

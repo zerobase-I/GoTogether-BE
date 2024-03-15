@@ -5,7 +5,9 @@ import com.example.gotogetherbe.auth.dto.ReissueDto;
 import com.example.gotogetherbe.auth.dto.SignInDto;
 import com.example.gotogetherbe.auth.dto.SignUpDto;
 import com.example.gotogetherbe.auth.service.AuthService;
+import com.example.gotogetherbe.global.util.jwt.dto.TokenDto;
 import com.example.gotogetherbe.global.util.mail.dto.SendMailRequest;
+import com.example.gotogetherbe.global.util.mail.dto.SendMailResponse;
 import com.example.gotogetherbe.global.util.mail.dto.VerifyMailRequest;
 import com.example.gotogetherbe.global.util.mail.service.MailService;
 import jakarta.validation.Valid;
@@ -29,13 +31,13 @@ public class AuthController {
   private final MailService mailService;
 
   @PostMapping("/signUp")
-  public ResponseEntity<?> signUpUser(@RequestPart("request") SignUpDto request,
+  public ResponseEntity<SignUpDto> signUpUser(@RequestPart("request") SignUpDto request,
       @RequestPart(name = "image", required = false) MultipartFile image){
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.signUp(request,image));
   }
 
   @PostMapping("/signIn")
-  public ResponseEntity<?> signInUser(@RequestBody SignInDto request){
+  public ResponseEntity<TokenDto> signInUser(@RequestBody SignInDto request){
     return ResponseEntity.ok(authService.signIn(request));
   }
   @PostMapping("/logout")
@@ -45,11 +47,11 @@ public class AuthController {
   }
 
   @PostMapping("/reissue")
-  public ResponseEntity<?> reissueToken(@Valid @RequestBody ReissueDto request){
+  public ResponseEntity<TokenDto> reissueToken(@Valid @RequestBody ReissueDto request){
     return ResponseEntity.ok(authService.reissue(request));
   }
   @PostMapping("/mail/certification")
-  public ResponseEntity<?> sendCertificationMail(@RequestBody SendMailRequest request){
+  public ResponseEntity<SendMailResponse> sendCertificationMail(@RequestBody SendMailRequest request){
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(mailService.generateAndDispatchAuthCode(request.getEmail()));
   }
