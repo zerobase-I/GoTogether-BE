@@ -1,14 +1,13 @@
 package com.example.gotogetherbe.global.service;
 
-import com.example.gotogetherbe.chat.dto.ChatRoomSessionDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * Redis DB 데이터 처리
@@ -74,31 +73,41 @@ public class RedisService {
   }
 
 
-  public Map<Object, Object> getHashByKey(String key) {
-    HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
-    return hashOps.entries(key);
+  /**
+   * 주어진 key 에 대응하는 데이터를 Redis DB 에 저장.
+   *
+   * @param key 저장하고자 하는 데이터의 key
+   * @param data 저장하고자 하는 데이터
+   */
+  public void setClassData(String key, Object data){
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      String jsonData = mapper.writeValueAsString(data);
+      redisTemplate.opsForValue().set(key, jsonData);
+    } catch (Exception e) {
+      log.error("{} is occurred", e.getMessage());
+    }
   }
 
-
-  public void saveToHash(String hashKey, Map<Object, Object> data, int hourTime) {
-    redisTemplate.opsForHash().putAll(hashKey, data);
-
-    redisTemplate.expire(hashKey, Duration.ofHours(hourTime));
+  /**
+   * 주어진 key 에 대응하는 데이터를 Redis DB 에서 조회.
+   *
+   * @param key 조회하고자 하는 데이터의 key
+   * @param elementClass 조회하고자 하는 클래스
+   */
+  public <T> T getClassData(String key, Class<T> elementClass) {
+    try {
+      String jsonResult = (String) redisTemplate.opsForValue().get(key);
+      if (StringUtils.isEmpty(jsonResult)) {
+        return null;
+      } else {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(jsonResult, elementClass);
+      }
+    } catch (Exception e) {
+      log.error("{} is occurred", e.getMessage());
+    }
+    return null;
   }
 
-
-  public void updateToHash(String hashKey, Object field, Object value) {
-    redisTemplate.opsForHash().put(hashKey, field, value);
-  }
-
-
-  public ChatRoomSessionDto getChatRoomHashKey(String key, String sessionId) {
-    HashOperations<String, Object, ChatRoomSessionDto> hashOps = redisTemplate.opsForHash();
-    return hashOps.get(key, sessionId);
-  }
-
-
-  public void deleteHashKey(String hashKey, Object value) {
-    redisTemplate.opsForHash().delete(hashKey, value);
-  }
 }
