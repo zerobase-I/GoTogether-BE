@@ -37,7 +37,7 @@ public class AwsS3Service {
    * @param multipartFile 업로드할 이미지 파일
    * @return 업로드된 이미지의 S3 URL, 파일 이름, 파일 크기를 포함한 S3ImageDto 객체
    */
-  public S3ImageDto uploadPostImage(MultipartFile multipartFile) {
+  public S3ImageDto uploadImage(MultipartFile multipartFile) {
     log.info("[uploadPostImage] start");
 
     String fileName = generateFileName(multipartFile);
@@ -51,28 +51,12 @@ public class AwsS3Service {
   }
 
   /**
-   * 프로필 이미지를 AWS S3에 업로드하고 그에 대한 URL 을 반환.
-   *
-   * @param multipartFile 업로드할 이미지 파일
-   * @return 업로드된 이미지의 S3 URL
-   */
-  public String uploadProfileImage(MultipartFile multipartFile) {
-    log.info("[uploadProfileImage] start");
-
-    String fileName = generateFileName(multipartFile);
-    uploadToS3(multipartFile, fileName);
-
-    return getUrl(fileName);
-  }
-
-
-  /**
    * AWS S3에 파일을 업로드.
    *
    * @param multipartFile 업로드할 파일
    * @param fileName      파일 이름
    */
-  private void uploadToS3(MultipartFile multipartFile, String fileName) {
+  public void uploadToS3(MultipartFile multipartFile, String fileName) {
     try (InputStream inputStream = multipartFile.getInputStream()) {
       amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream,
           getObjectMetadata(multipartFile))
@@ -92,19 +76,28 @@ public class AwsS3Service {
     }
   }
 
-  private String getUrl(String fileName) {
+  public String getUrl(String fileName) {
     return amazonS3.getUrl(bucketName, fileName).toString();
   }
 
 
-  private ObjectMetadata getObjectMetadata(MultipartFile multipartFile) {
+  public ObjectMetadata getObjectMetadata(MultipartFile multipartFile) {
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentType(multipartFile.getContentType());
     objectMetadata.setContentLength(multipartFile.getSize());
     return objectMetadata;
   }
 
-  private String generateFileName(MultipartFile multipartFile) {
+  public String generateFileName(MultipartFile multipartFile) {
     return UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+  }
+
+  // URL 을 사용하여 파일을 삭제하는 메서드
+  public void deleteFileUsingUrl(String fileUrl) {
+    String fileName = extractFileNameFromUrl(fileUrl);
+    deleteFile(fileName); // 기존에 작성한 deleteFile 메서드를 재사용
+  }
+  public String extractFileNameFromUrl(String fileUrl) {
+    return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
   }
 }

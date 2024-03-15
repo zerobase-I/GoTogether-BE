@@ -15,7 +15,7 @@ public class ChatMessageDto {
   private Long memberId;
   private Long chatRoomId;
   private String content;
-  private String nickName;
+  private String nickname;
   private String profileImageUrl;
   private LocalDateTime createdAt;
 
@@ -23,6 +23,17 @@ public class ChatMessageDto {
     return ChatMessage.builder()
         .content(this.content)
         .createdAt(this.createdAt)
+        .build();
+  }
+
+  public static ChatMessageDto from(ChatMessage chatMessage) {
+    return ChatMessageDto.builder()
+        .memberId(chatMessage.getChatMember().getMember().getId())
+        .chatRoomId(chatMessage.getChatRoom().getId())
+        .content(chatMessage.getContent())
+        .nickname(chatMessage.getChatMember().getMember().getNickname())
+        .profileImageUrl(chatMessage.getChatMember().getMember().getProfileImageUrl())
+        .createdAt(chatMessage.getCreatedAt())
         .build();
   }
 }

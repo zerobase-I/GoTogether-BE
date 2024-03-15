@@ -30,14 +30,15 @@ public enum ErrorCode {
   POST_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "게시물 이미지 업로드 중 오류가 발생했습니다."),
   ALREADY_DELETED_CHATROOM(HttpStatus.BAD_REQUEST, "삭제된 채팅방입니다."),
   ALREADY_CREATED_CHATROOM(HttpStatus.BAD_REQUEST, "이미 생성된 채팅방입니다."),
+  NOT_ENOUGH_CURRENT_PEOPLE(HttpStatus.BAD_REQUEST, "모집된 인원이 부족합니다."),
   CHATROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅방을 찾을 수 없습니다."),
   CHAT_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅 참여회원을 찾을 수 없습니다."),
   CHATROOM_IS_EMPTY(HttpStatus.BAD_REQUEST, "참여중인 회원이 없습니다."),
   NOT_BELONG_TO_CHAT_MEMBER(HttpStatus.BAD_REQUEST, "채팅방의 참여중인 회원이 아닙니다."),
   UNCOMPLETED_ACCOMPANY(HttpStatus.BAD_REQUEST, "완료되지 않은 동행입니다."),
   NOT_SAME_ACCOMPANY_MEMBER(HttpStatus.BAD_REQUEST, "같은 동행에 참여한 회원이 아닙니다."),
-
-
+  NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "알림을 찾을 수 없습니다."),
+  WRONG_DESTINATION(HttpStatus.BAD_REQUEST, "잘못된 설정된 채팅방 목적지입니다."),
 
   /**
    * 401 Unauthorized
@@ -63,6 +64,7 @@ public enum ErrorCode {
    */
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 없습니다."),
   ACCOMPANY_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "동행 요청을 찾을 수 없습니다."),
+  MEMBER_ASSESSMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 평가 정보를 찾을 수 없습니다."),
   MAIN_SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "주요 일정을 찾을 수 없습니다."),
   
   /**

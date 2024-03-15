@@ -1,11 +1,18 @@
 package com.example.gotogetherbe.chat.controller;
 
 import com.example.gotogetherbe.auth.config.LoginUser;
+import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
+import com.example.gotogetherbe.chat.dto.ChatMemberDto;
+import com.example.gotogetherbe.chat.dto.ChatMessageDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomDto;
 import com.example.gotogetherbe.chat.service.ChatRoomService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +26,7 @@ public class ChatRoomController {
 
   // 채팅방 생성
   @PostMapping("/{postId}")
-  public ResponseEntity<?> createChatRoom(
+  public ResponseEntity<ChatRoomDto> createChatRoom(
       @LoginUser String username,
       @PathVariable Long postId
   ) {
@@ -27,14 +34,32 @@ public class ChatRoomController {
   }
 
   // 참여중인 채팅방 목록 조회
-  @GetMapping("/list")
-  public ResponseEntity<?> getChatRoomList(@LoginUser String username) {
+  @GetMapping("/my-list")
+  public ResponseEntity<List<ChatRoomDto>> getChatRoomList(@LoginUser String username) {
     return ResponseEntity.ok(chatRoomService.getMyChatRoomList(username));
+  }
+
+  // 채팅방에 참여중인 멤버 목록 조회
+  @GetMapping("/member-list/{chatRoomId}")
+  public ResponseEntity<List<ChatMemberDto>> getChatMemberList(
+      @LoginUser String username,
+      @PathVariable Long chatRoomId
+  ){
+    return ResponseEntity.ok(chatRoomService.getChatMemberList(username, chatRoomId));
+  }
+
+  // 채팅방 메세지 조회
+  @GetMapping("/message/{chatRoomId}")
+  public ResponseEntity<Slice<ChatMessageDto>> getChatRoomMessage(
+      @LoginUser String username,
+      @ModelAttribute ChatLastMessageRequest request,
+      @PathVariable Long chatRoomId) {
+    return ResponseEntity.ok(chatRoomService.getChatRoomMessage(username, request, chatRoomId));
   }
 
   // 채팅방 입장
   @PostMapping("/enter/{chatRoomId}")
-  public ResponseEntity<?> enterChatRoom(
+  public ResponseEntity<ChatMemberDto> enterChatRoom(
       @LoginUser String username,
       @PathVariable Long chatRoomId
   ) {
@@ -43,7 +68,7 @@ public class ChatRoomController {
 
   // 채팅방 퇴장
   @DeleteMapping("/exit/{chatRoomId}")
-  public ResponseEntity<?> exitChatRoom(
+  public ResponseEntity<ChatMemberDto> exitChatRoom(
       @LoginUser String username,
       @PathVariable Long chatRoomId
   ) {

@@ -9,10 +9,12 @@ import com.example.gotogetherbe.global.util.aws.entity.PostImage;
 import com.example.gotogetherbe.global.util.aws.service.AwsS3Service;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.post.entity.PostDocument;
 import com.example.gotogetherbe.post.dto.PostRequest;
 import com.example.gotogetherbe.post.dto.PostResponse;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
+import com.example.gotogetherbe.post.repository.PostSearchRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final MemberRepository memberRepository;
+  private final PostSearchRepository postSearchRepository;
   private final AwsS3Service awsS3Service;
 
 
@@ -41,7 +44,6 @@ public class PostService {
   @Transactional
   public PostResponse createPost(PostRequest requestDto, String email,
       List<MultipartFile> images) {
-    log.info("[createPost] start");
 
     Member member = getMember(email);
     Post post = requestDto.toEntity();
@@ -52,7 +54,10 @@ public class PostService {
     }
     member.addPost(post);
 
-    return PostResponse.fromEntity(postRepository.save(post));
+    Post saved = postRepository.save(post);
+    postSearchRepository.save(PostDocument.from(saved));
+
+    return PostResponse.fromEntity(saved);
   }
 
   /**
@@ -82,7 +87,6 @@ public class PostService {
   @Transactional
   public PostResponse updatePost(Long id, PostRequest requestDto, String email,
       List<MultipartFile> newImages, List<Long> imageIdsToDelete) {
-    log.info("[updatePost] start");
 
     Post post = getPost(id);
     Member member = getMember(email);
@@ -112,6 +116,8 @@ public class PostService {
 
     return PostResponse.fromEntity(post);
   }
+
+
 
   /**
    * 게시물을 삭제.
@@ -168,11 +174,13 @@ public class PostService {
   private Post uploadS3Image(PostRequest requestDto, List<MultipartFile> multipartFiles) {
     Post post = requestDto.toEntity();
 
-    List<S3ImageDto> list = multipartFiles.stream().map(awsS3Service::uploadPostImage).toList();
+    List<S3ImageDto> list = multipartFiles.stream().map(awsS3Service::uploadImage).toList();
     List<PostImage> imageList = list.stream().map(S3ImageDto::toEntity).toList();
 
     imageList.forEach(post::addImage);
     return post;
   }
+
+
 
 }

@@ -16,41 +16,58 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Review {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "reviewer_id")
-        private Member reviewer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewer_id")
+    private Member reviewer;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "target_member_id")
-        private Member targetMember;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_member_id")
+    private Member targetMember;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "post_id")
-        private Post post;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-        @Column(nullable = false)
-        private Double score;
+    @Column(nullable = false)
+    private Double score;
 
-        private String content;
+    @Column(nullable = false)
+    private boolean punctuality;
 
-        @CreatedDate
-        private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private boolean responsiveness;
+
+    @Column(nullable = false)
+    private boolean photography;
+
+    @Column(nullable = false)
+    private boolean manner;
+
+    @Column(nullable = false)
+    private boolean navigation;
+
+    @Column(nullable = false)
+    private boolean humor;
+
+    @Column(nullable = false)
+    private boolean adaptability;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 
 }

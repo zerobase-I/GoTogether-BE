@@ -22,6 +22,7 @@ import lombok.Setter;
 @Builder
 public class PostResponse {
   private Long id;
+  private Long memberId;
   private String userEmail;
 
   private TravelCountryType travelCountry;
@@ -51,6 +52,7 @@ public class PostResponse {
 
     return PostResponse.builder()
         .id(post.getId())
+        .memberId(post.getMember().getId())
         .userEmail(post.getMember().getEmail())
         .travelCountry(post.getTravelCountry())
         .travelCity(post.getTravelCity())

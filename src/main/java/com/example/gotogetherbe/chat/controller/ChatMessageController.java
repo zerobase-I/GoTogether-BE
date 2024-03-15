@@ -18,7 +18,7 @@ public class ChatMessageController {
   private final RabbitTemplate rabbitTemplate;
 
   // /pub/chat/{chatRoomId} 로 요청하면 브로커를 통해 처리
-  // /sub/chat.sub/room.{chatRoomId} 를 구독한 클라이언트에 메세지 전송
+  // /exchange/chat.exchange/room.{chatRoomId} 를 구독한 클라이언트에 메세지 전송
   @MessageMapping("/chat/enter/{chatRoomId}")
   public void enterMember(@Payload ChatMessageDto chatMessageDto,@DestinationVariable("chatRoomId") Long chatRoomId) {
     rabbitTemplate.convertAndSend(ChatConstant.CHAT_EXCHANGE_NAME,"room." + chatRoomId, chatMessageService.enterMessage(chatMessageDto, chatRoomId));
