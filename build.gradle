@@ -75,7 +75,11 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation 'com.h2database:h2'
+
+	//Elasticsearch (Spring Data Elasticsearch)
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'org.springframework.data:spring-data-elasticsearch:4.2.11'
+	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.2'
 }
 
 tasks.named('bootBuildImage') {
