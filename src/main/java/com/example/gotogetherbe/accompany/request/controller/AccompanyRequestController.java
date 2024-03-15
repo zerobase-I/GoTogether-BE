@@ -33,7 +33,7 @@ public class AccompanyRequestController {
     @PostMapping("/cancel/{requestId}")
     public ResponseEntity<String> cancelAccompanyRequest( @PathVariable Long requestId) {
         accompanyRequestService.cancelAccompanyRequest(requestId);
-        return ResponseEntity.ok().body("Accompany request canceled successfully.");
+        return ResponseEntity.ok("Accompany request canceled successfully.");
     }
 
     @GetMapping("/send")
@@ -50,16 +50,14 @@ public class AccompanyRequestController {
     public ResponseEntity<AccompanyRequestDto> approveAccompanyRequest(
         @LoginUser String username, @PathVariable Long requestId
     ) {
-        return ResponseEntity.ok()
-            .body(accompanyRequestService.approveAccompanyRequest(username, requestId));
+        return ResponseEntity.ok(accompanyRequestService.approveAccompanyRequest(username, requestId));
     }
 
     @PostMapping("/reject/{requestId}")
     public ResponseEntity<AccompanyRequestDto> rejectAccompanyRequest(
         @LoginUser String username, @PathVariable Long requestId
     ) {
-        return ResponseEntity.ok()
-            .body(accompanyRequestService.rejectAccompanyRequest(username, requestId));
+        return ResponseEntity.ok(accompanyRequestService.rejectAccompanyRequest(username, requestId));
     }
 
 }
