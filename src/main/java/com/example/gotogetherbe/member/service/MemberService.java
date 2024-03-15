@@ -25,14 +25,16 @@ public class MemberService {
   private final AwsS3Service awsS3Service;
   private final PasswordEncoder passwordEncoder;
 
-  @Transactional
+
+
+  @Transactional(readOnly = true)
   public MemberResponse getMyProfileInfo(String username){
 
     return MemberResponse.fromEntity(memberRepository.findByEmail(username)
         .orElseThrow(() -> new GlobalException(USER_NOT_FOUND)), true);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public MemberResponse getMemberInfo(Long id){
     return MemberResponse.fromEntity(memberRepository.findById(id)
         .orElseThrow(() -> new GlobalException(USER_NOT_FOUND)), false);

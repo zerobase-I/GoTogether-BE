@@ -34,4 +34,10 @@ public class ChatMember { // baseentity x
   @JoinColumn(name = "member_id")
   private Member member;
 
+  @Builder.Default
+  private Long lastChatId = null;
+
+  public void updateLastChatId(Long lastChatId) {
+    this.lastChatId = lastChatId;
+  }
 }
