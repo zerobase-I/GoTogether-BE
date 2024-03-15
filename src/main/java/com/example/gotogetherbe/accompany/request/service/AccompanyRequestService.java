@@ -41,29 +41,28 @@ public class AccompanyRequestService {
 
     private static final String URL_PREFIX = "/api/accompany/request";
 
+    /**
+     * 동행 요청 보내기
+     * @param email 사용자 이메일
+     * @param accompanyRequestSendDto 동행 요청 정보
+     * @return 동행 요청 정보
+     */
     @Transactional
     public AccompanyRequestDto sendAccompanyRequest(
-        String email,
-        AccompanyRequestSendDto accompanyRequestSendDto
+        String email, AccompanyRequestSendDto accompanyRequestSendDto
     ) {
         Member requestMember = getMemberByEmail(email);
 
-        Member requestedMember = memberRepository
-            .findById(accompanyRequestSendDto.getRequestedMemberId())
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+        // 동행 요청을 받는 사용자가 게시글 작성자와 같은지 확인
+        Post post = postRepository.findByMemberIdAndId(
+                accompanyRequestSendDto.getRequestedMemberId(), accompanyRequestSendDto.getPostId())
+            .orElseThrow(() -> new GlobalException(POST_AUTHOR_MISMATCH));
 
-        Post post = postRepository.findById(accompanyRequestSendDto.getPostId())
-            .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
-
-        // requestedMember가 post 작성자와 일치하지 않을 경우 에러
-        if (!Objects.equals(requestedMember, post.getMember())) {
-            throw new GlobalException(POST_AUTHOR_MISMATCH);
-        }
         // 중복 요청 확인
-        checkDuplication(requestMember, requestedMember, post);
+        checkDuplication(requestMember.getId(), post.getMember().getId(), post.getId());
         AccompanyRequest accompanyRequest = AccompanyRequest.builder()
             .requestMember(requestMember)
-            .requestedMember(requestedMember)
+            .requestedMember(post.getMember())
             .post(post)
             .requestStatus(WAITING)
             .build();
@@ -83,40 +82,52 @@ public class AccompanyRequestService {
 
     public List<AccompanyRequestDto> getSentAccompanyRequests(String email) {
         Member member = getMemberByEmail(email);
-
-        List<AccompanyRequest> sentRequests =
-            accompanyRequestRepository.findAllByRequestMember(member);
+        List<AccompanyRequest> sentRequests = accompanyRequestRepository
+            .findAllByRequestMemberIdOrderByCreatedAtDesc(member.getId());
 
         return convert(sentRequests);
     }
 
     public List<AccompanyRequestDto> getReceivedAccompanyRequests(String email) {
         Member member = getMemberByEmail(email);
-
-        List<AccompanyRequest> receivedRequests =
-            accompanyRequestRepository.findAllByRequestedMember(member);
+        List<AccompanyRequest> receivedRequests = accompanyRequestRepository
+            .findAllByRequestedMemberIdOrderByCreatedAtDesc(member.getId());
 
         return convert(receivedRequests);
     }
 
     @Transactional
     public AccompanyRequestDto approveAccompanyRequest(String email, Long requestId) {
-        Member member = getMemberByEmail(email);
+        AccompanyRequest request = getAccompanyRequest(email, requestId);
+        request.updateRequestStatus(APPROVED);
 
-        AccompanyRequest request = getAccompanyRequest(member, requestId);
-        request.setRequestStatus(APPROVED);
+        Post post = postRepository.findById(request.getPost().getId())
+            .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
+
+        post.updateCurrentPeople();
+        postRepository.save(post);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
     }
 
     @Transactional
     public AccompanyRequestDto rejectAccompanyRequest(String email, Long requestId) {
-        Member member = getMemberByEmail(email);
-
-        AccompanyRequest request = getAccompanyRequest(member, requestId);
-        request.setRequestStatus(REJECTED);
+        AccompanyRequest request = getAccompanyRequest(email, requestId);
+        request.updateRequestStatus(REJECTED);
 
         return AccompanyRequestDto.from(accompanyRequestRepository.save(request));
+    }
+
+    /**
+     * 동행 요청 취소
+     * @param requestId 요청 ID
+     */
+    @Transactional
+    public void cancelAccompanyRequest(Long requestId) {
+        AccompanyRequest accompanyRequest = accompanyRequestRepository.findById(requestId)
+            .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
+
+        accompanyRequestRepository.delete(accompanyRequest);
     }
 
     private Member getMemberByEmail(String email) {
@@ -124,12 +135,13 @@ public class AccompanyRequestService {
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
     }
 
-  /**
+    /**
      * 동일한 postId에 대해 중복되는 requestedMember & requestMember인지 체크(중복요청인지 확인)
      */
-    private void checkDuplication(Member requestMember, Member requestedMember, Post post) {
-        if (accompanyRequestRepository.existsByRequestMemberAndRequestedMemberAndPost(
-            requestMember, requestedMember, post)) {
+    private void checkDuplication(Long requestMemberId, Long requestedMemberId, Long postId) {
+        if (accompanyRequestRepository.existsByRequestedMember_IdAndRequestedMember_IdAndPost_Id(
+            requestMemberId, requestedMemberId, postId)
+        ) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
         }
     }
@@ -138,16 +150,17 @@ public class AccompanyRequestService {
         return requests.stream().map(AccompanyRequestDto::from).collect(Collectors.toList());
     }
 
-    private AccompanyRequest getAccompanyRequest(Member member, Long requestId) {
+    private AccompanyRequest getAccompanyRequest(String email, Long requestId) {
         AccompanyRequest accompanyRequest = accompanyRequestRepository
             .findById(requestId)
             .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
 
         // 승인 또는 거절하려는 사용자와 accompanyRequest에 저장된 요청을 받은 사용자가 일치하지 않으면 예외 발생
-        if (!Objects.equals(accompanyRequest.getRequestedMember(), member)) {
+        if (!Objects.equals(accompanyRequest.getRequestedMember().getEmail(), email)) {
             throw new GlobalException(USER_MISMATCH);
         }
 
         return accompanyRequest;
     }
+
 }

@@ -23,7 +23,19 @@ public class ReviewDto {
 
     private Double score;
 
-    private String content;
+    private boolean punctuality;
+
+    private boolean responsiveness;
+
+    private boolean photography;
+
+    private boolean manner;
+
+    private boolean navigation;
+
+    private boolean humor;
+
+    private boolean adaptability;
 
     private LocalDateTime createdAt;
 
@@ -34,7 +46,13 @@ public class ReviewDto {
             .targetMemberId(review.getTargetMember().getId())
             .postId(review.getPost().getId())
             .score(review.getScore())
-            .content(review.getContent())
+            .punctuality(review.isPunctuality())
+            .responsiveness(review.isResponsiveness())
+            .photography(review.isPhotography())
+            .manner(review.isManner())
+            .navigation(review.isNavigation())
+            .humor(review.isHumor())
+            .adaptability(review.isAdaptability())
             .createdAt(review.getCreatedAt())
             .build();
     }

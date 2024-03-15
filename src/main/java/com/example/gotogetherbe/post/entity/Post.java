@@ -38,78 +38,82 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Post extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id")
-  private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  @Builder.Default
-  private PostRecruitmentStatus recruitmentStatus = PostRecruitmentStatus.RECRUITING;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private PostRecruitmentStatus recruitmentStatus = PostRecruitmentStatus.RECRUITING;
 
-  @Column(nullable = false, length = 20)
-  @Enumerated(EnumType.STRING)
-  private TravelCountryType travelCountry;
+    @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private TravelCountryType travelCountry;
 
-  @Column(nullable = false, length = 20)
-  @Enumerated(EnumType.STRING)
-  private TravelCityType travelCity;
+    @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private TravelCityType travelCity;
 
-  @Column(nullable = false)
-  private LocalDateTime startDate;
+    @Column(nullable = false)
+    private LocalDateTime startDate;
 
-  @Column(nullable = false)
-  private LocalDateTime endDate;
+    @Column(nullable = false)
+    private LocalDateTime endDate;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 10)
-  private PostGenderType gender;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private PostGenderType gender;
 
-  @Column(nullable = false)
-  private Integer minimumAge;
+    @Column(nullable = false)
+    private Integer minimumAge;
 
-  @Column(nullable = false)
-  private Integer maximumAge;
+    @Column(nullable = false)
+    private Integer maximumAge;
 
-  @Column(nullable = false)
-  private Integer recruitsPeople;
+    @Column(nullable = false)
+    private Integer recruitsPeople;
 
-  @Builder.Default
-  @Column(nullable = false)
-  private Integer currentPeople = 0;
+    @Builder.Default
+    @Column(nullable = false)
+    private Integer currentPeople = 0;
 
-  @Column
-  private Integer estimatedTravelExpense;
+    @Column
+    private Integer estimatedTravelExpense;
 
-  @Enumerated(EnumType.STRING)
-  @Column(length = 10)
-  private PostCategory category;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private PostCategory category;
 
-  @Column(nullable = false, length = 20)
-  private String title;
+    @Column(nullable = false, length = 20)
+    private String title;
 
-  @Column(nullable = false, columnDefinition = "TEXT")
-  private String content;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
 
-  @Column(nullable = false)
-  @Builder.Default
-  Boolean chatRoomExists = false;
+    @Column(nullable = false)
+    @Builder.Default
+    Boolean chatRoomExists = false;
 
-  @Builder.Default
-  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<PostImage> images = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> images = new ArrayList<>();
 
-  public void addImage(PostImage image){
-    this.images.add(image);
-    image.mappingPost(this);
-  }
-  public void removeImage(PostImage image){
-    this.images.remove(image);
-  }
+    public void addImage(PostImage image) {
+        this.images.add(image);
+        image.mappingPost(this);
+    }
 
+    public void removeImage(PostImage image) {
+        this.images.remove(image);
+    }
+
+    public void updateCurrentPeople() {
+        this.currentPeople++;
+    }
 
 }

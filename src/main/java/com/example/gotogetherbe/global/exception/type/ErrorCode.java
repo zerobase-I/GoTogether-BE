@@ -64,6 +64,7 @@ public enum ErrorCode {
    */
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 없습니다."),
   ACCOMPANY_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "동행 요청을 찾을 수 없습니다."),
+  MEMBER_ASSESSMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 평가 정보를 찾을 수 없습니다."),
   MAIN_SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "주요 일정을 찾을 수 없습니다."),
   
   /**

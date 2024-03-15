@@ -21,6 +21,18 @@ public class ReviewWriteDto {
     @Min(0)
     private Double score;
 
-    private String content;
+    private boolean punctuality;
+
+    private boolean responsiveness;
+
+    private boolean photography;
+
+    private boolean manner;
+
+    private boolean navigation;
+
+    private boolean humor;
+
+    private boolean adaptability;
 
 }

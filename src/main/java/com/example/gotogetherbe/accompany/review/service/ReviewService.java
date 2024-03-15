@@ -2,15 +2,19 @@ package com.example.gotogetherbe.accompany.review.service;
 
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.CHATROOM_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_REVIEW;
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.MEMBER_ASSESSMENT_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOT_SAME_ACCOMPANY_MEMBER;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.UNCOMPLETED_ACCOMPANY;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
-import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.*;
+import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.COMPLETED;
 
+import com.example.gotogetherbe.accompany.review.dto.MemberAssessmentDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
+import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.accompany.review.entity.Review;
+import com.example.gotogetherbe.accompany.review.repository.MemberAssessmentRepository;
 import com.example.gotogetherbe.accompany.review.repository.ReviewRepository;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
@@ -20,6 +24,7 @@ import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,43 +39,43 @@ public class ReviewService {
     private final PostRepository postRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMemberRepository chatMemberRepository;
-    private final TravelScoreService travelScoreService;
+    private final MemberAssessmentRepository memberAssessmentRepository;
+    private final MemberAssessmentService memberAssessmentService;
 
     /**
      * 리뷰 작성
      *
-     * @param email     로그인한 사용자 이메일
-     * @param reviewDto 리뷰 작성 정보
+     * @param email           로그인한 사용자 이메일
+     * @param reviewWriteDtos 리뷰 작성 정보
      * @return 작성된 리뷰 정보
      */
     @Transactional
-    public ReviewDto writeReview(String email, ReviewWriteDto reviewDto) {
+    public List<ReviewDto> writeReview(String email, List<ReviewWriteDto> reviewWriteDtos) {
         Member reviewer = getMemberByEmail(email);
 
-        Member targetMember = memberRepository.findById(reviewDto.getTargetMemberId())
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
-
-        Post post = postRepository.findById(reviewDto.getPostId())
+        Post post = postRepository.findById(reviewWriteDtos.get(0).getPostId())
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
 
-        // 리뷰 작성이 가능한 조건인지 확인(완료된 동행, 동행 참여자 확인)
-        checkAccompanyCondition(post, reviewer, targetMember);
-        // 리뷰 중복 확인
-        checkDuplication(reviewer, targetMember, post);
+        List<Review> reviews = getAssessment(reviewWriteDtos, post, reviewer);
 
-        Review review = Review.builder()
-            .reviewer(reviewer)
-            .targetMember(targetMember)
-            .post(post)
-            .score(reviewDto.getScore())
-            .content(reviewDto.getContent())
-            .build();
+        List<Review> savedReviews = reviewRepository.saveAll(reviews);
 
-        Review saved = reviewRepository.save(review);
-     // 동행 점수 업데이트
-        travelScoreService.updateTravelScore(saved.getTargetMember(), saved.getScore());
+        memberAssessmentService.updateMemberAssessment(savedReviews);
 
-        return ReviewDto.from(saved);
+        return savedReviews.stream().map(ReviewDto::from).toList();
+    }
+
+    /**
+     * 사용자의 평가 조회
+     *
+     * @param memberId 사용자 id
+     * @return 사용자의 리뷰 상세
+     */
+    public MemberAssessmentDto getAssessment(Long memberId) {
+        MemberAssessment memberAssessment = memberAssessmentRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new GlobalException(MEMBER_ASSESSMENT_NOT_FOUND));
+
+        return MemberAssessmentDto.from(memberAssessment);
     }
 
     /**
@@ -86,7 +91,7 @@ public class ReviewService {
             .orElseThrow(() -> new GlobalException(CHATROOM_NOT_FOUND));
 
         if (!chatMemberRepository
-            .areUsersInSameChatRoom(reviewer.getId(), targetMember.getId(), chatRoom.getId())
+            .isUsersInSameChatRoom(reviewer.getId(), targetMember.getId(), chatRoom.getId())
         ) {
             throw new GlobalException(NOT_SAME_ACCOMPANY_MEMBER);
         }
@@ -98,30 +103,45 @@ public class ReviewService {
     }
 
     /**
-     * 로그인 한 사용자의 리뷰 조회
+     * 리뷰 작성 정보로 리뷰 객체 생성
      *
-     * @param email 로그인한 사용자 이메일
-     * @return 로그인한 사용자의 리뷰 리스트
+     * @param post            참여한 동행 게시글
+     * @param reviewWriteDtos 리뷰 작성 정보
+     * @param reviewer        리뷰 작성자
+     * @return 작성된 리뷰 정보
      */
-    public List<ReviewDto> getMyReviews(String email) {
-        Member member = getMemberByEmail(email);
-        List<Review> reviews = reviewRepository.findAllByTargetMember(member);
+    private List<Review> getAssessment(List<ReviewWriteDto> reviewWriteDtos, Post post,
+        Member reviewer) {
+        List<Review> reviews = new ArrayList<>();
 
-        return reviews.stream().map(ReviewDto::from).toList();
-    }
+        for (ReviewWriteDto reviewWriteDto : reviewWriteDtos) {
 
-    /**
-     * 특정 사용자의 리뷰 조회
-     *
-     * @param memberId 사용자 id
-     * @return 특정 사용자의 리뷰 리스트
-     */
-    public List<ReviewDto> getReviews(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
-        List<Review> reviews = reviewRepository.findAllByTargetMember(member);
+            Member targetMember = memberRepository.findById(reviewWriteDto.getTargetMemberId())
+                .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
 
-        return reviews.stream().map(ReviewDto::from).toList();
+            // 리뷰 작성이 가능한 조건인지 확인(완료된 동행, 동행 참여자 확인)
+            checkAccompanyCondition(post, reviewer, targetMember);
+
+            // 리뷰 중복 확인
+            checkDuplication(reviewer, targetMember, post);
+
+            Review review = Review.builder()
+                .reviewer(reviewer)
+                .targetMember(targetMember)
+                .post(post)
+                .score(reviewWriteDto.getScore())
+                .punctuality(reviewWriteDto.isPunctuality())
+                .responsiveness(reviewWriteDto.isResponsiveness())
+                .photography(reviewWriteDto.isPhotography())
+                .manner(reviewWriteDto.isManner())
+                .navigation(reviewWriteDto.isNavigation())
+                .humor(reviewWriteDto.isHumor())
+                .adaptability(reviewWriteDto.isAdaptability())
+                .build();
+
+            reviews.add(review);
+        }
+        return reviews;
     }
 
     /**
