@@ -18,27 +18,19 @@ public enum ErrorCode {
   PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다"),
   INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
   EMAIL_NOT_VERITY(HttpStatus.BAD_REQUEST, "이메일 인증이 되지 않았습니다."),
-  MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "회원을 찾을 수 없습니다."),
   ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "이미 등록되어있습니다."),
-  BOOKMARK_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 북마크가 없습니다."),
   WRITE_NOT_YOURSELF(HttpStatus.BAD_REQUEST, "본인이 작성한 글만 수정, 삭제가 가능합니다."),
-  CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 카테고리가 없습니다."),
-  POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 글이 없습니다."),
-  POST_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 글 카테고리가 없습니다."),
-  COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당하는 댓글이 없습니다."),
   PROFILE_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "프로필 이미지 업로드 중 오류가 발생했습니다."),
   POST_IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "게시물 이미지 업로드 중 오류가 발생했습니다."),
   ALREADY_DELETED_CHATROOM(HttpStatus.BAD_REQUEST, "삭제된 채팅방입니다."),
   ALREADY_CREATED_CHATROOM(HttpStatus.BAD_REQUEST, "이미 생성된 채팅방입니다."),
   NOT_ENOUGH_CURRENT_PEOPLE(HttpStatus.BAD_REQUEST, "모집된 인원이 부족합니다."),
-  CHATROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅방을 찾을 수 없습니다."),
-  CHAT_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "채팅 참여회원을 찾을 수 없습니다."),
   CHATROOM_IS_EMPTY(HttpStatus.BAD_REQUEST, "참여중인 회원이 없습니다."),
   NOT_BELONG_TO_CHAT_MEMBER(HttpStatus.BAD_REQUEST, "채팅방의 참여중인 회원이 아닙니다."),
   UNCOMPLETED_ACCOMPANY(HttpStatus.BAD_REQUEST, "완료되지 않은 동행입니다."),
   NOT_SAME_ACCOMPANY_MEMBER(HttpStatus.BAD_REQUEST, "같은 동행에 참여한 회원이 아닙니다."),
-  NOTIFICATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "알림을 찾을 수 없습니다."),
   WRONG_DESTINATION(HttpStatus.BAD_REQUEST, "잘못된 설정된 채팅방 목적지입니다."),
+  NOT_MEMBER_COMMENT(HttpStatus.BAD_REQUEST, "회원의 댓글이 아닙니다."),
 
   /**
    * 401 Unauthorized
@@ -66,7 +58,15 @@ public enum ErrorCode {
   ACCOMPANY_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "동행 요청을 찾을 수 없습니다."),
   MEMBER_ASSESSMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 평가 정보를 찾을 수 없습니다."),
   MAIN_SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "주요 일정을 찾을 수 없습니다."),
-  
+  COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
+  BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 북마크가 없습니다."),
+  CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 카테고리가 없습니다."),
+  POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 글이 없습니다."),
+  POST_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 글 카테고리가 없습니다."),
+  CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."),
+  CHAT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅 참여회원을 찾을 수 없습니다."),
+  NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "알림을 찾을 수 없습니다."),
+
   /**
    * 406 Not Acceptable
    */
