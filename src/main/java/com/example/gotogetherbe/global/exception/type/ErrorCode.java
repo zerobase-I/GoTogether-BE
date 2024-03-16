@@ -37,6 +37,7 @@ public enum ErrorCode {
   NOT_SAME_ACCOMPANY_MEMBER(HttpStatus.BAD_REQUEST, "같은 동행에 참여한 회원이 아닙니다."),
 
 
+  KAKAO_ENTER_ADDITIONAL_INFORMATION(HttpStatus.BAD_REQUEST, "추가 정보를 입력해주세요"),
   /**
    * 401 Unauthorized
    */

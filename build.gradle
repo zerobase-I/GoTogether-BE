@@ -80,6 +80,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'org.springframework.data:spring-data-elasticsearch:4.2.11'
 	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.2'
+
+	//Oauth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 }
 
 tasks.named('bootBuildImage') {
