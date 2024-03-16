@@ -1,6 +1,7 @@
 package com.example.gotogetherbe.accompany.review.controller;
 
 import com.example.gotogetherbe.accompany.review.dto.MemberAssessmentDto;
+import com.example.gotogetherbe.accompany.review.dto.MemberInfoDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
 import com.example.gotogetherbe.accompany.review.service.ReviewService;
@@ -22,16 +23,24 @@ public class AccompanyReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("")
-    public ResponseEntity<List<ReviewDto>> writeReview(
+    @GetMapping("/{postId}")
+    public ResponseEntity<List<MemberInfoDto>> getParticipantMembers(
+        @LoginUser String username,
+        @PathVariable Long postId
+    ) {
+        return ResponseEntity.ok(reviewService.getParticipantMembers(username, postId));
+    }
+
+    @PostMapping("/submit")
+    public ResponseEntity<List<ReviewDto>> submitReview(
         @LoginUser String username,
         @RequestBody List<ReviewWriteDto> reviewWriteDtos) {
         return ResponseEntity.ok(reviewService.writeReview(username, reviewWriteDtos));
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/assessment/{memberId}")
     public ResponseEntity<MemberAssessmentDto> getReviewDetail(@PathVariable Long memberId) {
-        return ResponseEntity.ok().body(reviewService.getAssessment(memberId));
+        return ResponseEntity.ok().body(reviewService.getMemberAssessment(memberId));
     }
 
 }
