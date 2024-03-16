@@ -8,6 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MemberGender {
 
-  MALE,
-  FEMALE
+  MALE("male"),
+  FEMALE("female");
+
+  private final String code;
 }
