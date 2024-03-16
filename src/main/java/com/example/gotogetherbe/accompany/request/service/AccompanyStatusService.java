@@ -11,7 +11,7 @@ import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_
 
 import com.example.gotogetherbe.accompany.request.dto.AccompanyStatusDto;
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
-import com.example.gotogetherbe.accompany.request.repository.AccompanyStatusRepository;
+import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AccompanyStatusService {
 
-    private final AccompanyStatusRepository accompanyStatusRepository;
+    private final AccompanyRepository accompanyRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
@@ -50,7 +50,7 @@ public class AccompanyStatusService {
 
         Accompany accompany = makeAccompanyStatus(requestMember, post);
 
-        return AccompanyStatusDto.from(accompanyStatusRepository.save(accompany));
+        return AccompanyStatusDto.from(accompanyRepository.save(accompany));
     }
 
     /**
@@ -60,7 +60,7 @@ public class AccompanyStatusService {
      */
     public List<AccompanyStatusDto> getSentAccompanyRequests(String email) {
         Member member = getMemberByEmail(email);
-        List<Accompany> sentRequests = accompanyStatusRepository
+        List<Accompany> sentRequests = accompanyRepository
             .findAllByRequestMemberIdAndStatusOrderByCreatedAtDesc(member.getId(), WAITING);
 
         return convert(sentRequests);
@@ -73,7 +73,7 @@ public class AccompanyStatusService {
      */
     public List<AccompanyStatusDto> getReceivedAccompanyRequests(String email) {
         Member member = getMemberByEmail(email);
-        List<Accompany> receivedRequests = accompanyStatusRepository
+        List<Accompany> receivedRequests = accompanyRepository
             .findAllByRequestedMemberIdAndStatusOrderByCreatedAtDesc(member.getId(), WAITING);
 
         return convert(receivedRequests);
@@ -94,7 +94,7 @@ public class AccompanyStatusService {
         post.updateCurrentPeople();
         postRepository.save(post);
 
-        return AccompanyStatusDto.from(accompanyStatusRepository.save(accompany));
+        return AccompanyStatusDto.from(accompanyRepository.save(accompany));
     }
 
     /**
@@ -108,7 +108,7 @@ public class AccompanyStatusService {
         Accompany request = getAccompanyRequest(email, requestId);
         request.updateRequestStatus(REJECTED);
 
-        return AccompanyStatusDto.from(accompanyStatusRepository.save(request));
+        return AccompanyStatusDto.from(accompanyRepository.save(request));
     }
 
     /**
@@ -117,9 +117,9 @@ public class AccompanyStatusService {
      */
     @Transactional
     public void cancelAccompanyRequest(Long requestId) {
-        Accompany accompanyRequest = accompanyStatusRepository.findById(requestId)
+        Accompany accompanyRequest = accompanyRepository.findById(requestId)
             .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
-        accompanyStatusRepository.delete(accompanyRequest);
+        accompanyRepository.delete(accompanyRequest);
     }
 
     private Post getOrElseThrow(Long postId) {
@@ -145,7 +145,7 @@ public class AccompanyStatusService {
      * 해당하는 postId에 대해 requestMember가 동일한 요청이 존재하는지 체크(중복요청 확인)
      */
     private void checkDuplication(Long requestMemberId, Long postId) {
-        if (accompanyStatusRepository.existsByRequestMember_IdAndPost_Id(
+        if (accompanyRepository.existsByRequestMember_IdAndPost_Id(
             requestMemberId, postId)
         ) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
@@ -157,7 +157,7 @@ public class AccompanyStatusService {
     }
 
     private Accompany getAccompanyRequest(String email, Long requestId) {
-        Accompany accompanyRequest = accompanyStatusRepository
+        Accompany accompanyRequest = accompanyRepository
             .findById(requestId)
             .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
 

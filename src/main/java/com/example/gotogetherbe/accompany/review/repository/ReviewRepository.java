@@ -9,4 +9,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     boolean existsByReviewerAndTargetMemberAndPost(Member reviewer, Member targetMember, Post post);
 
+    boolean existsByPostAndReviewer(Post post, Member member);
 }
