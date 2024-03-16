@@ -53,8 +53,7 @@ public class Accompany {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public void updateRequestStatus(
-        com.example.gotogetherbe.accompany.request.type.AccompanyStatus accompanyStatus) {
+    public void updateRequestStatus(AccompanyStatus accompanyStatus) {
         this.status = accompanyStatus;
     }
 
