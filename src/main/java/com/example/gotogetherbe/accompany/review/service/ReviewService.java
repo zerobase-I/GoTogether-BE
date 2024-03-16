@@ -108,8 +108,8 @@ public class ReviewService {
             .orElseThrow(() -> new GlobalException(POST_NOT_FOUND));
     }
 
-    private void verifyDuplicationReview(Post post, Member member) {
-        if (reviewRepository.existsByPostAndReviewer(post, member)) {
+    private void verifyDuplicationReview(Post post, Member reviewer) {
+        if (reviewRepository.existsByPostAndReviewer(post, reviewer)) {
             throw new GlobalException(DUPLICATE_REVIEW);
         }
     }
