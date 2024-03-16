@@ -1,6 +1,6 @@
 package com.example.gotogetherbe.accompany.request.entity;
 
-import com.example.gotogetherbe.accompany.request.type.RequestStatus;
+import com.example.gotogetherbe.accompany.request.type.AccompanyStatus;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.post.entity.Post;
 import jakarta.persistence.Column;
@@ -28,7 +28,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class AccompanyRequest {
+public class Accompany {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,13 +48,13 @@ public class AccompanyRequest {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private RequestStatus requestStatus;
+    private AccompanyStatus status;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public void updateRequestStatus(RequestStatus requestStatus) {
-        this.requestStatus = requestStatus;
+    public void updateRequestStatus(AccompanyStatus accompanyStatus) {
+        this.status = accompanyStatus;
     }
 
 }
