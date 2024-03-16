@@ -54,7 +54,7 @@ public class AuthService {
     if (profileImage != null && !profileImage.isEmpty()) {
       // 이미지 업로드 시도
       try {
-        profileImageUrl = awsS3Service.uploadProfileImage(profileImage);  // 수정
+        profileImageUrl = uploadProfileImage(profileImage);  // 수정
       } catch (Exception e) { // 이미지 업로드 중 오류 발생 시 예외 처리
         throw new GlobalException(PROFILE_IMAGE_UPLOAD_ERROR);
       }
@@ -137,7 +137,7 @@ public class AuthService {
    * @param roleType 사용자 타입
    * @return 생성된 토큰 정보를 담은 TokenDto 객체
    */
-  private TokenDto generateToken(String email, String roleType) {
+  public TokenDto generateToken(String email, String roleType) {
     TokenDto tokenDto = tokenProvider.generateToken(email, roleType);
 
     // 생성된 토큰 정보를 Redis 에 저장
@@ -159,4 +159,18 @@ public class AuthService {
         .collect(Collectors.joining());
   }
 
+  /**
+   * 프로필 이미지를 AWS S3에 업로드하고 그에 대한 URL 을 반환.
+   *
+   * @param multipartFile 업로드할 이미지 파일
+   * @return 업로드된 이미지의 S3 URL
+   */
+  private String uploadProfileImage(MultipartFile multipartFile) {
+    log.info("[uploadProfileImage] start");
+
+    String fileName = awsS3Service.generateFileName(multipartFile);
+    awsS3Service.uploadToS3(multipartFile, fileName);
+
+    return awsS3Service.getUrl(fileName);
+  }
 }
