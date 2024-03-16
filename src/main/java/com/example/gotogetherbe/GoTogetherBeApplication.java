@@ -1,15 +1,19 @@
 package com.example.gotogetherbe;
 
+import com.example.gotogetherbe.post.repository.PostSearchRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
 @SpringBootApplication
-@ComponentScan(basePackages = "com.example.gotogetherbe",
-	excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.example.gotogetherbe.chat.*"))
+@EnableJpaRepositories(excludeFilters =
+@ComponentScan.Filter(
+		type = FilterType.ASSIGNABLE_TYPE,
+		classes = PostSearchRepository.class))
 public class GoTogetherBeApplication {
 
 	public static void main(String[] args) {

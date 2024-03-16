@@ -1,13 +1,11 @@
-package com.example.gotogetherbe.auth.dto;
-
-
+package com.example.gotogetherbe.auth.kakao.dto;
 
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.entitiy.type.MemberGender;
 import com.example.gotogetherbe.member.entitiy.type.MemberLoginType;
 import com.example.gotogetherbe.member.entitiy.type.MemberMbti;
-import com.example.gotogetherbe.member.entitiy.type.MemberRoleType;
 
+import com.example.gotogetherbe.member.entitiy.type.MemberRoleType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,74 +20,55 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpDto {
+public class KaKaoSignUpDto {
 
   @Email
   private String email;
-
-  @NotBlank
-  private String password;
-
   @NotBlank
   private String name;
-
-  @NotBlank
-  private String nickname;
-
-  @NotBlank
-  private String phoneNumber;
-
-  @NotBlank
-  private String address;
-
-  @NotNull
-  private Integer age;
-
   @NotNull
   private MemberGender gender;
 
+  @NotBlank
+  private String nickname;
+  @NotBlank
+  private String phoneNumber;
+  @NotBlank
+  private String address;
+  @NotNull
+  private Integer age;
+
   private MemberMbti mbti;
-
   private String instagramId;
-
   private String description;
 
-  private String profileImageUrl;
-
-
-  public static SignUpDto fromEntity(Member member){
-    return SignUpDto.builder()
-        .email(member.getEmail())
-        .password(member.getPassword())
+  public static KaKaoSignUpDto fromEntity(Member member){
+    return KaKaoSignUpDto.builder()
         .name(member.getName())
         .nickname(member.getNickname())
         .phoneNumber(member.getPhoneNumber())
         .address(member.getAddress())
         .age(member.getAge())
-        .gender(member.getGender())
         .mbti(member.getMbti())
         .instagramId(member.getInstagramId())
         .description(member.getDescription())
-        .profileImageUrl(member.getProfileImageUrl())
         .build();
   }
-
-  public static Member signUpForm(SignUpDto request, String encodedPasswordEncoder){
+  public static Member toEntity(KaKaoSignUpDto request){
     return Member.builder()
         .email(request.getEmail())
-        .password(encodedPasswordEncoder)
         .name(request.getName())
         .nickname(request.getNickname())
+        .gender(request.getGender())
         .phoneNumber(request.getPhoneNumber())
         .address(request.getAddress())
         .age(request.getAge())
-        .gender(request.getGender())
         .mbti(request.getMbti())
         .instagramId(request.getInstagramId())
         .description(request.getDescription())
         .roleType(MemberRoleType.USER)
-        .loginType(MemberLoginType.EMAIL)
-        .profileImageUrl(request.getProfileImageUrl())  // 새로 추가
+        .loginType(MemberLoginType.KAKAO)
+        .emailAuth(true)
         .build();
   }
 

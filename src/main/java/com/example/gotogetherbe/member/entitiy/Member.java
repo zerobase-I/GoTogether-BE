@@ -40,7 +40,6 @@ public class Member extends BaseEntity {
   @Column(nullable = false, unique = true, length = 30)
   private String email;
 
-  @Column(nullable = false)
   private String password;
 
   @Column(nullable = false, length = 10)
@@ -76,7 +75,7 @@ public class Member extends BaseEntity {
   private String description;
 
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "travel_score_id", nullable = true)
+  @JoinColumn(name = "travel_score_id")
   private TravelScore travelScore;
 
   @Builder.Default

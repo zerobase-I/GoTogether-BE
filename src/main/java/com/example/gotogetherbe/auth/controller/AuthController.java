@@ -4,6 +4,8 @@ import com.example.gotogetherbe.auth.dto.LogoutDto;
 import com.example.gotogetherbe.auth.dto.ReissueDto;
 import com.example.gotogetherbe.auth.dto.SignInDto;
 import com.example.gotogetherbe.auth.dto.SignUpDto;
+import com.example.gotogetherbe.auth.kakao.dto.KaKaoSignUpDto;
+import com.example.gotogetherbe.auth.kakao.service.KakaoService;
 import com.example.gotogetherbe.auth.service.AuthService;
 import com.example.gotogetherbe.global.util.jwt.dto.TokenDto;
 import com.example.gotogetherbe.global.util.mail.dto.SendMailRequest;
@@ -14,9 +16,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +33,7 @@ public class AuthController {
 
   private final AuthService authService;
   private final MailService mailService;
+  private final KakaoService kakaoService;
 
   @PostMapping("/signUp")
   public ResponseEntity<SignUpDto> signUpUser(@RequestPart("request") SignUpDto request,
@@ -56,8 +61,18 @@ public class AuthController {
         .body(mailService.generateAndDispatchAuthCode(request.getEmail()));
   }
   @PostMapping("/mail/verify")
-  public ResponseEntity<?> sendVerifyMail(@RequestBody VerifyMailRequest request){
+  public ResponseEntity<String> sendVerifyMail(@RequestBody VerifyMailRequest request){
     mailService.verifyEmail(request.getEmail(), request.getCode());
     return ResponseEntity.status(HttpStatus.OK).body("메일 인증 성공");
+  }
+
+  @GetMapping("/redirected/kakao")
+  public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code){
+    return ResponseEntity.ok(kakaoService.kakaoLogin(code));
+  }
+
+  @PostMapping("/kakao/signUp")
+  public ResponseEntity<?> kakoSignUp(@RequestBody KaKaoSignUpDto request){
+    return ResponseEntity.ok(kakaoService.kakaoSignUp(request));
   }
 }
