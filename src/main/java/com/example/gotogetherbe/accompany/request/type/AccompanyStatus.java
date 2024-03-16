@@ -4,5 +4,6 @@ public enum AccompanyStatus {
     WAITING,
     REJECTED,
     CANCELED,
-    PARTICIPATING
+    PARTICIPATING,
+    COMPLETED
 }

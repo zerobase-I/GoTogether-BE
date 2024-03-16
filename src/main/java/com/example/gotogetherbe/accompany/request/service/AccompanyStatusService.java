@@ -82,19 +82,19 @@ public class AccompanyStatusService {
     /**
      * 동행 요청 승인
      * @param email    사용자 이메일
-     * @param requestId 요청 ID
+     * @param accompanyId 요청 ID
      * @return 동행 요청 정보
      */
     @Transactional
-    public AccompanyStatusDto approveAccompanyRequest(String email, Long requestId) {
-        Accompany request = getAccompanyRequest(email, requestId);
-        request.updateRequestStatus(PARTICIPATING);
+    public AccompanyStatusDto approveAccompanyRequest(String email, Long accompanyId) {
+        Accompany accompany = getAccompanyRequest(email, accompanyId);
+        accompany.updateRequestStatus(PARTICIPATING);
 
-        Post post = getOrElseThrow(request.getPost().getId());
+        Post post = getOrElseThrow(accompany.getPost().getId());
         post.updateCurrentPeople();
         postRepository.save(post);
 
-        return AccompanyStatusDto.from(accompanyStatusRepository.save(request));
+        return AccompanyStatusDto.from(accompanyStatusRepository.save(accompany));
     }
 
     /**
