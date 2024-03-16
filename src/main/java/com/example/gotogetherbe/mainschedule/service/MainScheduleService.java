@@ -84,8 +84,8 @@ public class MainScheduleService {
       throw new GlobalException(ErrorCode.MEMBER_AND_MAIN_SCHEDULE_INCORRECT);
     }
 
-    mainSchedule.setScheduleDate(request.getScheduleDate());
-    mainSchedule.setContent(request.getContent());
+    mainSchedule.updateScheduleDate(request.getScheduleDate());
+    mainSchedule.updateContent(request.getContent());
 
     MainSchedule updatedMainSchedule = mainScheduleRepository.save(mainSchedule);
 
@@ -99,7 +99,6 @@ public class MainScheduleService {
    * @param mainScheduleId     삭제할 주요일정ID
    * @return 삭제한 주요일정의 정보를 포함한 MainScheduleDto 객체
    */
-  @Transactional
   public MainScheduleDto deleteMainSchedule(String email, Long mainScheduleId) {
     Member member = getMemberOrThrow(email);
     MainSchedule mainSchedule = mainScheduleRepository.findById(mainScheduleId)
