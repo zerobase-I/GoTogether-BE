@@ -71,6 +71,7 @@ public class StompPreHandler implements ChannelInterceptor {
     } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) { // 채팅방 구독 권한 확인
       log.info("[WS] subscribe start");
       String email = accessor.getUser().getName();
+      log.info("[WS] accessor.getUser().getName() : {}", email);
       Long roomId = parseRoomId(accessor.getDestination());
 
       Member member = memberRepository.findByEmail(email)
@@ -83,26 +84,27 @@ public class StompPreHandler implements ChannelInterceptor {
         throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
       }
 
-      String sessionId = accessor.getSessionId();
-
-      saveSession(roomId, member.getId(), sessionId);
+      saveSession(roomId, member.getId(), accessor.getSessionId());
 
       log.info("[WS] subscribed chat room [{}]", roomId);
     } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) { // 채팅방 나갈 시 마지막 메세지 ID 업데이트
+      log.info("[WS] disconnect start");
       String sessionId = accessor.getSessionId();
       assert sessionId != null;
 
-      ChatRoomSessionDto sessionDto = redisService.getChatRoomHashKey(ChatConstant.CHATROOM_SESSION, sessionId);
+      ChatRoomSessionDto sessionDto = redisService.getClassData(sessionId, ChatRoomSessionDto.class);
       if (sessionDto == null) {
+        log.info("[WS] sessionDto is null");
         return message;
       }
 
-      Member member = memberRepository.findById(sessionDto.memberId())
+      Member member = memberRepository.findById(sessionDto.getMemberId())
           .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
-      ChatRoom chatRoom = chatRoomRepository.findById(sessionDto.chatRoomId())
+      ChatRoom chatRoom = chatRoomRepository.findById(sessionDto.getChatRoomId())
           .orElseThrow(() -> new GlobalException(ErrorCode.CHATROOM_NOT_FOUND));
 
+      // TODO
       chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId()).ifPresent(
           p -> chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
               .ifPresent(chatMessage -> {
@@ -112,7 +114,7 @@ public class StompPreHandler implements ChannelInterceptor {
               })
       );
 
-      redisService.deleteHashKey(ChatConstant.CHATROOM_SESSION, sessionId);
+      redisService.deleteData(sessionId);
     }
 
     return message;
@@ -144,6 +146,6 @@ public class StompPreHandler implements ChannelInterceptor {
         .memberId(memberId)
         .build();
 
-    redisService.updateToHash(ChatConstant.CHATROOM_SESSION, sessionId, sessionDto);
+    redisService.setClassData(sessionId, sessionDto);
   }
 }

@@ -1,8 +1,17 @@
 package com.example.gotogetherbe.chat.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder
-public record ChatRoomSessionDto(Long memberId, Long chatRoomId) {
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChatRoomSessionDto {
+  Long memberId;
+  Long chatRoomId;
 }

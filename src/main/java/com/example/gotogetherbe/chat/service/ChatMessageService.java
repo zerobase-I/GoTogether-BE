@@ -29,8 +29,7 @@ public class ChatMessageService {
    * @return 채팅 메세지
    */
   public ChatMessageDto chatMessage(ChatMessageDto request, Long chatRoomId) {
-    Member member = memberRepository.findById(request.getMemberId())
-        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+    Member member = getMember(request.getMemberId());
 
     return ChatMessageDto.builder()
         .memberId(member.getId())
@@ -50,8 +49,7 @@ public class ChatMessageService {
    * @return 채팅 메세지
    */
   public ChatMessageDto enterMessage(ChatMessageDto request, Long chatRoomId) {
-    Member member = memberRepository.findById(request.getMemberId())
-        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+    Member member = getMember(request.getMemberId());
 
     String content = member.getNickname() + "님이 입장하였습니다.";
 
@@ -73,8 +71,7 @@ public class ChatMessageService {
    * @return 채팅 메세지
    */
   public ChatMessageDto exitMessage(ChatMessageDto request, Long chatRoomId) {
-    Member member = memberRepository.findById(request.getMemberId())
-        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+    Member member = getMember(request.getMemberId());
 
     String content = member.getNickname() + "님이 퇴장하였습니다.";
 
@@ -102,5 +99,10 @@ public class ChatMessageService {
 
           chatMessageRepository.save(message);
         });
+  }
+
+  private Member getMember(Long memberId) {
+    return memberRepository.findById(memberId)
+        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
   }
 }
