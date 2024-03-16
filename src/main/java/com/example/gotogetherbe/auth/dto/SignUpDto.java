@@ -61,6 +61,7 @@ public class SignUpDto {
     return SignUpDto.builder()
         .email(member.getEmail())
         .password(member.getPassword())
+        .name(member.getName())
         .nickname(member.getNickname())
         .phoneNumber(member.getPhoneNumber())
         .address(member.getAddress())
