@@ -1,0 +1,29 @@
+### 채팅방 생성
+POST http://localhost:8080/api/chat-room/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcxMDQyNDgwOCwiZXhwIjoxNzEwNDI2NjA4fQ.3jtond8LSumOFqh9FO6-zftf8v2nYf7wZM39KT5D_KE
+
+### 참여중인 채팅방 목록 조회
+GET http://localhost:8080/api/chat-room/my-list
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcxMDQxMjk2NCwiZXhwIjoxNzEwNDE0NzY0fQ.ng8wxqaO8vQ7-zi6_BINevxIBQ5KmbVFyFIpuHU4zL8
+
+### 채팅방에 참여중인 멤버 목록 조회
+GET http://localhost:8080/api/chat-room/member-list/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcxMDQxMjk2NCwiZXhwIjoxNzEwNDE0NzY0fQ.ng8wxqaO8vQ7-zi6_BINevxIBQ5KmbVFyFIpuHU4zL8
+
+### 채팅방 입장
+POST http://localhost:8080/api/chat-room/enter/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcxMDQyNDgwOCwiZXhwIjoxNzEwNDI2NjA4fQ.3jtond8LSumOFqh9FO6-zftf8v2nYf7wZM39KT5D_KE
+
+### 채팅방 퇴장
+DELETE http://localhost:8080/api/chat-room/exit/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcwOTgxOTg2OCwiZXhwIjoxNzA5ODIxNjY4fQ.J-bjdeULASXGaG09BXE2GUpS3fNPtjjyqVF5vRXfDRc
+
+### 채팅방 메세지 조회
+GET http://localhost:8080/api/chat-room/message/1?lastMessageId=0&limit=10
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhY2Nlc3MtdG9rZW4iLCJyb2xlcyI6IlJPTEVfVVNFUiIsInVzZXJJZCI6InRlc3QxMjM0QGdtYWlsLmNvbSIsImlhdCI6MTcxMDQyNDgwOCwiZXhwIjoxNzEwNDI2NjA4fQ.3jtond8LSumOFqh9FO6-zftf8v2nYf7wZM39KT5D_KE

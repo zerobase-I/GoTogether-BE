@@ -1,19 +1,21 @@
 package com.example.gotogetherbe.chat.config.handler;
 
 
-import com.example.gotogetherbe.auth.service.AuthServiceImpl;
-import com.example.gotogetherbe.chat.entity.ChatMember;
+import com.example.gotogetherbe.chat.dto.ChatRoomSessionDto;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
+import com.example.gotogetherbe.chat.repository.ChatMessageRepository;
 import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
-import com.example.gotogetherbe.chat.type.ChatRoomStatus;
+import com.example.gotogetherbe.chat.type.ChatConstant;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
+import com.example.gotogetherbe.global.service.RedisService;
 import com.example.gotogetherbe.global.util.jwt.TokenProvider;
-import java.security.Principal;
-import java.util.Map;
+import com.example.gotogetherbe.member.entitiy.Member;
+import com.example.gotogetherbe.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -23,16 +25,25 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class StompPreHandler implements ChannelInterceptor {
 
+  @Value("${spring.jwt.prefix}")
+  private String ACCESS_TOKEN_PREFIX;
+  private static final String REFRESH_TOKEN_PREFIX = "RT: ";
+
   private final TokenProvider tokenProvider;
+
+  private final MemberRepository memberRepository;
   private final ChatRoomRepository chatRoomRepository;
   private final ChatMemberRepository chatMemberRepository;
-  private final AuthServiceImpl authService;
+  private final ChatMessageRepository chatMessageRepository;
+
+  private final RedisService redisService;
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -40,68 +51,101 @@ public class StompPreHandler implements ChannelInterceptor {
 
     assert accessor != null;
 
-    if (StompCommand.CONNECT.equals(accessor.getCommand())) { // 연결 인증 처리
-      String accessToken = accessor.getFirstNativeHeader("Authorization");
+    // Stomp 연결시 인증 처리
+    if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+      log.info("[WS] connection start");
+      String token = resolveToken(accessor.getFirstNativeHeader("Authorization"));
 
-      if (tokenProvider.validateToken(accessToken)) {
-        setAuthentication(accessToken, accessor);
-      } else {
-        // TODO : refresh Token
-
-        setAuthentication(accessToken, accessor);
+      if (tokenProvider.validateToken(token)) {
+        setAuthentication(token, accessor);
       }
+      else {
+        String refreshToken = redisService.getData(REFRESH_TOKEN_PREFIX + token);
 
+        tokenProvider.validateToken(refreshToken);
+
+        setAuthentication(token, accessor);
+      }
       log.info("[WS] connection successful");
+
     } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) { // 채팅방 구독 권한 확인
-      Long memberId = getMemberId(accessor.getUser());
+      log.info("[WS] subscribe start");
+      String email = accessor.getUser().getName();
+      log.info("[WS] accessor.getUser().getName() : {}", email);
       Long roomId = parseRoomId(accessor.getDestination());
 
-      validateChatRoom(roomId);
+      Member member = memberRepository.findByEmail(email)
+          .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
-      checkAccessChatRoom(roomId, memberId);
+      if (!chatRoomRepository.existsById(roomId)) {
+        throw new GlobalException(ErrorCode.CHATROOM_NOT_FOUND);
+      }
+      if (!chatMemberRepository.existsByChatRoomIdAndMemberId(roomId, member.getId())) {
+        throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
+      }
 
-      // 현재 구독한 채팅방으로만 메세지 전송
-      Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-      sessionAttributes.put("roomId", roomId);
+      saveSession(roomId, member.getId(), accessor.getSessionId());
 
       log.info("[WS] subscribed chat room [{}]", roomId);
+    } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) { // 채팅방 나갈 시 마지막 메세지 ID 업데이트
+      log.info("[WS] disconnect start");
+      String sessionId = accessor.getSessionId();
+      assert sessionId != null;
+
+      ChatRoomSessionDto sessionDto = redisService.getClassData(sessionId, ChatRoomSessionDto.class);
+      if (sessionDto == null) {
+        log.info("[WS] sessionDto is null");
+        return message;
+      }
+
+      Member member = memberRepository.findById(sessionDto.getMemberId())
+          .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+
+      ChatRoom chatRoom = chatRoomRepository.findById(sessionDto.getChatRoomId())
+          .orElseThrow(() -> new GlobalException(ErrorCode.CHATROOM_NOT_FOUND));
+
+      // TODO
+      chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId()).ifPresent(
+          p -> chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
+              .ifPresent(chatMessage -> {
+                p.updateLastChatId(chatMessage.getId());
+                chatMemberRepository.save(p);
+                log.info("[WS] disconnect : Last Message save.");
+              })
+      );
+
+      redisService.deleteData(sessionId);
     }
 
     return message;
   }
 
-  private void setAuthentication(String accessToken, StompHeaderAccessor accessor) {
-    Authentication authentication = tokenProvider.getAuthentication(accessToken);
+  private void setAuthentication(String token, StompHeaderAccessor accessor) {
+    Authentication authentication = tokenProvider.getAuthentication(token);
     accessor.setUser(authentication);
   }
 
-  private void validateChatRoom(Long roomId) {
-    if (!chatRoomRepository.existsById(roomId)) {
-      throw new GlobalException(ErrorCode.CHATROOM_NOT_FOUND);
+  private String resolveToken(String token) {
+    if (StringUtils.hasText(token) && token.startsWith(ACCESS_TOKEN_PREFIX)) {
+      return token.substring(ACCESS_TOKEN_PREFIX.length());
     }
-  }
-
-  private void checkAccessChatRoom(Long chatRoomId, Long memberId) {
-    ChatMember chatMember = chatMemberRepository.findByChatRoomIdAndMemberId(chatRoomId, memberId)
-        .orElseThrow(() -> new GlobalException(ErrorCode.ACCESS_DENIED));
-
-    if (chatMember.getChatRoom().getStatus() == ChatRoomStatus.DELETED) {
-      throw new GlobalException(ErrorCode.ALREADY_DELETED_CHATROOM);
-    }
-  }
-
-  private Long getMemberId(Principal user) {
-    if (ObjectUtils.isEmpty(user)) {
-      throw new GlobalException(ErrorCode.USER_NOT_FOUND);
-    }
-    return Long.parseLong(user.getName());
+    throw new GlobalException(ErrorCode.UNSUPPORTED_TOKEN);
   }
 
   private Long parseRoomId(String destination) {
-    if (ObjectUtils.isEmpty(destination) || !destination.startsWith(CHAT_ROOM) ||
-        destination.length() == CHAT_ROOM.length()) {
-      throw new GlobalException(ErrorCode.USER_NOT_FOUND); // 잘못된 구독 경로
+    if (ObjectUtils.isEmpty(destination) || !destination.startsWith(ChatConstant.CHAT_ROOM) ||
+        destination.length() == ChatConstant.CHAT_ROOM.length()) {
+      throw new GlobalException(ErrorCode.WRONG_DESTINATION);
     }
-    return Long.parseLong(destination.substring(CHAT_ROOM.length()));
+    return Long.parseLong(destination.substring(ChatConstant.CHAT_ROOM.length()));
+  }
+
+  private void saveSession(Long chatRoomId, Long memberId, String sessionId) {
+    ChatRoomSessionDto sessionDto = ChatRoomSessionDto.builder()
+        .chatRoomId(chatRoomId)
+        .memberId(memberId)
+        .build();
+
+    redisService.setClassData(sessionId, sessionDto);
   }
 }

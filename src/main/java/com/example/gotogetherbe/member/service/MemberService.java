@@ -24,7 +24,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final AwsS3Service awsS3Service;
   private final PasswordEncoder passwordEncoder;
-
+  
   @Transactional(readOnly = true)
   public MemberResponse getMyProfileInfo(String username){
 

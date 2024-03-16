@@ -1,14 +1,14 @@
 package com.example.gotogetherbe.accompany.request.controller;
 
-import com.example.gotogetherbe.accompany.request.dto.AccompanyRequestSendDto;
-import com.example.gotogetherbe.accompany.request.service.AccompanyRequestService;
+import com.example.gotogetherbe.accompany.request.dto.AccompanyStatusDto;
+import com.example.gotogetherbe.accompany.request.service.AccompanyStatusService;
 import com.example.gotogetherbe.auth.config.LoginUser;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,44 +17,44 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/accompany/request")
 public class AccompanyRequestController {
 
-    private final AccompanyRequestService accompanyRequestService;
+    private final AccompanyStatusService accompanyStatusService;
 
-    @PostMapping("/send")
-    public ResponseEntity<?> sendAccompanyRequest(
+    @PostMapping("/send/{postId}")
+    public ResponseEntity<AccompanyStatusDto> sendAccompanyRequest(
         @LoginUser String username,
-        @RequestBody AccompanyRequestSendDto accompanyRequestSendDto
+        @PathVariable Long postId
     ) {
-        return ResponseEntity.ok()
-            .body(accompanyRequestService.sendAccompanyRequest(username, accompanyRequestSendDto));
+        return ResponseEntity.ok(accompanyStatusService
+            .sendAccompanyRequest(username, postId));
+    }
+
+    @PostMapping("/cancel/{requestId}")
+    public void cancelAccompanyRequest(@PathVariable Long requestId) {
+        accompanyStatusService.cancelAccompanyRequest(requestId);
     }
 
     @GetMapping("/send")
-    public ResponseEntity<?> sentAccompanyRequest(@LoginUser String username) {
-        return ResponseEntity.ok().body(accompanyRequestService.getSentAccompanyRequests(username));
+    public ResponseEntity<List<AccompanyStatusDto>> sentAccompanyRequest(@LoginUser String username) {
+        return ResponseEntity.ok(accompanyStatusService.getSentAccompanyRequests(username));
     }
 
     @GetMapping("/receive")
-    public ResponseEntity<?> receivedAccompanyRequest(@LoginUser String username) {
-        return ResponseEntity.ok()
-            .body(accompanyRequestService.getReceivedAccompanyRequests(username));
+    public ResponseEntity<List<AccompanyStatusDto>> receivedAccompanyRequest(@LoginUser String username) {
+        return ResponseEntity.ok(accompanyStatusService.getReceivedAccompanyRequests(username));
     }
 
     @PostMapping("/approve/{requestId}")
-    public ResponseEntity<?> approveAccompanyRequest(
-        @LoginUser String username,
-        @PathVariable Long requestId
+    public ResponseEntity<AccompanyStatusDto> approveAccompanyRequest(
+        @LoginUser String username, @PathVariable Long requestId
     ) {
-        return ResponseEntity.ok()
-            .body(accompanyRequestService.approveAccompanyRequest(username, requestId));
+        return ResponseEntity.ok(accompanyStatusService.approveAccompanyRequest(username, requestId));
     }
 
     @PostMapping("/reject/{requestId}")
-    public ResponseEntity<?> rejectAccompanyRequest(
-        @LoginUser String username,
-        @PathVariable Long requestId
+    public ResponseEntity<AccompanyStatusDto> rejectAccompanyRequest(
+        @LoginUser String username, @PathVariable Long requestId
     ) {
-        return ResponseEntity.ok()
-            .body(accompanyRequestService.rejectAccompanyRequest(username, requestId));
+        return ResponseEntity.ok(accompanyStatusService.rejectAccompanyRequest(username, requestId));
     }
 
 }

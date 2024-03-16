@@ -1,11 +1,16 @@
 package com.example.gotogetherbe.chat.service;
 
+import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
+import com.example.gotogetherbe.chat.dto.ChatMessageDto;
 import com.example.gotogetherbe.chat.entity.ChatMember;
+import com.example.gotogetherbe.chat.entity.ChatMessage;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
 import com.example.gotogetherbe.chat.dto.ChatRoomDto;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
+import com.example.gotogetherbe.chat.repository.ChatMessageRepository;
 import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
+import com.example.gotogetherbe.chat.type.ChatConstant;
 import com.example.gotogetherbe.chat.type.ChatRoomStatus;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
@@ -18,6 +23,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +33,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatRoomService {
   private final ChatRoomRepository chatRoomRepository;
   private final ChatMemberRepository chatMemberRepository;
+  private final ChatMessageRepository chatMessageRepository;
   private final MemberRepository memberRepository;
   private final PostRepository postRepository;
 
+  /**
+   * 채팅방 생성
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param postId 게시글에 해당하는 채팅방을 생성하기 위한 id
+   * @return 생성된 ChatRoom 정보
+   */
   @Transactional
   public ChatRoomDto createChatRoom(String email, Long postId) {
     Member member = memberRepository.findByEmail(email)
@@ -40,9 +55,11 @@ public class ChatRoomService {
     if (!Objects.equals(member.getId(), post.getMember().getId())) {
       throw new GlobalException(ErrorCode.MEMBER_POST_INCORRECT);
     }
-
-    if (chatRoomRepository.existsById(postId)) {
+    if (post.getChatRoomExists()) {
       throw new GlobalException(ErrorCode.ALREADY_CREATED_CHATROOM);
+    }
+    if (post.getCurrentPeople() < 2) {
+      throw new GlobalException(ErrorCode.NOT_ENOUGH_CURRENT_PEOPLE);
     }
 
     ChatRoom createdChatRoom = chatRoomRepository.save(ChatRoom.builder()
@@ -51,20 +68,77 @@ public class ChatRoomService {
             .status(ChatRoomStatus.ACTIVE)
             .build());
 
+    post.setChatRoomExists(true);
+    postRepository.save(post);
+
     return ChatRoomDto.from(createdChatRoom);
   }
 
-  public List<ChatRoomDto> getChatRoomList(String email) {
+  /**
+   * 내가 참여중인 채팅방 목록 조회
+   *
+   * @param email  로그인한 사용자 이메일
+   * @return 내가 참여중인 채팅방 목록
+   */
+  @Transactional(readOnly = true)
+  public List<ChatRoomDto> getMyChatRoomList(String email) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
-    List<ChatMember> chatMemberList = chatMemberRepository.findAllByMemberId(member.getId());
-
-    List<ChatRoom> chatRoomList = chatMemberList.stream().map(ChatMember::getChatRoom).toList();
+    List<ChatRoom> chatRoomList = chatMemberRepository.findAllByMemberId(member.getId())
+        .stream().map(ChatMember::getChatRoom).toList();
 
     return chatRoomList.stream().map(ChatRoomDto::from).collect(Collectors.toList());
   }
 
+  /**
+   * 채팅방에 참여중인 멤버 목록 조회
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId  채팅방 아이디
+   * @return 채팅방에 참여중인 멤버 목록
+   */
+  @Transactional(readOnly = true)
+  public List<ChatMemberDto> getChatMemberList(String email, Long chatRoomId) {
+    List<ChatMember> chatMemberList = chatMemberRepository.findAllByChatRoomId(chatRoomId);
+
+    if(chatMemberList.stream().noneMatch(chatMember -> Objects.equals(
+        chatMember.getMember().getEmail(), email))) {
+      throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
+    }
+
+    return chatMemberList.stream().map(ChatMemberDto::from).collect(Collectors.toList());
+  }
+
+  /**
+   * 채팅방 메세지 조회
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId 채팅방 아이디
+   * @return 내가 참여중인 채팅방 목록
+   */
+  public Slice<ChatMessageDto> getChatRoomMessage(String email, ChatLastMessageRequest request, Long chatRoomId) {
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+
+    if (!chatMemberRepository.existsByChatRoomIdAndMemberId(chatRoomId, member.getId())) {
+      throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
+    }
+
+    Slice<ChatMessage> messages = chatMessageRepository.findChatRoomMessage(
+        request.lastMessageId(), chatRoomId,
+        Pageable.ofSize(request.limit() != 0 ? request.limit() : ChatConstant.CHAT_MESSAGE_PAGE_SIZE));
+
+    return messages.map(ChatMessageDto::from);
+  }
+
+  /**
+   * 채팅방 입장
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId 참여하는 채팅방 아이디
+   * @return 참여한 회원 정보
+   */
   @Transactional
   public ChatMemberDto enterChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
@@ -87,6 +161,13 @@ public class ChatRoomService {
     return ChatMemberDto.from(enterChatMember);
   }
 
+  /**
+   * 채팅방 퇴장
+   *
+   * @param email  로그인한 사용자 이메일
+   * @param chatRoomId 퇴장하는 채팅방 아이디
+   * @return 퇴장한 회원 정보
+   */
   @Transactional
   public ChatMemberDto exitChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
