@@ -1,6 +1,6 @@
 package com.example.gotogetherbe.accompany.request.dto;
 
-import com.example.gotogetherbe.accompany.request.entity.AccompanyRequest;
+import com.example.gotogetherbe.accompany.request.entity.Accompany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AccompanyRequestDto {
+public class AccompanyStatusDto {
 
     private Long id;
 
@@ -24,13 +24,13 @@ public class AccompanyRequestDto {
 
     private String createdAt;
 
-    public static AccompanyRequestDto from(AccompanyRequest accompanyRequest) {
-        return AccompanyRequestDto.builder()
+    public static AccompanyStatusDto from(Accompany accompanyRequest) {
+        return AccompanyStatusDto.builder()
             .id(accompanyRequest.getId())
             .requestMemberId(accompanyRequest.getRequestMember().getId())
             .requestedMemberId(accompanyRequest.getRequestedMember().getId())
             .postId(accompanyRequest.getPost().getId())
-            .requestStatus(accompanyRequest.getRequestStatus().name())
+            .requestStatus(accompanyRequest.getStatus().name())
             .createdAt(accompanyRequest.getCreatedAt().toString())
             .build();
     }
