@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
   mariadb:
@@ -51,7 +51,7 @@ services:
       context: ./elastic_search
       dockerfile: Dockerfile
       args:
-        VERSION: 7.10.1
+        VERSION: 7.10.0
     container_name: elasticsearch
     environment:
       - cluster.name=es-docker
@@ -77,7 +77,7 @@ services:
 
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.6.2
+    image: docker.elastic.co/kibana/kibana:7.10.0
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
       TZ: Asia/Seoul
