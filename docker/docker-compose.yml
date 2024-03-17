@@ -1,0 +1,88 @@
+version: '3.1'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    container_name: mariadb
+    env_file:
+      - .env
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      TZ: Asia/Seoul
+    volumes:
+      - /home/ec2-user/mariadb_data:/var/lib/mariadb
+    ports:
+      - 3306:3306
+
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - /home/ec2-user/redis_data:/data
+    restart: always
+    environment:
+      TZ: Asia/Seoul
+
+  rabbitmq:
+    build:
+      context: ./rabbitMQ
+      dockerfile: Dockerfile
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "RabbitMQ-My-Cookies"
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      TZ: Asia/Seoul
+    volumes:
+      - /home/ec2-user/rabbitmq_data:/var/lib/rabbitmq/mnesia
+    restart: always
+
+  elasticsearch:
+    build:
+      context: ./elastic_search
+      dockerfile: Dockerfile
+      args:
+        VERSION: 7.10.1
+    container_name: elasticsearch
+    environment:
+      - cluster.name=es-docker
+      - node.name=es01
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - TZ=Asia/Seoul
+    ulimits:            #컨테이너 리소스 제한
+      memlock:          #메모리 잠금 제한
+        soft: -1
+        hard: -1
+      nofile:           #열려 있는 파일 설명자의 최대 갯수
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK        #메모리를 잠글 수 있는 기능
+    ports:
+      - "9200:9200"     #엘라스틱 서치가 접속하는 포트
+      - "9300:9300"     #내부 노드가 통신하는 포트
+    volumes:
+      - /home/ec2-user/elasticsearch_data:/usr/share/elasticsearch/data
+    restart: always
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.6.2
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      TZ: Asia/Seoul
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    restart: always
