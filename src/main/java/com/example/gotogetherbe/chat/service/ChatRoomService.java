@@ -168,7 +168,6 @@ public class ChatRoomService {
    * @param chatRoomId 퇴장하는 채팅방 아이디
    * @return 퇴장한 회원 정보
    */
-  @Transactional
   public ChatMemberDto exitChatRoom(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
