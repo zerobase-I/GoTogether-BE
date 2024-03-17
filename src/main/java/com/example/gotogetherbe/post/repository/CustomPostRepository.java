@@ -11,8 +11,10 @@ import org.springframework.data.domain.Slice;
 public interface CustomPostRepository {
   Slice<Post> searchByTitle(Long postId, String title, Pageable pageable);
 
+  Slice<Post> getMyPosts(Long memberId, Long postId, Pageable pageable);
   Slice<PostDocument> searchByKeyword(List<String> keywords,
       LocalDateTime userStartDate, LocalDateTime userEndDate,
       Pageable pageable);
+
 
 }

@@ -60,6 +60,22 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     return checkLastPage(pageable, postList);
   }
 
+  @Override
+  public Slice<Post> getMyPosts(Long memberId, Long postId, Pageable pageable) {
+    List<Post> postList = jpa
+        .selectFrom(post)
+        .where(
+            post.member.id.eq(memberId), // 회원 ID가 일치하는 조건
+            ltPostId(postId) // 게시물 ID가 주어진 postId 값보다 작은 조건
+        )
+        .orderBy(post.id.desc()) // 게시물 ID 내림차순 정렬
+        .limit(pageable.getPageSize() + 1) // 페이지네이션 처리를 위해 요청된 페이지 사이즈보다 1 더 큰 수의 게시물을 요청
+        .fetch();
+
+    // 검색된 결과를 바탕으로 Slice 생성 및 반환
+    return checkLastPage(pageable, postList);
+  }
+
 
   /**
    * 특정 키워드들이 포함된 게시물들을 검색하고, 그 결과를 Slice 로 반환. 검색은 Elasticsearch 를 사용하며,
