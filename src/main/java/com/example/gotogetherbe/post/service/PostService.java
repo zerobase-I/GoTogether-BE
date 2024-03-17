@@ -18,6 +18,8 @@ import com.example.gotogetherbe.post.repository.PostSearchRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +40,7 @@ public class PostService {
    *
    * @param requestDto 생성할 게시물 정보
    * @param email      게시물을 생성하는 회원의 이메일
-   * @param images      업로드할 이미지 파일들
+   * @param images     업로드할 이미지 파일들
    * @return 생성된 게시물의 정보를 포함한 PostResponse 객체
    */
   @Transactional
@@ -118,7 +120,6 @@ public class PostService {
   }
 
 
-
   /**
    * 게시물을 삭제.
    *
@@ -135,13 +136,17 @@ public class PostService {
 
     member.removePost(post);
     postRepository.delete(post);
+  }
 
+  public Slice<PostResponse> getMyPostList(Long userId, Long postId, Pageable pageable) {
+
+   return postRepository.getMyPosts(userId, postId, pageable)
+        .map(PostResponse::fromEntity);
   }
 
 
   /**
-   * 게시물에 대한 유효성을 검사.
-   * 게시물 작성자와 현재 사용자가 같은지 검사.
+   * 게시물에 대한 유효성을 검사. 게시물 작성자와 현재 사용자가 같은지 검사.
    *
    * @param post   유효성을 검사할 게시물
    * @param member 현재 사용자
@@ -151,6 +156,7 @@ public class PostService {
       throw new GlobalException(WRITE_NOT_YOURSELF);
     }
   }
+
 
   private Post getPost(Long id) {
 
@@ -163,9 +169,9 @@ public class PostService {
         .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
   }
 
+
   /**
-   * 게시물과 이미지 파일을 AWS S3에 업로드하고,
-   * 업로드된 게시물에 대한 정보를 반환.
+   * 게시물과 이미지 파일을 AWS S3에 업로드하고, 업로드된 게시물에 대한 정보를 반환.
    *
    * @param requestDto     생성할 게시물 정보
    * @param multipartFiles 업로드할 이미지 파일들
@@ -180,7 +186,6 @@ public class PostService {
     imageList.forEach(post::addImage);
     return post;
   }
-
 
 
 }

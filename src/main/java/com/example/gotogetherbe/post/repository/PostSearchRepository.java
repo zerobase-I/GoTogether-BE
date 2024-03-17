@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface PostSearchRepository extends ElasticsearchRepository<PostDocument, Long>
     , CustomPostRepository, CrudRepository<PostDocument, Long>{
 
+
+
 }

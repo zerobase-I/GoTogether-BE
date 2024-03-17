@@ -20,7 +20,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +80,7 @@ public class Post extends BaseEntity {
 
     @Builder.Default
     @Column(nullable = false)
-    private Integer currentPeople = 0;
+    private Integer currentPeople = 1;
 
     @Column
     private Integer estimatedTravelExpense;

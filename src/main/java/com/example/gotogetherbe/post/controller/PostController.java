@@ -84,11 +84,15 @@ public class PostController {
 
 
   /**
-   * 내가 작성한 게시물 리스트 조회
+   * 자신 또는 특정 회원아 작성한 게시물 리스트 조회
    */
-  @GetMapping("/list/{id}")
-  public ResponseEntity<?> getPostList(@PathVariable Long id) {
-    return null;
+  @GetMapping("/myPosts/{userId}")
+  public ResponseEntity<Slice<PostResponse>> getMyPostList(@PathVariable("userId") Long userId,
+      @RequestParam(value = "postId", required = false) Long postId,
+      @PageableDefault(sort = "createdAt"
+          , direction = Direction.DESC) Pageable pageable) {
+
+    return ResponseEntity.ok(postService.getMyPostList(userId,postId,pageable));
   }
 
 
