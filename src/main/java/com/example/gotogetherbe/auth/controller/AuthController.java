@@ -56,7 +56,6 @@ public class AuthController {
   public ResponseEntity<TokenDto> reissueToken(@Valid @RequestBody ReissueDto request){
     return ResponseEntity.ok(authService.reissue(request));
   }
-  @CrossOrigin(origins = "http://49.50.167.227:8080", maxAge = 3600)
   @PostMapping("/mail/certification")
   public ResponseEntity<SendMailResponse> sendCertificationMail(@RequestBody SendMailRequest request){
     return ResponseEntity.status(HttpStatus.CREATED)
