@@ -40,11 +40,9 @@ public class AuthService {
 
   @Transactional
   public SignUpDto signUp(SignUpDto request, MultipartFile profileImage) {
-    if (memberRepository.existsByEmail(request.getEmail())) {
-      throw new GlobalException(DUPLICATE_USER);
-    }
-    if(memberRepository.existsByNickname(request.getNickname())){
-      throw new GlobalException(DUPLICATE_NICKNAME);
+
+    if(!request.isEmailAuth()){
+      throw new GlobalException(EMAIL_NOT_VERITY);
     }
 
     String encodedPasswordEncoder = passwordEncoder.encode(request.getPassword());
