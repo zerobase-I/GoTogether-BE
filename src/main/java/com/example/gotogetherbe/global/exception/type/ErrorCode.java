@@ -16,6 +16,7 @@ public enum ErrorCode {
 
   // User error
   PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다"),
+  CODE_VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "인증번호가 유효하지 않습니다."),
   INVALID_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
   EMAIL_NOT_VERITY(HttpStatus.BAD_REQUEST, "이메일 인증이 되지 않았습니다."),
   ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "이미 등록되어있습니다."),
