@@ -48,6 +48,8 @@ public class SignUpDto {
   @NotNull
   private MemberGender gender;
 
+  private boolean emailAuth;
+
   private MemberMbti mbti;
 
   private String instagramId;
@@ -56,10 +58,10 @@ public class SignUpDto {
 
   private String profileImageUrl;
 
-
   public static SignUpDto fromEntity(Member member){
     return SignUpDto.builder()
         .email(member.getEmail())
+        .emailAuth(member.isEmailAuth())
         .password(member.getPassword())
         .name(member.getName())
         .nickname(member.getNickname())
@@ -89,6 +91,7 @@ public class SignUpDto {
         .description(request.getDescription())
         .roleType(MemberRoleType.USER)
         .loginType(MemberLoginType.EMAIL)
+        .emailAuth(request.isEmailAuth())
         .profileImageUrl(request.getProfileImageUrl())  // 새로 추가
         .build();
   }
