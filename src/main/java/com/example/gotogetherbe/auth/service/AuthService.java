@@ -173,4 +173,12 @@ public class AuthService {
 
     return awsS3Service.getUrl(fileName);
   }
+
+  public Boolean checkEmail(String email){
+    return memberRepository.existsByEmail(email);
+  }
+
+  public Boolean checkNickname(String nickname){
+    return memberRepository.existsByNickname(nickname);
+  }
 }

@@ -12,6 +12,7 @@ import com.example.gotogetherbe.global.util.mail.dto.SendMailRequest;
 import com.example.gotogetherbe.global.util.mail.dto.SendMailResponse;
 import com.example.gotogetherbe.global.util.mail.dto.VerifyMailRequest;
 import com.example.gotogetherbe.global.util.mail.service.MailService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,7 @@ public class AuthController {
   private final KakaoService kakaoService;
 
   @PostMapping("/signUp")
+  @ApiResponse
   public ResponseEntity<SignUpDto> signUpUser(@RequestPart("request") SignUpDto request,
       @RequestPart(name = "image", required = false) MultipartFile image){
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.signUp(request,image));
@@ -74,5 +76,14 @@ public class AuthController {
   @PostMapping("/kakao/signUp")
   public ResponseEntity<?> kakoSignUp(@RequestBody KaKaoSignUpDto request){
     return ResponseEntity.ok(kakaoService.kakaoSignUp(request));
+  }
+  @GetMapping("/checkEmail")
+  public ResponseEntity<Boolean> checkEmail(@RequestParam("email") String email){
+    return ResponseEntity.ok(authService.checkEmail(email));
+  }
+
+  @GetMapping("checkNickname")
+  public ResponseEntity<Boolean> checkNickname(@RequestParam("nickname") String nickname){
+    return ResponseEntity.ok(authService.checkNickname(nickname));
   }
 }
