@@ -1,6 +1,7 @@
 package com.example.gotogetherbe.accompany.request.dto;
 
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
+import com.example.gotogetherbe.accompany.request.type.AccompanyStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class AccompanyStatusDto {
 
     private Long postId;
 
-    private String requestStatus;
+    private AccompanyStatus requestStatus;
 
     private String createdAt;
 
@@ -30,7 +31,7 @@ public class AccompanyStatusDto {
             .requestMemberId(accompanyRequest.getRequestMember().getId())
             .requestedMemberId(accompanyRequest.getRequestedMember().getId())
             .postId(accompanyRequest.getPost().getId())
-            .requestStatus(accompanyRequest.getStatus().name())
+            .requestStatus(accompanyRequest.getStatus())
             .createdAt(accompanyRequest.getCreatedAt().toString())
             .build();
     }
