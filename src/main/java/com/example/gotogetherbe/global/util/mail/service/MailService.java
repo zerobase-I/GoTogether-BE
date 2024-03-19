@@ -6,7 +6,6 @@ import static com.example.gotogetherbe.global.exception.type.ErrorCode.*;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.service.RedisService;
 import com.example.gotogetherbe.global.util.mail.dto.SendMailResponse;
-import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -39,9 +38,14 @@ public class MailService {
    * @return 인증 코드와 이메일 주소를 포함한 SendMailResponse 객체
    */
   public SendMailResponse generateAndDispatchAuthCode(String email) {
+    //이메일 인증코드 재전송시 기존 인증코드 삭제
+    redisService.deleteData(email);
+
     String code = createRandomCode();
     sendAuthMail(email, code);
+
     redisService.setDataExpire(EMAIL_PREFIX + email, code, EMAIL_TOKEN_EXPIRATION);
+    log.info("redis Success");
 
     return SendMailResponse.builder()
         .email(email)
@@ -91,20 +95,16 @@ public class MailService {
    *
    * @param email 검증할 이메일 주소
    * @param code  검증할 인증 코드
+   * @return true: 이메일 주소와 인증 코드가 일치함, false: 이메일 주소와 인증 코드가 일치하지 않음
    */
   @Transactional
-  public void verifyEmail(String email, String code) {
+  public boolean verifyEmail(String email, String code) {
     if (!isVerify(email, code)) {
       throw new GlobalException(INVALID_AUTH_CODE);
     }
-
-    // Member 이메일 인증 여부 변경
-    Member member = memberRepository.findByEmail(email)
-        .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
-    member.changeEmailAuth();
-    memberRepository.save(member);
-
     redisService.deleteData(EMAIL_PREFIX + email);
+
+    return true;
   }
 
   /**
@@ -117,7 +117,7 @@ public class MailService {
   private boolean isVerify(String email, String code) {
     String data = redisService.getData(EMAIL_PREFIX + email);
     if (data == null) {
-      throw new GlobalException(USER_NOT_FOUND);
+      throw new GlobalException(CODE_VALIDATION_FAILED);
     }
 
     return data.equals(code);

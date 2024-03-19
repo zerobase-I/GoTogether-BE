@@ -63,9 +63,9 @@ public class AuthController {
         .body(mailService.generateAndDispatchAuthCode(request.getEmail()));
   }
   @PostMapping("/mail/verify")
-  public ResponseEntity<String> sendVerifyMail(@RequestBody VerifyMailRequest request){
-    mailService.verifyEmail(request.getEmail(), request.getCode());
-    return ResponseEntity.status(HttpStatus.OK).body("메일 인증 성공");
+  public ResponseEntity<Boolean> sendVerifyMail(@RequestBody VerifyMailRequest request){
+
+    return ResponseEntity.ok(mailService.verifyEmail(request.getEmail(), request.getCode()));
   }
 
   @GetMapping("/redirected/kakao")
@@ -82,7 +82,7 @@ public class AuthController {
     return ResponseEntity.ok(authService.checkEmail(email));
   }
 
-  @GetMapping("checkNickname")
+  @GetMapping("/checkNickname")
   public ResponseEntity<Boolean> checkNickname(@RequestParam("nickname") String nickname){
     return ResponseEntity.ok(authService.checkNickname(nickname));
   }
