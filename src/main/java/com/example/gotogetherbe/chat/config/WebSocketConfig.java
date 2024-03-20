@@ -43,7 +43,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry
         .addEndpoint("/ws")
-        .setAllowedOriginPatterns("*");
+        .setAllowedOrigins("*");
         //.withSockJS();
     registry
         .setErrorHandler(stompErrorHandler);
@@ -74,13 +74,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     registry.setMessageSizeLimit(50 * 1024 * 1024);
     registry.setSendTimeLimit(20 * 10000);
     registry.setSendBufferSizeLimit(3 * 512 * 1024);
-  }
-
-  @Bean
-  public ServletServerContainerFactoryBean servletServerContainerFactoryBean(){
-    ServletServerContainerFactoryBean servletServerContainerFactoryBean = new ServletServerContainerFactoryBean();
-    servletServerContainerFactoryBean.setMaxTextMessageBufferSize(2048 * 2048);
-    servletServerContainerFactoryBean.setMaxBinaryMessageBufferSize(2048 * 2048);
-    return servletServerContainerFactoryBean;
   }
 }

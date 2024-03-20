@@ -53,8 +53,8 @@ public class StompPreHandler implements ChannelInterceptor {
 
     // Stomp 연결시 인증 처리
     if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-      log.info("[WS] connection start");
       String token = resolveToken(accessor.getFirstNativeHeader("Authorization"));
+      log.info("[WS] connection start : {}", token);
 
       if (tokenProvider.validateToken(token)) {
         setAuthentication(token, accessor);
@@ -69,10 +69,9 @@ public class StompPreHandler implements ChannelInterceptor {
       log.info("[WS] connection successful");
 
     } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) { // 채팅방 구독 권한 확인
-      log.info("[WS] subscribe start");
       String email = accessor.getUser().getName();
-      log.info("[WS] accessor.getUser().getName() : {}", email);
       Long roomId = parseRoomId(accessor.getDestination());
+      log.info("[WS] subscribe start / user : {}, roomId : {}", email, roomId);
 
       Member member = memberRepository.findByEmail(email)
           .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
@@ -86,7 +85,7 @@ public class StompPreHandler implements ChannelInterceptor {
 
       saveSession(roomId, member.getId(), accessor.getSessionId());
 
-      log.info("[WS] subscribed chat room [{}]", roomId);
+      log.info("[WS] {} subscribed chat room [{}]", email, roomId);
     } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) { // 채팅방 나갈 시 마지막 메세지 ID 업데이트
       log.info("[WS] disconnect start");
       String sessionId = accessor.getSessionId();
@@ -104,7 +103,6 @@ public class StompPreHandler implements ChannelInterceptor {
       ChatRoom chatRoom = chatRoomRepository.findById(sessionDto.getChatRoomId())
           .orElseThrow(() -> new GlobalException(ErrorCode.CHATROOM_NOT_FOUND));
 
-      // TODO
       chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId()).ifPresent(
           p -> chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId())
               .ifPresent(chatMessage -> {
