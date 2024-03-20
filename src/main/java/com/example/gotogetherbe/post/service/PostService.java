@@ -180,7 +180,8 @@ public class PostService {
   private Post uploadS3Image(PostRequest requestDto, List<MultipartFile> multipartFiles) {
     Post post = requestDto.toEntity();
 
-    List<S3ImageDto> list = multipartFiles.stream().map(awsS3Service::uploadImage).toList();
+    List<S3ImageDto> list = multipartFiles.stream().filter(image -> image.getSize() > 0)
+        .map(awsS3Service::uploadImage).toList();
     List<PostImage> imageList = list.stream().map(S3ImageDto::toEntity).toList();
 
     imageList.forEach(post::addImage);
