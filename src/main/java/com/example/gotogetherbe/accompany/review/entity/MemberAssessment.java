@@ -29,7 +29,7 @@ public class MemberAssessment {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    private Integer totalReviewCount;
+    private Long totalReviewCount;
 
     private Double rating;
 
@@ -47,7 +47,7 @@ public class MemberAssessment {
 
     private Long adaptabilityCount;
 
-    public void updateRatingAndTotalReviewCount(Double rating, Integer totalReviewCount) {
+    public void updateRatingAndTotalReviewCount(Double rating, Long totalReviewCount) {
         this.rating = rating;
         this.totalReviewCount = totalReviewCount;
     }
