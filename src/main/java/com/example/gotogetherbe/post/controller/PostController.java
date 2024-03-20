@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +42,10 @@ public class PostController {
   /**
    * 게시물 생성
    */
-  @PostMapping
-  public ResponseEntity<PostResponse> createPost(@Valid @RequestPart(value = "request") PostRequest requestDto,
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<PostResponse> createPost(
+      @Valid @RequestPart(value = "request") PostRequest requestDto,
       @LoginUser String email,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
