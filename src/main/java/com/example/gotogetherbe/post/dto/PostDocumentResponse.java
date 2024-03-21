@@ -8,6 +8,7 @@ import com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus;
 import com.example.gotogetherbe.post.entity.type.TravelCityType;
 import com.example.gotogetherbe.post.entity.type.TravelCountryType;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,8 @@ import lombok.Setter;
 public class PostDocumentResponse {
 
   private Long id;
+  private Long memberId;
+  private String userEmail;
 
   private PostRecruitmentStatus recruitmentStatus;
 
@@ -56,9 +59,13 @@ public class PostDocumentResponse {
 
   private LocalDateTime createdAt;
 
+  private List<String> imagesUrl;
+
   public static PostDocumentResponse fromDocument(PostDocument postDocument) {
     return PostDocumentResponse.builder()
         .id(postDocument.getId())
+        .memberId(postDocument.getMemberId())
+        .userEmail(postDocument.getUserEmail())
         .recruitmentStatus(postDocument.getRecruitmentStatus())
         .travelCountry(postDocument.getTravelCountry())
         .travelCity(postDocument.getTravelCity())
@@ -74,6 +81,7 @@ public class PostDocumentResponse {
         .title(postDocument.getTitle())
         .content(postDocument.getContent())
         .createdAt(postDocument.getCreatedAt())
+        .imagesUrl(postDocument.getImagesUrl())
         .build();
   }
 

@@ -74,9 +74,6 @@ public class Member extends BaseEntity {
   @Column
   private String description;
 
-  @Builder.Default
-  private Boolean certificationMark = false;
-
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
   private MemberLoginType loginType;

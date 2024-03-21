@@ -4,6 +4,7 @@ import static org.springframework.data.elasticsearch.annotations.DateFormat.date
 import static org.springframework.data.elasticsearch.annotations.DateFormat.epoch_millis;
 import static org.springframework.data.elasticsearch.annotations.DateFormat.year_month_day;
 
+import com.example.gotogetherbe.global.util.aws.entity.PostImage;
 import com.example.gotogetherbe.post.entity.type.PostCategory;
 import com.example.gotogetherbe.post.entity.type.PostGenderType;
 import com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus;
@@ -12,6 +13,7 @@ import com.example.gotogetherbe.post.entity.type.TravelCountryType;
 
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +35,9 @@ public class PostDocument{
   @Id
   private Long id;
 
+  private Long memberId;
+
+  private String userEmail;
 
   @Field(type = FieldType.Keyword)
   private PostRecruitmentStatus recruitmentStatus;
@@ -84,11 +89,17 @@ public class PostDocument{
   @Field(type = FieldType.Date, format = {date_hour_minute_second_millis, epoch_millis})
   private LocalDateTime updatedAt;
 
+  private List<String> imagesUrl;
 
 
   public static PostDocument from(Post post){
+    List<String> imageUrlList = post.getImages().stream()
+        .map(PostImage::getUrl).toList();
+
     return PostDocument.builder()
         .id(post.getId())
+        .memberId(post.getMember().getId())
+        .userEmail(post.getMember().getEmail())
         .recruitmentStatus(post.getRecruitmentStatus())
         .travelCountry(post.getTravelCountry())
         .travelCity(post.getTravelCity())
@@ -105,6 +116,7 @@ public class PostDocument{
         .content(post.getContent())
         .createdAt(post.getCreatedAt())
         .updatedAt(post.getUpdatedAt())
+        .imagesUrl(imageUrlList)
         .build();
   }
 }

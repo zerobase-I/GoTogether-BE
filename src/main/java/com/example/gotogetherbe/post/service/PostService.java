@@ -116,6 +116,7 @@ public class PostService {
       });
     }
 
+    postSearchRepository.save(PostDocument.from(post));
     return PostResponse.fromEntity(post);
   }
 
@@ -126,6 +127,7 @@ public class PostService {
    * @param id    삭제할 게시물의 ID
    * @param email 게시물을 삭제하는 회원의 이메일
    */
+  @Transactional
   public void deletePost(Long id, String email) {
     Post post = getPost(id);
     Member member = getMember(email);
@@ -136,6 +138,7 @@ public class PostService {
 
     member.removePost(post);
     postRepository.delete(post);
+    postSearchRepository.deleteById(post.getId());
   }
 
   public Slice<PostResponse> getMyPostList(Long userId, Long postId, Pageable pageable) {
