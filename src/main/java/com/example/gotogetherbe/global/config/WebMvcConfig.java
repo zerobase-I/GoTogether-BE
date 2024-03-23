@@ -23,6 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
+        .allowedOrigins("https://go-together-frontend.vercel.app/member")  // 여기서 요청을 허용할 출처를 지정
         .allowedOrigins("http://localhost:5173")  // 여기서 요청을 허용할 출처를 지정
         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // 허용할 HTTP 메소드 지정
         .allowedHeaders("*")  // 모든 헤더 허용
