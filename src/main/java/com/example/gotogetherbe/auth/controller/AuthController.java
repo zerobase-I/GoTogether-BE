@@ -12,10 +12,10 @@ import com.example.gotogetherbe.global.util.mail.dto.SendMailRequest;
 import com.example.gotogetherbe.global.util.mail.dto.SendMailResponse;
 import com.example.gotogetherbe.global.util.mail.dto.VerifyMailRequest;
 import com.example.gotogetherbe.global.util.mail.service.MailService;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,14 +36,15 @@ public class AuthController {
   private final MailService mailService;
   private final KakaoService kakaoService;
 
-  @PostMapping("/signUp")
-  @ApiResponse
+  @PostMapping(path = "/signUp", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<SignUpDto> signUpUser(@RequestPart("request") SignUpDto request,
       @RequestPart(name = "image", required = false) MultipartFile image){
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.signUp(request,image));
   }
 
-  @PostMapping("/signIn")
+  @PostMapping(path = "/signIn", consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<TokenDto> signInUser(@RequestBody SignInDto request){
     return ResponseEntity.ok(authService.signIn(request));
   }
@@ -53,16 +54,20 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).body("로그아웃 성공");
   }
 
-  @PostMapping("/reissue")
+  @PostMapping(path = "/reissue", consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<TokenDto> reissueToken(@Valid @RequestBody ReissueDto request){
     return ResponseEntity.ok(authService.reissue(request));
   }
-  @PostMapping("/mail/certification")
-  public ResponseEntity<SendMailResponse> sendCertificationMail(@RequestBody SendMailRequest request){
+  @PostMapping(path = "/mail/certification", consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SendMailResponse> sendCertificationMail(
+      @RequestBody SendMailRequest request){
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(mailService.generateAndDispatchAuthCode(request.getEmail()));
   }
-  @PostMapping("/mail/verify")
+  @PostMapping(path = "/mail/verify", consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Boolean> sendVerifyMail(@RequestBody VerifyMailRequest request){
 
     return ResponseEntity.ok(mailService.verifyEmail(request.getEmail(), request.getCode()));
@@ -73,7 +78,8 @@ public class AuthController {
     return ResponseEntity.ok(kakaoService.kakaoLogin(code));
   }
 
-  @PostMapping("/kakao/signUp")
+  @PostMapping(path = "/kakao/signUp", consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> kakoSignUp(@RequestBody KaKaoSignUpDto request){
     return ResponseEntity.ok(kakaoService.kakaoSignUp(request));
   }

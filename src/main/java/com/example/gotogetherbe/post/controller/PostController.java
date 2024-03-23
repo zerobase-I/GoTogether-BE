@@ -56,7 +56,8 @@ public class PostController {
   /**
    * 게시물 수정
    */
-  @PutMapping("/{id}")
+  @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<PostResponse> updatePost(@PathVariable Long id,
       @Valid @RequestPart(value = "request") PostRequest requestDto,
       @LoginUser String email,

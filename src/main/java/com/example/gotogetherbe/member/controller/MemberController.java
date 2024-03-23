@@ -7,6 +7,7 @@ import com.example.gotogetherbe.member.dto.MemberResponse;
 import com.example.gotogetherbe.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,8 +30,9 @@ public class MemberController {
     return ResponseEntity.ok(memberService.getMyProfileInfo(username));
   }
 
-  //TODO: 프로필 이미지 수정 로직 수정
-  @PutMapping("/myProfile")
+
+  @PutMapping(path = "/myProfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+  ,produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<MemberResponse> updateMyProfile(@RequestPart(name = "request", required = false)
   @Valid @RequestBody MemberRequest request,
       @LoginUser String username,
