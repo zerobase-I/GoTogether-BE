@@ -44,6 +44,7 @@ public class MemberResponse {
     MemberResponse.MemberResponseBuilder builder = MemberResponse.builder()
         .id(member.getId())
         .email(member.getEmail())
+        .name(member.getName())  // 수정
         .nickname(member.getNickname())
         .phoneNumber(member.getPhoneNumber())
         .address(member.getAddress())
