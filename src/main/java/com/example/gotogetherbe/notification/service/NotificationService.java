@@ -97,8 +97,7 @@ public class NotificationService {
     /**
      * 알림 확인, 상태 변경(unread -> read)
      * @param notificationId 알림 id
-     * @return 알림 확인 시 이동할 url
-     */
+     * */
     public void readNotification(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
             .orElseThrow(() -> new GlobalException(NOTIFICATION_NOT_FOUND));

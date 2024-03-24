@@ -1,12 +1,10 @@
 package com.example.gotogetherbe.notification.service;
 
-import static com.example.gotogetherbe.notification.type.NotificationStatus.*;
+import static com.example.gotogetherbe.notification.type.NotificationStatus.UNREAD;
 
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.notification.dto.NotificationInfoDto;
-import com.example.gotogetherbe.notification.type.NotificationStatus;
 import com.example.gotogetherbe.notification.type.NotificationType;
-import com.example.gotogetherbe.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
