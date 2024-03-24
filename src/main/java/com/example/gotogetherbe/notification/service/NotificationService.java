@@ -100,15 +100,12 @@ public class NotificationService {
      * @param notificationId 알림 id
      * @return 알림 확인 시 이동할 url
      */
-    @Transactional
-    public String readNotification(Long notificationId) {
+    public void readNotification(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
             .orElseThrow(() -> new GlobalException(NOTIFICATION_NOT_FOUND));
 
         notification.updateStatus(READ);
         notificationRepository.save(notification);
-
-        return notification.getUrl();
     }
 
     /**
