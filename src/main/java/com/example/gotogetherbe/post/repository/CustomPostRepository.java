@@ -16,5 +16,4 @@ public interface CustomPostRepository {
       LocalDateTime userStartDate, LocalDateTime userEndDate,
       Pageable pageable);
 
-
 }
