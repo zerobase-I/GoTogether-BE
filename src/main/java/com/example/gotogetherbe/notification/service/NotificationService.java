@@ -61,11 +61,10 @@ public class NotificationService {
      * @param notificationInfo 알림 정보
      */
     public void send(NotificationInfoDto notificationInfo) {
-        Notification notification = notificationRepository.save(
-            notificationInfo.of()); //repository에 저장
+        Notification notification = notificationRepository.save(notificationInfo.of()); //repository에 저장
         log.info("알림 저장 완료");
 
-        if (!notification.getMember().getAlarmStatus()) { // 알림 설정이 꺼져있으면 전송하지 않음
+        if (!notificationInfo.getMember().getAlarmStatus()) { // 알림 설정이 꺼져있으면 전송하지 않음
             return;
         }
 
