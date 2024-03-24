@@ -6,6 +6,7 @@ import static com.example.gotogetherbe.global.exception.type.ErrorCode.MEMBER_AS
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.UNCOMPLETED_ACCOMPANY;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
+import static com.example.gotogetherbe.notification.type.NotificationType.*;
 import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.COMPLETED;
 
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
@@ -21,6 +22,8 @@ import com.example.gotogetherbe.accompany.review.repository.ReviewRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.notification.service.EventPublishService;
+import com.example.gotogetherbe.notification.type.NotificationType;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ public class ReviewService {
     private final MemberAssessmentRepository memberAssessmentRepository;
     private final MemberAssessmentService memberAssessmentService;
     private final AccompanyRepository accompanyRepository;
+    private final EventPublishService eventPublishService;
 
     /**
      * 동행 참여자 조회
@@ -81,6 +85,10 @@ public class ReviewService {
         List<Review> savedReviews = reviewRepository.saveAll(reviews);
 
         memberAssessmentService.updateMemberAssessment(savedReviews);
+
+        for (Review review : savedReviews) {
+            eventPublishService.publishEvent(post.getId(), review.getTargetMember(), NEW_REVIEW);
+        }
 
         return savedReviews.stream().map(ReviewDto::from).toList();
     }
