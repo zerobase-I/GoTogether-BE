@@ -11,6 +11,7 @@ import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_
 import static com.example.gotogetherbe.notification.type.NotificationType.ACCOMPANY_REQUEST;
 import static com.example.gotogetherbe.notification.type.NotificationType.ACCOMPANY_REQUEST_APPROVAL;
 import static com.example.gotogetherbe.notification.type.NotificationType.ACCOMPANY_REQUEST_REJECT;
+import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.*;
 
 import com.example.gotogetherbe.accompany.request.dto.AccompanyStatusDto;
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
@@ -20,6 +21,7 @@ import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import com.example.gotogetherbe.notification.service.EventPublishService;
 import com.example.gotogetherbe.post.entity.Post;
+import com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.List;
 import java.util.Objects;
@@ -98,6 +100,7 @@ public class AccompanyStatusService {
 
         Post post = getOrElseThrow(accompany.getPost().getId());
         post.updateCurrentPeople();
+        isRecruitmentFull(post);
         postRepository.save(post);
 
         Member requestMember = getMemberById(accompany.getRequestMember().getId());
@@ -166,6 +169,12 @@ public class AccompanyStatusService {
             requestMemberId, postId)
         ) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
+        }
+    }
+
+    private static void isRecruitmentFull(Post post) {
+        if (Objects.equals(post.getRecruitsPeople(), post.getCurrentPeople())) {
+            post.updateRecruitmentStatus(RECRUITMENT_COMPLETED);
         }
     }
 
