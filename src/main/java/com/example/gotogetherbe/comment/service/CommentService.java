@@ -3,7 +3,7 @@ package com.example.gotogetherbe.comment.service;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.COMMENT_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
-import static com.example.gotogetherbe.notification.type.NotificationType.*;
+import static com.example.gotogetherbe.notification.type.NotificationType.COMMENT;
 
 import com.example.gotogetherbe.comment.dto.CommentDto;
 import com.example.gotogetherbe.comment.dto.CommentRequest;
@@ -14,7 +14,6 @@ import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import com.example.gotogetherbe.notification.service.EventPublishService;
-import com.example.gotogetherbe.notification.type.NotificationType;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.List;
