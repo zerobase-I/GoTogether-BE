@@ -18,26 +18,26 @@ public class SchedulerService {
   private final PostRepository postRepository;
   @Scheduled(cron = "0 0 * * *", zone="Asia/Seoul")
   public void startTravel() {
-    List<Post> postList  = postRepository.searchByStartDate(LocalDateTime.now());
+    List<Post> postList  = postRepository.findAllByStartDate(LocalDateTime.now());
 
     if (!postList.isEmpty()) {
       postList.forEach(post -> {
         post.setRecruitmentStatus(PostRecruitmentStatus.IN_PROGRESS);
         postRepository.save(post);
-        log.info("[Scheduler] travel start. post_id : {}", post.getId());
+        log.info("[Scheduler] travel start - post_id : {}", post.getId());
       });
     }
   }
 
   @Scheduled(cron = "0 0 * * *", zone="Asia/Seoul")
   public void endTravel() {
-    List<Post> postList  = postRepository.searchByEndDate(LocalDateTime.now());
+    List<Post> postList  = postRepository.findAllByEndDate(LocalDateTime.now());
 
     if (!postList.isEmpty()) {
       postList.forEach(post -> {
         post.setRecruitmentStatus(PostRecruitmentStatus.COMPLETED);
         postRepository.save(post);
-        log.info("[Scheduler] travel end. post_id : {}", post.getId());
+        log.info("[Scheduler] travel end - post_id : {}", post.getId());
       });
     }
   }

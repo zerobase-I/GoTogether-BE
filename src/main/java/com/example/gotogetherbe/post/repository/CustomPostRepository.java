@@ -16,8 +16,4 @@ public interface CustomPostRepository {
       LocalDateTime userStartDate, LocalDateTime userEndDate,
       Pageable pageable);
 
-  List<Post> searchByStartDate(LocalDateTime startDateTime);
-
-  List<Post> searchByEndDate(LocalDateTime endDateTime);
-
 }
