@@ -201,4 +201,22 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     }
   }
 
+  @Override
+  public List<Post> searchByStartDate(LocalDateTime startDateTime) {
+    return jpa.selectFrom(post)
+        .where(
+            post.startDate.between(startDateTime.minusMinutes(5), startDateTime.plusMinutes(5))
+        )
+        .fetch();
+  }
+
+  @Override
+  public List<Post> searchByEndDate(LocalDateTime endDateTime) {
+    return jpa.selectFrom(post)
+        .where(
+            post.endDate.between(endDateTime.minusMinutes(5), endDateTime.plusMinutes(5))
+        )
+        .fetch();
+  }
+
 }
