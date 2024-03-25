@@ -109,7 +109,7 @@ public class Member extends BaseEntity {
   public void initializeMemberAssessment() {
     this.memberAssessment = MemberAssessment.builder()
         .member(this)
-        .totalReviewCount(0)
+        .totalReviewCount(0L)
         .rating(0.0)
         .punctualityCount(0L)
         .responsivenessCount(0L)
