@@ -16,7 +16,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
@@ -62,11 +61,10 @@ public class NotificationService {
      * @param notificationInfo 알림 정보
      */
     public void send(NotificationInfoDto notificationInfo) {
-        Notification notification = notificationRepository.save(
-            notificationInfo.of()); //repository에 저장
+        Notification notification = notificationRepository.save(notificationInfo.of()); //repository에 저장
         log.info("알림 저장 완료");
 
-        if (!notification.getMember().getAlarmStatus()) { // 알림 설정이 꺼져있으면 전송하지 않음
+        if (!notificationInfo.getMember().getAlarmStatus()) { // 알림 설정이 꺼져있으면 전송하지 않음
             return;
         }
 
@@ -98,17 +96,13 @@ public class NotificationService {
     /**
      * 알림 확인, 상태 변경(unread -> read)
      * @param notificationId 알림 id
-     * @return 알림 확인 시 이동할 url
-     */
-    @Transactional
-    public String readNotification(Long notificationId) {
+     * */
+    public void readNotification(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
             .orElseThrow(() -> new GlobalException(NOTIFICATION_NOT_FOUND));
 
         notification.updateStatus(READ);
         notificationRepository.save(notification);
-
-        return notification.getUrl();
     }
 
     /**

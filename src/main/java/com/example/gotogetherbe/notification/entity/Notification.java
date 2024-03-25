@@ -1,8 +1,8 @@
 package com.example.gotogetherbe.notification.entity;
 
 import com.example.gotogetherbe.member.entitiy.Member;
-import com.example.gotogetherbe.notification.type.NotificationType;
 import com.example.gotogetherbe.notification.type.NotificationStatus;
+import com.example.gotogetherbe.notification.type.NotificationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -19,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -47,8 +46,6 @@ public class Notification {
 
     @Enumerated(EnumType.STRING)
     private NotificationStatus status;
-
-    private String url;
 
     @CreatedDate
     private LocalDateTime createdAt;

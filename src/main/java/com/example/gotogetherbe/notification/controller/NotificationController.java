@@ -39,8 +39,7 @@ public class NotificationController {
 
     // 알림 확인
     @PostMapping("/{notificationId}")
-    public ResponseEntity<String> readNotification(@PathVariable Long notificationId) {
+    public void readNotification(@PathVariable Long notificationId) {
         notificationService.readNotification(notificationId);
-        return ResponseEntity.ok(notificationService.readNotification(notificationId));
     }
 }

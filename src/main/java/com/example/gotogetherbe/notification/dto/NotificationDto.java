@@ -25,8 +25,6 @@ public class NotificationDto {
 
     private NotificationStatus status;
 
-    private String url;
-
     private LocalDateTime createdAt;
 
     public static NotificationDto from(Notification notification) {
@@ -36,7 +34,6 @@ public class NotificationDto {
             .memberId(notification.getMember().getId())
             .type(notification.getType())
             .status(notification.getStatus())
-            .url(notification.getUrl())
             .createdAt(notification.getCreatedAt())
             .build();
     }

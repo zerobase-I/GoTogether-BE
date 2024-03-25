@@ -116,4 +116,8 @@ public class Post extends BaseEntity {
         this.currentPeople++;
     }
 
+    public void updateRecruitmentStatus(PostRecruitmentStatus status) {
+        this.recruitmentStatus = status;
+    }
+
 }

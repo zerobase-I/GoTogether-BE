@@ -8,6 +8,10 @@ import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
+import static com.example.gotogetherbe.notification.type.NotificationType.ACCOMPANY_REQUEST;
+import static com.example.gotogetherbe.notification.type.NotificationType.ACCOMPANY_REQUEST_APPROVAL;
+import static com.example.gotogetherbe.notification.type.NotificationType.ACCOMPANY_REQUEST_REJECT;
+import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.RECRUITMENT_COMPLETED;
 
 import com.example.gotogetherbe.accompany.request.dto.AccompanyStatusDto;
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
@@ -15,6 +19,7 @@ import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.notification.service.EventPublishService;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.List;
@@ -31,8 +36,7 @@ public class AccompanyStatusService {
     private final AccompanyRepository accompanyRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-
-    private static final String URL_PREFIX = "/api/accompany/request";
+    private final EventPublishService eventPublishService;
 
     /**
      * 동행 요청 보내기
@@ -43,12 +47,15 @@ public class AccompanyStatusService {
      */
     @Transactional
     public AccompanyStatusDto sendAccompanyRequest(String email, Long postId) {
-        Member requestMember = getMemberByEmail(email);
         Post post = getOrElseThrow(postId);
+        Member requestMember = getMemberByEmail(email);
+        Member requestedMember = getMemberById(post.getMember().getId());
 
         checkDuplication(requestMember.getId(), post.getId());
 
         Accompany accompany = makeAccompanyStatus(requestMember, post);
+
+        eventPublishService.publishEvent(post.getId(), requestedMember, ACCOMPANY_REQUEST);
 
         return AccompanyStatusDto.from(accompanyRepository.save(accompany));
     }
@@ -92,7 +99,11 @@ public class AccompanyStatusService {
 
         Post post = getOrElseThrow(accompany.getPost().getId());
         post.updateCurrentPeople();
+        isRecruitmentFull(post);
         postRepository.save(post);
+
+        Member requestMember = getMemberById(accompany.getRequestMember().getId());
+        eventPublishService.publishEvent(post.getId(), requestMember, ACCOMPANY_REQUEST_APPROVAL);
 
         return AccompanyStatusDto.from(accompanyRepository.save(accompany));
     }
@@ -100,15 +111,18 @@ public class AccompanyStatusService {
     /**
      * 동행 요청 거절
      * @param email    사용자 이메일
-     * @param requestId 요청 ID
+     * @param accompanyId 요청 ID
      * @return 동행 요청 정보
      */
     @Transactional
-    public AccompanyStatusDto rejectAccompanyRequest(String email, Long requestId) {
-        Accompany request = getAccompanyRequest(email, requestId);
-        request.updateRequestStatus(REJECTED);
+    public AccompanyStatusDto rejectAccompanyRequest(String email, Long accompanyId) {
+        Accompany accompany = getAccompanyRequest(email, accompanyId);
+        accompany.updateRequestStatus(REJECTED);
 
-        return AccompanyStatusDto.from(accompanyRepository.save(request));
+        Member requestMember = getMemberById(accompany.getRequestMember().getId());
+        eventPublishService.publishEvent(accompany.getPost().getId(), requestMember, ACCOMPANY_REQUEST_REJECT);
+
+        return AccompanyStatusDto.from(accompanyRepository.save(accompany));
     }
 
     /**
@@ -136,6 +150,11 @@ public class AccompanyStatusService {
             .build();
     }
 
+    private Member getMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+    }
+
     private Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
@@ -149,6 +168,12 @@ public class AccompanyStatusService {
             requestMemberId, postId)
         ) {
             throw new GlobalException(DUPLICATE_ACCOMPANY_REQUEST);
+        }
+    }
+
+    private static void isRecruitmentFull(Post post) {
+        if (Objects.equals(post.getRecruitsPeople(), post.getCurrentPeople())) {
+            post.updateRecruitmentStatus(RECRUITMENT_COMPLETED);
         }
     }
 
