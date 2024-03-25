@@ -8,6 +8,7 @@ import com.example.gotogetherbe.global.util.aws.service.AwsS3Service;
 import com.example.gotogetherbe.member.dto.MemberRequest;
 import com.example.gotogetherbe.member.dto.MemberResponse;
 import com.example.gotogetherbe.member.entitiy.Member;
+import com.example.gotogetherbe.member.entitiy.type.MemberStatus;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,26 @@ public class MemberService {
     awsS3Service.uploadToS3(multipartFile, fileName);
 
     return awsS3Service.getUrl(fileName);
+  }
+
+  @Transactional
+  public void withdraw(String username){
+    Member member = memberRepository.findByEmail(username)
+        .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+    member.changeStatus(MemberStatus.DELETED);
+  }
+
+  @Transactional
+  public void changeAlarmStatus(String username){
+    Member member = memberRepository.findByEmail(username)
+        .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+    member.changeAlarmStatus();
+  }
+
+  public boolean checkAlarmStatus(String username){
+    Member member = memberRepository.findByEmail(username)
+        .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+    return member.getAlarmStatus();
   }
 
 
