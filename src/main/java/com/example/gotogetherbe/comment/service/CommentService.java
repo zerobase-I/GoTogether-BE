@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,7 @@ public class CommentService {
    * @param request    생성할 댓글 내용
    * @return 생성된 댓글의 정보를 포함한 CommentDto 객체
    */
+  @Transactional
   public CommentDto createComment(String email, Long postId, CommentRequest request) {
     Member member = getMemberOrThrow(email);
     Post post = getPostOrThrow(postId);

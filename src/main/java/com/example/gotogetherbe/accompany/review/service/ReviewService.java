@@ -61,8 +61,7 @@ public class ReviewService {
         verifyCompletedStatus(post);
         verifyDuplicationReview(post, reviewer);
 
-        List<Accompany> accompanies = accompanyRepository.findAllByPostIdAndStatus(postId,
-            PARTICIPATING);
+        List<Accompany> accompanies = accompanyRepository.findAllByPostIdAndStatus(postId, PARTICIPATING);
         List<Member> members = getParticipantsExcludingReviewer(reviewer, accompanies);
 
         return members.stream().map(MemberInfoDto::from).collect(Collectors.toList());
