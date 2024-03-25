@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class SchedulerService {
 
   private final PostRepository postRepository;
-  @Scheduled(cron = "0 0 * * *", zone="Asia/Seoul")
+  @Scheduled(cron = "0 0 0 * * *", zone="Asia/Seoul")
   public void startTravel() {
     List<Post> postList  = postRepository.findAllByStartDate(LocalDateTime.now());
 
@@ -29,7 +29,7 @@ public class SchedulerService {
     }
   }
 
-  @Scheduled(cron = "0 0 * * *", zone="Asia/Seoul")
+  @Scheduled(cron = "0 0 0 * * *", zone="Asia/Seoul")
   public void endTravel() {
     List<Post> postList  = postRepository.findAllByEndDate(LocalDateTime.now());
 
