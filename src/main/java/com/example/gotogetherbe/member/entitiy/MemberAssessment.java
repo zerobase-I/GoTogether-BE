@@ -23,7 +23,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MemberAssessment {
+public classMemberAssessment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
