@@ -1,6 +1,6 @@
-package com.example.gotogetherbe.accompany.review.repository;
+package com.example.gotogetherbe.member.repository;
 
-import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
+import com.example.gotogetherbe.member.entitiy.MemberAssessment;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

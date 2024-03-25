@@ -10,15 +10,11 @@ import static org.mockito.BDDMockito.given;
 
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository;
-import com.example.gotogetherbe.accompany.review.dto.MemberAssessmentDto;
 import com.example.gotogetherbe.accompany.review.dto.MemberInfoDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
-import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.accompany.review.entity.Review;
-import com.example.gotogetherbe.accompany.review.repository.MemberAssessmentRepository;
 import com.example.gotogetherbe.accompany.review.repository.ReviewRepository;
-import com.example.gotogetherbe.accompany.review.service.MemberAssessmentService;
 import com.example.gotogetherbe.accompany.review.service.ReviewService;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
@@ -28,6 +24,8 @@ import com.example.gotogetherbe.member.entitiy.type.MemberLoginType;
 import com.example.gotogetherbe.member.entitiy.type.MemberMbti;
 import com.example.gotogetherbe.member.entitiy.type.MemberRoleType;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.member.service.MemberAssessmentService;
+import com.example.gotogetherbe.notification.service.EventPublishService;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.entity.type.PostCategory;
 import com.example.gotogetherbe.post.entity.type.PostGenderType;
@@ -63,10 +61,10 @@ public class ReviewServiceTest {
     private PostRepository postRepository;
 
     @Mock
-    private MemberAssessmentRepository memberAssessmentRepository;
+    private AccompanyRepository accompanyRepository;
 
     @Mock
-    private AccompanyRepository accompanyRepository;
+    private EventPublishService eventPublishService;
 
     @Mock
     private MemberAssessmentService memberAssessmentService;
@@ -297,51 +295,4 @@ public class ReviewServiceTest {
         assertEquals(ErrorCode.USER_NOT_FOUND, globalException.getErrorCode());
     }
 
-    @Test
-    @DisplayName("회원 평가 조회 성공")
-    void getMemberAssessmentSuccess() {
-        // given
-        MemberAssessment memberAssessment = MemberAssessment.builder()
-            .id(1L)
-            .member(member2)
-            .totalReviewCount(1L)
-            .rating(4.5)
-            .punctualityCount(1L)
-            .responsivenessCount(1L)
-            .photographyCount(0L)
-            .mannerCount(0L)
-            .navigationCount(1L)
-            .humorCount(0L)
-            .adaptabilityCount(1L)
-            .build();
-
-        given(memberAssessmentRepository.findByMemberId(anyLong())).willReturn(
-            java.util.Optional.of(memberAssessment));
-
-        // when
-        MemberAssessmentDto memberAssessmentDto = reviewService.getMemberAssessment(
-            member2.getId());
-
-        // then
-        assertThat(memberAssessment.getMember().getId()).isEqualTo(member2.getId());
-        assertThat(memberAssessmentDto.getRating()).isEqualTo(memberAssessment.getRating());
-        assertThat(memberAssessmentDto.getAdaptability()).isEqualTo(
-            memberAssessment.getAdaptabilityCount());
-    }
-
-    @Test
-    @DisplayName("회원 평가 조회 실패 - 평가 정보를 찾지 못함")
-    void getMemberAssessmentFail() {
-        // given
-        given(memberAssessmentRepository.findByMemberId(anyLong())).willReturn(
-            java.util.Optional.empty());
-
-        // when
-        GlobalException globalException = assertThrows(GlobalException.class, () -> {
-            reviewService.getMemberAssessment(member2.getId());
-        });
-
-        // then
-        assertEquals(ErrorCode.MEMBER_ASSESSMENT_NOT_FOUND, globalException.getErrorCode());
-    }
 }

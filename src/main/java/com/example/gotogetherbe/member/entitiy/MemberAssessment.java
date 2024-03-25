@@ -1,6 +1,5 @@
-package com.example.gotogetherbe.accompany.review.entity;
+package com.example.gotogetherbe.member.entitiy;
 
-import com.example.gotogetherbe.member.entitiy.Member;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -1,6 +1,6 @@
-package com.example.gotogetherbe.accompany.review.dto;
+package com.example.gotogetherbe.member.dto;
 
-import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
+import com.example.gotogetherbe.member.entitiy.MemberAssessment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

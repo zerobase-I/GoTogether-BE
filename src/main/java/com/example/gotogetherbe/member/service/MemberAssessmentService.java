@@ -1,11 +1,12 @@
-package com.example.gotogetherbe.accompany.review.service;
+package com.example.gotogetherbe.member.service;
 
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.MEMBER_ASSESSMENT_NOT_FOUND;
 
-import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.accompany.review.entity.Review;
-import com.example.gotogetherbe.accompany.review.repository.MemberAssessmentRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
+import com.example.gotogetherbe.member.dto.MemberAssessmentDto;
+import com.example.gotogetherbe.member.entitiy.MemberAssessment;
+import com.example.gotogetherbe.member.repository.MemberAssessmentRepository;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberAssessmentService {
 
     private final MemberAssessmentRepository memberAssessmentRepository;
+
+    /**
+     * 사용자의 평가 조회
+     *
+     * @param memberId 사용자 id
+     * @return 사용자의 리뷰 상세
+     */
+    public MemberAssessmentDto getMemberAssessment(Long memberId) {
+        MemberAssessment memberAssessment = memberAssessmentRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new GlobalException(MEMBER_ASSESSMENT_NOT_FOUND));
+
+        return MemberAssessmentDto.from(memberAssessment);
+    }
 
     /**
      * 회원 평가 업데이트

@@ -1,6 +1,5 @@
 package com.example.gotogetherbe.member.entitiy;
 
-import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.global.entity.BaseEntity;
 import com.example.gotogetherbe.member.entitiy.type.MemberGender;
 import com.example.gotogetherbe.member.entitiy.type.MemberLoginType;
