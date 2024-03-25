@@ -50,7 +50,7 @@ public class MemberAssessmentService {
     private void updateRating(MemberAssessment memberAssessment, Double score) {
         double totalScore = (memberAssessment.getRating() * memberAssessment.getTotalReviewCount()
             + score);
-        int newTotalReviewCount = memberAssessment.getTotalReviewCount() + 1;
+        long newTotalReviewCount = memberAssessment.getTotalReviewCount() + 1;
 
         DecimalFormat form = new DecimalFormat("#.#");
         double newRating = Double.parseDouble(form.format(totalScore / newTotalReviewCount));
