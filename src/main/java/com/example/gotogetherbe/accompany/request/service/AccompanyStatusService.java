@@ -5,6 +5,7 @@ import static com.example.gotogetherbe.accompany.request.type.AccompanyStatus.RE
 import static com.example.gotogetherbe.accompany.request.type.AccompanyStatus.WAITING;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.ACCOMPANY_REQUEST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_ACCOMPANY_REQUEST;
+import static com.example.gotogetherbe.global.exception.type.ErrorCode.NOT_WAITING_ACCOMPANY;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_MISMATCH;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
@@ -94,7 +95,7 @@ public class AccompanyStatusService {
      */
     @Transactional
     public AccompanyStatusDto approveAccompanyRequest(String email, Long accompanyId) {
-        Accompany accompany = getAccompanyRequest(email, accompanyId);
+        Accompany accompany = getAccompany(email, accompanyId);
         accompany.updateRequestStatus(PARTICIPATING);
 
         Post post = getOrElseThrow(accompany.getPost().getId());
@@ -116,7 +117,7 @@ public class AccompanyStatusService {
      */
     @Transactional
     public AccompanyStatusDto rejectAccompanyRequest(String email, Long accompanyId) {
-        Accompany accompany = getAccompanyRequest(email, accompanyId);
+        Accompany accompany = getAccompany(email, accompanyId);
         accompany.updateRequestStatus(REJECTED);
 
         Member requestMember = getMemberById(accompany.getRequestMember().getId());
@@ -129,7 +130,6 @@ public class AccompanyStatusService {
      * 동행 요청 취소
      * @param requestId 요청 ID
      */
-    @Transactional
     public void cancelAccompanyRequest(Long requestId) {
         Accompany accompanyRequest = accompanyRepository.findById(requestId)
             .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
@@ -181,17 +181,21 @@ public class AccompanyStatusService {
         return requests.stream().map(AccompanyStatusDto::from).collect(Collectors.toList());
     }
 
-    private Accompany getAccompanyRequest(String email, Long requestId) {
-        Accompany accompanyRequest = accompanyRepository
+    private Accompany getAccompany(String email, Long requestId) {
+        Accompany accompany = accompanyRepository
             .findById(requestId)
             .orElseThrow(() -> new GlobalException(ACCOMPANY_REQUEST_NOT_FOUND));
 
+        if (accompany.getStatus() != WAITING) {
+            throw new GlobalException(NOT_WAITING_ACCOMPANY);
+        }
+
         // 승인 또는 거절하려는 사용자와 accompanyRequest에 저장된 요청을 받은 사용자가 일치하지 않으면 예외 발생
-        if (!Objects.equals(accompanyRequest.getRequestedMember().getEmail(), email)) {
+        if (!Objects.equals(accompany.getRequestedMember().getEmail(), email)) {
             throw new GlobalException(USER_MISMATCH);
         }
 
-        return accompanyRequest;
+        return accompany;
     }
 
 }

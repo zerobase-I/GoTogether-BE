@@ -45,14 +45,16 @@ public class AccompanyRequestController {
 
     @PostMapping("/approve/{requestId}")
     public ResponseEntity<AccompanyStatusDto> approveAccompanyRequest(
-        @LoginUser String username, @PathVariable Long requestId
+        @LoginUser String username,
+        @PathVariable Long requestId
     ) {
         return ResponseEntity.ok(accompanyStatusService.approveAccompanyRequest(username, requestId));
     }
 
     @PostMapping("/reject/{requestId}")
     public ResponseEntity<AccompanyStatusDto> rejectAccompanyRequest(
-        @LoginUser String username, @PathVariable Long requestId
+        @LoginUser String username,
+        @PathVariable Long requestId
     ) {
         return ResponseEntity.ok(accompanyStatusService.rejectAccompanyRequest(username, requestId));
     }
