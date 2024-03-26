@@ -38,6 +38,7 @@ public class ChatMessageService {
         .createdAt(LocalDateTime.now())
         .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
+        .timeStamp(request.getTimeStamp())
         .build();
   }
 
@@ -60,6 +61,7 @@ public class ChatMessageService {
         .createdAt(LocalDateTime.now())
         .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
+        .timeStamp(request.getTimeStamp())
         .build();
   }
 
@@ -82,6 +84,7 @@ public class ChatMessageService {
         .createdAt(LocalDateTime.now())
         .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
+        .timeStamp(request.getTimeStamp())
         .build();
   }
 

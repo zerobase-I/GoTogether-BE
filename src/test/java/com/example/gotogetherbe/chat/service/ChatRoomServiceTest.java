@@ -49,7 +49,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -243,7 +242,7 @@ public class ChatRoomServiceTest {
 
     ChatRoomEnterDto chatRoomEnterDto = ChatRoomEnterDto.builder()
         .chatRoomId(1L)
-        .memberId(1L)
+        .accompanyRequestMemberId(1L)
         .build();
     given(memberRepository.findByEmail(anyString()))
         .willReturn(Optional.of(member));

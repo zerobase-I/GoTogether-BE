@@ -1,6 +1,5 @@
 package com.example.gotogetherbe.chat.service;
 
-import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.dto.ChatMessageDto;
 import com.example.gotogetherbe.chat.dto.ChatRoomCreateDto;
@@ -12,7 +11,6 @@ import com.example.gotogetherbe.chat.dto.ChatRoomDto;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
 import com.example.gotogetherbe.chat.repository.ChatMessageRepository;
 import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
-import com.example.gotogetherbe.chat.type.ChatConstant;
 import com.example.gotogetherbe.chat.type.ChatRoomStatus;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
@@ -25,8 +23,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -151,7 +147,7 @@ public class ChatRoomService {
    * @return 참여한 회원 정보
    */
   public ChatMemberDto enterChatRoom(ChatRoomEnterDto chatRoomEnterDto) {
-    Member member = memberRepository.findById(chatRoomEnterDto.getMemberId())
+    Member member = memberRepository.findById(chatRoomEnterDto.getAccompanyRequestMemberId())
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
     ChatRoom chatRoom = chatRoomRepository.findById(chatRoomEnterDto.getChatRoomId())

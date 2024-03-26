@@ -18,6 +18,7 @@ public class ChatMessageDto {
   private String nickname;
   private String profileImageUrl;
   private LocalDateTime createdAt;
+  private LocalDateTime timeStamp;
 
   public ChatMessage toEntity() {
     return ChatMessage.builder()
@@ -34,6 +35,7 @@ public class ChatMessageDto {
         .nickname(chatMessage.getChatMember().getMember().getNickname())
         .profileImageUrl(chatMessage.getChatMember().getMember().getProfileImageUrl())
         .createdAt(chatMessage.getCreatedAt())
+        .timeStamp(null)
         .build();
   }
 }

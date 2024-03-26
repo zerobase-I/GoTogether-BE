@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ChatRoomEnterDto {
   private Long chatRoomId;
-  private Long memberId;
+  private Long accompanyRequestMemberId;
 }

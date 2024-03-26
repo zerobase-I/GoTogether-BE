@@ -1,7 +1,6 @@
 package com.example.gotogetherbe.chat.controller;
 
 import com.example.gotogetherbe.auth.config.LoginUser;
-import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.dto.ChatMessageDto;
 import com.example.gotogetherbe.chat.dto.ChatRoomCreateDto;
@@ -10,11 +9,9 @@ import com.example.gotogetherbe.chat.dto.ChatRoomEnterDto;
 import com.example.gotogetherbe.chat.service.ChatRoomService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
