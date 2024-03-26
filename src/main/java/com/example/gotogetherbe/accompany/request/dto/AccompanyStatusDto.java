@@ -21,16 +21,19 @@ public class AccompanyStatusDto {
 
     private Long postId;
 
+    private Long chatRoomId;
+
     private AccompanyStatus requestStatus;
 
     private String createdAt;
 
-    public static AccompanyStatusDto from(Accompany accompanyRequest) {
+    public static AccompanyStatusDto from(Accompany accompanyRequest, Long chatRoomId) {
         return AccompanyStatusDto.builder()
             .id(accompanyRequest.getId())
             .requestMemberId(accompanyRequest.getRequestMember().getId())
             .requestedMemberId(accompanyRequest.getRequestedMember().getId())
             .postId(accompanyRequest.getPost().getId())
+            .chatRoomId(chatRoomId)
             .requestStatus(accompanyRequest.getStatus())
             .createdAt(accompanyRequest.getCreatedAt().toString())
             .build();

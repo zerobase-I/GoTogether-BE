@@ -19,6 +19,8 @@ import com.example.gotogetherbe.accompany.request.dto.ReceiveAccompanyDto;
 import com.example.gotogetherbe.accompany.request.dto.SendAccompanyDto;
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository;
+import com.example.gotogetherbe.chat.entity.ChatRoom;
+import com.example.gotogetherbe.chat.repository.ChatRoomRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
@@ -28,6 +30,7 @@ import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +42,7 @@ public class AccompanyStatusService {
     private final AccompanyRepository accompanyRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final EventPublishService eventPublishService;
 
     /**
@@ -60,7 +64,7 @@ public class AccompanyStatusService {
 
         eventPublishService.publishEvent(post.getId(), requestedMember, ACCOMPANY_REQUEST);
 
-        return AccompanyStatusDto.from(accompanyRepository.save(accompany));
+        return AccompanyStatusDto.from(accompanyRepository.save(accompany), null);
     }
 
     /**
@@ -108,7 +112,9 @@ public class AccompanyStatusService {
         Member requestMember = getMemberById(accompany.getRequestMember().getId());
         eventPublishService.publishEvent(post.getId(), requestMember, ACCOMPANY_REQUEST_APPROVAL);
 
-        return AccompanyStatusDto.from(accompanyRepository.save(accompany));
+        Long chatRoomId = getChatRoomId(post);
+
+        return AccompanyStatusDto.from(accompanyRepository.save(accompany), chatRoomId);
     }
 
     /**
@@ -125,7 +131,7 @@ public class AccompanyStatusService {
         Member requestMember = getMemberById(accompany.getRequestMember().getId());
         eventPublishService.publishEvent(accompany.getPost().getId(), requestMember, ACCOMPANY_REQUEST_REJECT);
 
-        return AccompanyStatusDto.from(accompanyRepository.save(accompany));
+        return AccompanyStatusDto.from(accompanyRepository.save(accompany), null);
     }
 
     /**
@@ -218,6 +224,11 @@ public class AccompanyStatusService {
         }
 
         return accompany;
+    }
+
+    private Long getChatRoomId(Post post) {
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByPostId(post.getId());
+        return optionalChatRoom.map(ChatRoom::getId).orElse(null);
     }
 
 }
