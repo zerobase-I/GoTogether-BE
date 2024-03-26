@@ -29,10 +29,10 @@ public class ChatMessageService {
    * @return 채팅 메세지
    */
   public ChatMessageDto chatMessage(ChatMessageDto request, Long chatRoomId) {
-    Member member = getMember(request.getMemberId());
+    Member member = getMember(request.getEmail());
 
     return ChatMessageDto.builder()
-        .memberId(member.getId())
+        .email(member.getEmail())
         .chatRoomId(chatRoomId)
         .content(request.getContent())
         .createdAt(LocalDateTime.now())
@@ -49,12 +49,12 @@ public class ChatMessageService {
    * @return 채팅 메세지
    */
   public ChatMessageDto enterMessage(ChatMessageDto request, Long chatRoomId) {
-    Member member = getMember(request.getMemberId());
+    Member member = getMember(request.getEmail());
 
     String content = member.getNickname() + "님이 입장하였습니다.";
 
     return ChatMessageDto.builder()
-        .memberId(member.getId())
+        .email(member.getEmail())
         .chatRoomId(chatRoomId)
         .content(content)
         .createdAt(LocalDateTime.now())
@@ -71,12 +71,12 @@ public class ChatMessageService {
    * @return 채팅 메세지
    */
   public ChatMessageDto exitMessage(ChatMessageDto request, Long chatRoomId) {
-    Member member = getMember(request.getMemberId());
+    Member member = getMember(request.getEmail());
 
     String content = member.getNickname() + "님이 퇴장하였습니다.";
 
     return ChatMessageDto.builder()
-        .memberId(member.getId())
+        .email(member.getEmail())
         .chatRoomId(chatRoomId)
         .content(content)
         .createdAt(LocalDateTime.now())
@@ -86,12 +86,13 @@ public class ChatMessageService {
   }
 
   /**
-   * 채팅방 입장 메세지 작성
+   * 채팅방 메세지 저장
    *
    * @param response 채팅 전송 후 저장할 응답
    */
   public void saveChatMessage(ChatMessageDto response) {
-    chatMemberRepository.findByChatRoomIdAndMemberId(response.getChatRoomId(), response.getMemberId())
+    Member member = getMember(response.getEmail());
+    chatMemberRepository.findByChatRoomIdAndMemberId(response.getChatRoomId(), member.getId())
         .ifPresent(e -> {
           ChatMessage message = response.toEntity();
           message.updateChatMember(e);
@@ -101,8 +102,8 @@ public class ChatMessageService {
         });
   }
 
-  private Member getMember(Long memberId) {
-    return memberRepository.findById(memberId)
+  private Member getMember(String email) {
+    return memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
   }
 }

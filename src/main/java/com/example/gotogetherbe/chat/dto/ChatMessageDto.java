@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDto {
-  private Long memberId;
+  private String email;
   private Long chatRoomId;
   private String content;
   private String nickname;
@@ -28,7 +28,7 @@ public class ChatMessageDto {
 
   public static ChatMessageDto from(ChatMessage chatMessage) {
     return ChatMessageDto.builder()
-        .memberId(chatMessage.getChatMember().getMember().getId())
+        .email(chatMessage.getChatMember().getMember().getEmail())
         .chatRoomId(chatMessage.getChatRoom().getId())
         .content(chatMessage.getContent())
         .nickname(chatMessage.getChatMember().getMember().getNickname())
