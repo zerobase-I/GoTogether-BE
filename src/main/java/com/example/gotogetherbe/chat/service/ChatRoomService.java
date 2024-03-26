@@ -117,7 +117,7 @@ public class ChatRoomService {
    * @param chatRoomId 채팅방 아이디
    * @return 내가 참여중인 채팅방 목록
    */
-  public Slice<ChatMessageDto> getChatRoomMessage(String email, ChatLastMessageRequest request, Long chatRoomId) {
+  public List<ChatMessageDto> getChatRoomMessage(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
@@ -125,11 +125,9 @@ public class ChatRoomService {
       throw new GlobalException(ErrorCode.NOT_BELONG_TO_CHAT_MEMBER);
     }
 
-    Slice<ChatMessage> messages = chatMessageRepository.findChatRoomMessage(
-        request.lastMessageId(), chatRoomId,
-        Pageable.ofSize(request.limit() != 0 ? request.limit() : ChatConstant.CHAT_MESSAGE_PAGE_SIZE));
+    List<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(chatRoomId);
 
-    return messages.map(ChatMessageDto::from);
+    return messages.stream().map(ChatMessageDto::from).collect(Collectors.toList());
   }
 
   /**

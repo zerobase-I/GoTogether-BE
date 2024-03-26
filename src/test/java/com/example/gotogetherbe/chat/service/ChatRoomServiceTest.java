@@ -343,9 +343,9 @@ public class ChatRoomServiceTest {
 
 
     //when
-    Slice<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomMessage(member.getEmail(), request, chatRoom.getId());
+    List<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomMessage(member.getEmail(), chatRoom.getId());
 
     //then
-   assertThat(chatMessageDtoList.hasContent()).isTrue();
+   assertThat(chatMessageDtoList.isEmpty()).isFalse();
   }
 }

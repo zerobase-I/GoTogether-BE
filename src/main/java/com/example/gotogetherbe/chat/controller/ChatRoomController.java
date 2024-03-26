@@ -50,11 +50,10 @@ public class ChatRoomController {
 
   // 채팅방 메세지 조회
   @GetMapping("/message/{chatRoomId}")
-  public ResponseEntity<Slice<ChatMessageDto>> getChatRoomMessage(
+  public ResponseEntity<List<ChatMessageDto>> getChatRoomMessage(
       @LoginUser String username,
-      @ModelAttribute ChatLastMessageRequest request,
       @PathVariable Long chatRoomId) {
-    return ResponseEntity.ok(chatRoomService.getChatRoomMessage(username, request, chatRoomId));
+    return ResponseEntity.ok(chatRoomService.getChatRoomMessage(username, chatRoomId));
   }
 
   // 채팅방 입장
