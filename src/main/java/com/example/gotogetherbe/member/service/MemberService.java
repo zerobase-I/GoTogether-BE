@@ -89,6 +89,7 @@ public class MemberService {
     Member member = memberRepository.findByEmail(username)
         .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
     member.changeStatus(MemberStatus.DELETED);
+    member.setEmail(member.getEmail() + "_DELETED");
   }
 
   @Transactional

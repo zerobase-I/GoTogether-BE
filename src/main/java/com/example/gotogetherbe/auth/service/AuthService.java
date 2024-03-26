@@ -12,6 +12,7 @@ import com.example.gotogetherbe.global.util.aws.service.AwsS3Service;
 import com.example.gotogetherbe.global.util.jwt.TokenProvider;
 import com.example.gotogetherbe.global.util.jwt.dto.TokenDto;
 import com.example.gotogetherbe.member.entitiy.Member;
+import com.example.gotogetherbe.member.entitiy.type.MemberStatus;
 import com.example.gotogetherbe.member.repository.MemberRepository;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,9 @@ public class AuthService {
 
     if (!member.isEmailAuth()) {
       throw new GlobalException(EMAIL_NOT_VERITY);
+    }
+    if(member.getStatus().equals(MemberStatus.DELETED)){
+      throw new GlobalException(USER_NOT_FOUND);
     }
 
     return generateToken(member.getEmail(), member.getRoleType().getCode());
