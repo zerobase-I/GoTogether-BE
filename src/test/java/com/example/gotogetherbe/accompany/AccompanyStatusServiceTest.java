@@ -10,6 +10,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.gotogetherbe.accompany.request.dto.AccompanyStatusDto;
+import com.example.gotogetherbe.accompany.request.dto.ReceiveAccompanyDto;
+import com.example.gotogetherbe.accompany.request.dto.SendAccompanyDto;
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository;
 import com.example.gotogetherbe.accompany.request.service.AccompanyStatusService;
@@ -184,7 +186,7 @@ public class AccompanyStatusServiceTest {
             any())).willReturn(List.of(accompany));
 
         // when
-        List<AccompanyStatusDto> accompanyStatusDtoList = accompanyStatusService
+        List<SendAccompanyDto> accompanyStatusDtoList = accompanyStatusService
             .getSentAccompanyRequests(member1.getEmail());
 
         // then
@@ -203,7 +205,7 @@ public class AccompanyStatusServiceTest {
             any())).willReturn(List.of(accompany));
 
         // when
-        List<AccompanyStatusDto> accompanyStatusDtoList = accompanyStatusService
+        List<ReceiveAccompanyDto> accompanyStatusDtoList = accompanyStatusService
             .getReceivedAccompanyRequests(member2.getEmail());
 
         // then

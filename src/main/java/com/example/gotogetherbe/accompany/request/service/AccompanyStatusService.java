@@ -15,6 +15,8 @@ import static com.example.gotogetherbe.notification.type.NotificationType.ACCOMP
 import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.RECRUITMENT_COMPLETED;
 
 import com.example.gotogetherbe.accompany.request.dto.AccompanyStatusDto;
+import com.example.gotogetherbe.accompany.request.dto.ReceiveAccompanyDto;
+import com.example.gotogetherbe.accompany.request.dto.SendAccompanyDto;
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
@@ -23,9 +25,9 @@ import com.example.gotogetherbe.member.repository.MemberRepository;
 import com.example.gotogetherbe.notification.service.EventPublishService;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,12 +68,12 @@ public class AccompanyStatusService {
      * @param email 사용자 이메일
      * @return 보낸 동행 요청 목록
      */
-    public List<AccompanyStatusDto> getSentAccompanyRequests(String email) {
+    public List<SendAccompanyDto> getSentAccompanyRequests(String email) {
         Member member = getMemberByEmail(email);
         List<Accompany> sentRequests = accompanyRepository
             .findAllByRequestMemberIdAndStatusOrderByCreatedAtDesc(member.getId(), WAITING);
 
-        return convert(sentRequests);
+        return sendConvert(sentRequests);
     }
 
     /**
@@ -79,12 +81,12 @@ public class AccompanyStatusService {
      * @param email 사용자 이메일
      * @return 받은 동행 요청 목록
      */
-    public List<AccompanyStatusDto> getReceivedAccompanyRequests(String email) {
+    public List<ReceiveAccompanyDto> getReceivedAccompanyRequests(String email) {
         Member member = getMemberByEmail(email);
         List<Accompany> receivedRequests = accompanyRepository
             .findAllByRequestedMemberIdAndStatusOrderByCreatedAtDesc(member.getId(), WAITING);
 
-        return convert(receivedRequests);
+        return receiveConvert(receivedRequests);
     }
 
     /**
@@ -177,8 +179,28 @@ public class AccompanyStatusService {
         }
     }
 
-    private List<AccompanyStatusDto> convert(List<Accompany> requests) {
-        return requests.stream().map(AccompanyStatusDto::from).collect(Collectors.toList());
+    private List<SendAccompanyDto> sendConvert(List<Accompany> accompanies) {
+        List<SendAccompanyDto> accompanyDtoList = new ArrayList<>();
+
+        accompanies.forEach(accompany -> {
+            Post post = getOrElseThrow(accompany.getPost().getId());
+            accompanyDtoList.add(SendAccompanyDto.from(accompany, post.getTitle()));
+        });
+
+        return accompanyDtoList;
+    }
+
+    private List<ReceiveAccompanyDto> receiveConvert(List<Accompany> accompanies) {
+        List<ReceiveAccompanyDto> accompanyDtoList = new ArrayList<>();
+
+        accompanies.forEach(accompany -> {
+            Post post = getOrElseThrow(accompany.getPost().getId());
+            Member member = getMemberById(accompany.getRequestMember().getId());
+
+            accompanyDtoList.add(ReceiveAccompanyDto.from(accompany, post.getTitle(), member));
+        });
+
+        return accompanyDtoList;
     }
 
     private Accompany getAccompany(String email, Long requestId) {
