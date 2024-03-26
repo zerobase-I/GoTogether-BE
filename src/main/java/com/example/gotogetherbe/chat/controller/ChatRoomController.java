@@ -4,7 +4,9 @@ import com.example.gotogetherbe.auth.config.LoginUser;
 import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.dto.ChatMessageDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomCreateDto;
 import com.example.gotogetherbe.chat.dto.ChatRoomDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomEnterDto;
 import com.example.gotogetherbe.chat.service.ChatRoomService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,12 +28,12 @@ public class ChatRoomController {
   private final ChatRoomService chatRoomService;
 
   // 채팅방 생성
-  @PostMapping("/{postId}")
+  @PostMapping("")
   public ResponseEntity<ChatRoomDto> createChatRoom(
       @LoginUser String username,
-      @PathVariable Long postId
+      @RequestBody ChatRoomCreateDto chatRoomCreateDto
   ) {
-    return ResponseEntity.ok(chatRoomService.createChatRoom(username, postId));
+    return ResponseEntity.ok(chatRoomService.createChatRoom(username, chatRoomCreateDto));
   }
 
   // 참여중인 채팅방 목록 조회
@@ -57,12 +60,11 @@ public class ChatRoomController {
   }
 
   // 채팅방 입장
-  @PostMapping("/enter/{chatRoomId}")
+  @PostMapping("/enter")
   public ResponseEntity<ChatMemberDto> enterChatRoom(
-      @LoginUser String username,
-      @PathVariable Long chatRoomId
+      @RequestBody ChatRoomEnterDto chatRoomEnterDto
   ) {
-    return ResponseEntity.ok(chatRoomService.enterChatRoom(username, chatRoomId));
+    return ResponseEntity.ok(chatRoomService.enterChatRoom(chatRoomEnterDto));
   }
 
   // 채팅방 퇴장

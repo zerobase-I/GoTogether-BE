@@ -3,6 +3,8 @@ package com.example.gotogetherbe.chat.service;
 import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.dto.ChatMessageDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomCreateDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomEnterDto;
 import com.example.gotogetherbe.chat.entity.ChatMember;
 import com.example.gotogetherbe.chat.entity.ChatMessage;
 import com.example.gotogetherbe.chat.repository.ChatMemberRepository;
@@ -41,18 +43,20 @@ public class ChatRoomService {
    * 채팅방 생성
    *
    * @param email  로그인한 사용자 이메일
-   * @param postId 게시글에 해당하는 채팅방을 생성하기 위한 id
+   * @param chatRoomCreateDto 게시글ID, 동행요청한 회원ID
    * @return 생성된 ChatRoom 정보
    */
-  @Transactional
-  public ChatRoomDto createChatRoom(String email, Long postId) {
-    Member member = memberRepository.findByEmail(email)
+  public ChatRoomDto createChatRoom(String email, ChatRoomCreateDto chatRoomCreateDto) {
+    Member writer = memberRepository.findByEmail(email)
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
-    Post post = postRepository.findById(postId)
+    Member accompanyRequestMember = memberRepository.findById(chatRoomCreateDto.getAccompanyRequestMemberId())
+        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+
+    Post post = postRepository.findById(chatRoomCreateDto.getPostId())
         .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
-    if (!Objects.equals(member.getId(), post.getMember().getId())) {
+    if (!Objects.equals(writer.getId(), post.getMember().getId())) {
       throw new GlobalException(ErrorCode.MEMBER_POST_INCORRECT);
     }
     if (post.getChatRoomExists()) {
@@ -70,6 +74,16 @@ public class ChatRoomService {
 
     post.setChatRoomExists(true);
     postRepository.save(post);
+
+    chatMemberRepository.save(ChatMember.builder()
+            .member(writer)
+            .chatRoom(createdChatRoom)
+            .build());
+
+    chatMemberRepository.save(ChatMember.builder()
+        .member(accompanyRequestMember)
+        .chatRoom(createdChatRoom)
+        .build());
 
     return ChatRoomDto.from(createdChatRoom);
   }
@@ -133,16 +147,14 @@ public class ChatRoomService {
   /**
    * 채팅방 입장
    *
-   * @param email  로그인한 사용자 이메일
-   * @param chatRoomId 참여하는 채팅방 아이디
+   * @param chatRoomEnterDto 회원ID, 채팅방ID
    * @return 참여한 회원 정보
    */
-  @Transactional
-  public ChatMemberDto enterChatRoom(String email, Long chatRoomId) {
-    Member member = memberRepository.findByEmail(email)
+  public ChatMemberDto enterChatRoom(ChatRoomEnterDto chatRoomEnterDto) {
+    Member member = memberRepository.findById(chatRoomEnterDto.getMemberId())
         .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
 
-    ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    ChatRoom chatRoom = chatRoomRepository.findById(chatRoomEnterDto.getChatRoomId())
         .orElseThrow(() -> new GlobalException(ErrorCode.CHATROOM_NOT_FOUND));
 
     Optional<ChatMember> optionalChatMember = chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId());

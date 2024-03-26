@@ -12,7 +12,9 @@ import static org.mockito.Mockito.verify;
 import com.example.gotogetherbe.chat.dto.ChatLastMessageRequest;
 import com.example.gotogetherbe.chat.dto.ChatMemberDto;
 import com.example.gotogetherbe.chat.dto.ChatMessageDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomCreateDto;
 import com.example.gotogetherbe.chat.dto.ChatRoomDto;
+import com.example.gotogetherbe.chat.dto.ChatRoomEnterDto;
 import com.example.gotogetherbe.chat.entity.ChatMember;
 import com.example.gotogetherbe.chat.entity.ChatMessage;
 import com.example.gotogetherbe.chat.entity.ChatRoom;
@@ -73,6 +75,7 @@ public class ChatRoomServiceTest {
   PostRepository postRepository;
 
   private Member member;
+  private Member member2;
   private Post post;
 
   @BeforeEach
@@ -91,6 +94,26 @@ public class ChatRoomServiceTest {
         .mbti(MemberMbti.ISFP)
         .instagramId("instagram123")
         .description("hi i'm kim")
+        .loginType(MemberLoginType.EMAIL)
+        .roleType(MemberRoleType.USER)
+        .emailAuth(true)
+        .posts(null)
+        .build();
+
+    member2 = Member.builder()
+        .id(2L)
+        .email("test1234@gmail.com")
+        .password("1321")
+        .name("lee")
+        .nickname("nickaaa")
+        .address("부산")
+        .phoneNumber("010-1234-5678")
+        .age(25)
+        .gender(MemberGender.MALE)
+        .profileImageUrl(null)
+        .mbti(MemberMbti.INFP)
+        .instagramId("instagram123")
+        .description("hi i'm lee")
         .loginType(MemberLoginType.EMAIL)
         .roleType(MemberRoleType.USER)
         .emailAuth(true)
@@ -127,8 +150,17 @@ public class ChatRoomServiceTest {
         .status(ChatRoomStatus.ACTIVE)
         .build();
 
+    ChatRoomCreateDto chatRoomCreateDto = ChatRoomCreateDto.builder()
+        .accompanyRequestMemberId(2L)
+        .postId(1L)
+        .build();
+
+
     given(memberRepository.findByEmail(anyString()))
         .willReturn(Optional.of(member));
+
+    given(memberRepository.findById(anyLong()))
+        .willReturn(Optional.of(member2));
 
     post.setCurrentPeople(2);
     given(postRepository.findById(anyLong()))
@@ -138,7 +170,7 @@ public class ChatRoomServiceTest {
         .willReturn(chatRoom);
 
     //when
-    ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(member.getEmail(), post.getId());
+    ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(member.getEmail(), chatRoomCreateDto);
 
     //then
     assertThat(chatRoomDto.getChatRoomId()).isEqualTo(chatRoom.getId());
@@ -149,8 +181,16 @@ public class ChatRoomServiceTest {
   @DisplayName("채팅방 생성 실패 : 이미 개설된 채팅방인 경우")
   void createChatRoom_FailByAlreadyCreatedChatRoom() {
     //given
+    ChatRoomCreateDto chatRoomCreateDto = ChatRoomCreateDto.builder()
+        .accompanyRequestMemberId(2L)
+        .postId(1L)
+        .build();
+
     given(memberRepository.findByEmail(anyString()))
         .willReturn(Optional.of(member));
+
+    given(memberRepository.findById(anyLong()))
+        .willReturn(Optional.of(member2));
 
     post.setChatRoomExists(true);
     given(postRepository.findById(anyLong()))
@@ -158,7 +198,7 @@ public class ChatRoomServiceTest {
 
     //when
     GlobalException globalException = Assertions.assertThrows(GlobalException.class,
-        () -> chatRoomService.createChatRoom(member.getEmail(), post.getId()));
+        () -> chatRoomService.createChatRoom(member.getEmail(), chatRoomCreateDto));
 
     //then
     assertThat(ErrorCode.ALREADY_CREATED_CHATROOM.getDescription()).isEqualTo(globalException.getErrorCode().getDescription());
@@ -168,15 +208,23 @@ public class ChatRoomServiceTest {
   @DisplayName("채팅방 생성 실패 : 모집 인원이 2명 미만인 경우")
   void createChatRoom_FailByCurrentPeopleNotEnough() {
     //given
+    ChatRoomCreateDto chatRoomCreateDto = ChatRoomCreateDto.builder()
+        .accompanyRequestMemberId(2L)
+        .postId(1L)
+        .build();
+
     given(memberRepository.findByEmail(anyString()))
         .willReturn(Optional.of(member));
+
+    given(memberRepository.findById(anyLong()))
+        .willReturn(Optional.of(member2));
 
     given(postRepository.findById(anyLong()))
         .willReturn(Optional.of(post));
 
     //when
     GlobalException globalException = Assertions.assertThrows(GlobalException.class,
-        () -> chatRoomService.createChatRoom(member.getEmail(), post.getId()));
+        () -> chatRoomService.createChatRoom(member.getEmail(), chatRoomCreateDto));
 
     //then
     assertThat(ErrorCode.NOT_ENOUGH_CURRENT_PEOPLE.getDescription()).isEqualTo(globalException.getErrorCode().getDescription());
@@ -193,6 +241,10 @@ public class ChatRoomServiceTest {
         .status(ChatRoomStatus.ACTIVE)
         .build();
 
+    ChatRoomEnterDto chatRoomEnterDto = ChatRoomEnterDto.builder()
+        .chatRoomId(1L)
+        .memberId(1L)
+        .build();
     given(memberRepository.findByEmail(anyString()))
         .willReturn(Optional.of(member));
 
@@ -206,7 +258,7 @@ public class ChatRoomServiceTest {
             .build());
 
     //when
-    ChatMemberDto chatMemberDto = chatRoomService.enterChatRoom(member.getEmail(), 1L);
+    ChatMemberDto chatMemberDto = chatRoomService.enterChatRoom(chatRoomEnterDto);
 
     //then
     assertThat(chatRoom.getId()).isEqualTo(chatMemberDto.getChatRoomId());
