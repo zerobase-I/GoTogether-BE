@@ -3,6 +3,7 @@ package com.example.gotogetherbe.comment.service;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.COMMENT_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
+import static com.example.gotogetherbe.notification.type.NotificationType.COMMENT;
 
 import com.example.gotogetherbe.comment.dto.CommentDto;
 import com.example.gotogetherbe.comment.dto.CommentRequest;
@@ -12,6 +13,7 @@ import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.global.exception.type.ErrorCode;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.notification.service.EventPublishService;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class CommentService {
   private final MemberRepository memberRepository;
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
+  private final EventPublishService eventPublishService;
 
   /**
    * 댓글 생성
@@ -35,6 +39,7 @@ public class CommentService {
    * @param request    생성할 댓글 내용
    * @return 생성된 댓글의 정보를 포함한 CommentDto 객체
    */
+  @Transactional
   public CommentDto createComment(String email, Long postId, CommentRequest request) {
     Member member = getMemberOrThrow(email);
     Post post = getPostOrThrow(postId);
@@ -44,6 +49,9 @@ public class CommentService {
             .post(post)
             .content(request.getContent())
             .build());
+
+    Member postAuthor = getMemberOrThrowById(post.getMember().getId());
+    eventPublishService.publishEvent(postId, postAuthor, COMMENT);
 
     return CommentDto.from(comment);
   }
@@ -102,6 +110,11 @@ public class CommentService {
 
   private Member getMemberOrThrow(String email) {
     return memberRepository.findByEmail(email)
+        .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
+  }
+
+  private Member getMemberOrThrowById(Long memberId) {
+    return memberRepository.findById(memberId)
         .orElseThrow(() -> new GlobalException(USER_NOT_FOUND));
   }
 

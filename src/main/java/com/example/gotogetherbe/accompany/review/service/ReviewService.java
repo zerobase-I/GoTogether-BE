@@ -2,25 +2,24 @@ package com.example.gotogetherbe.accompany.review.service;
 
 import static com.example.gotogetherbe.accompany.request.type.AccompanyStatus.PARTICIPATING;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_REVIEW;
-import static com.example.gotogetherbe.global.exception.type.ErrorCode.MEMBER_ASSESSMENT_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.UNCOMPLETED_ACCOMPANY;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
+import static com.example.gotogetherbe.notification.type.NotificationType.NEW_REVIEW;
 import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.COMPLETED;
 
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository;
-import com.example.gotogetherbe.accompany.review.dto.MemberAssessmentDto;
 import com.example.gotogetherbe.accompany.review.dto.MemberInfoDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewDto;
 import com.example.gotogetherbe.accompany.review.dto.ReviewWriteDto;
-import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.accompany.review.entity.Review;
-import com.example.gotogetherbe.accompany.review.repository.MemberAssessmentRepository;
 import com.example.gotogetherbe.accompany.review.repository.ReviewRepository;
 import com.example.gotogetherbe.global.exception.GlobalException;
 import com.example.gotogetherbe.member.entitiy.Member;
 import com.example.gotogetherbe.member.repository.MemberRepository;
+import com.example.gotogetherbe.member.service.MemberAssessmentService;
+import com.example.gotogetherbe.notification.service.EventPublishService;
 import com.example.gotogetherbe.post.entity.Post;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.ArrayList;
@@ -40,9 +39,9 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-    private final MemberAssessmentRepository memberAssessmentRepository;
     private final MemberAssessmentService memberAssessmentService;
     private final AccompanyRepository accompanyRepository;
+    private final EventPublishService eventPublishService;
 
     /**
      * 동행 참여자 조회
@@ -82,20 +81,11 @@ public class ReviewService {
 
         memberAssessmentService.updateMemberAssessment(savedReviews);
 
+        for (Review review : savedReviews) {
+            eventPublishService.publishEvent(post.getId(), review.getTargetMember(), NEW_REVIEW);
+        }
+
         return savedReviews.stream().map(ReviewDto::from).toList();
-    }
-
-    /**
-     * 사용자의 평가 조회
-     *
-     * @param memberId 사용자 id
-     * @return 사용자의 리뷰 상세
-     */
-    public MemberAssessmentDto getMemberAssessment(Long memberId) {
-        MemberAssessment memberAssessment = memberAssessmentRepository.findByMemberId(memberId)
-            .orElseThrow(() -> new GlobalException(MEMBER_ASSESSMENT_NOT_FOUND));
-
-        return MemberAssessmentDto.from(memberAssessment);
     }
 
     private Member getMemberByEmailOrElseThrow(String email) {

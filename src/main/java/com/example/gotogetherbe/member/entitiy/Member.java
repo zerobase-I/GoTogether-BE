@@ -1,11 +1,11 @@
 package com.example.gotogetherbe.member.entitiy;
 
-import com.example.gotogetherbe.accompany.review.entity.MemberAssessment;
 import com.example.gotogetherbe.global.entity.BaseEntity;
 import com.example.gotogetherbe.member.entitiy.type.MemberGender;
 import com.example.gotogetherbe.member.entitiy.type.MemberLoginType;
 import com.example.gotogetherbe.member.entitiy.type.MemberMbti;
 import com.example.gotogetherbe.member.entitiy.type.MemberRoleType;
+import com.example.gotogetherbe.member.entitiy.type.MemberStatus;
 import com.example.gotogetherbe.post.entity.Post;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PostPersist;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -91,16 +92,43 @@ public class Member extends BaseEntity {
   @Builder.Default
   private boolean emailAuth = false;
 
+  @Enumerated(EnumType.STRING)
+  @Builder.Default
+  private MemberStatus status = MemberStatus.ACTIVE;
+
   @Builder.Default
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Post> posts = new ArrayList<>();
 
 
-  @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true,
+      fetch = FetchType.LAZY)
   private MemberAssessment memberAssessment;
+  @PostPersist
+  public void initializeMemberAssessment() {
+    this.memberAssessment = MemberAssessment.builder()
+        .member(this)
+        .totalReviewCount(0L)
+        .rating(0.0)
+        .punctualityCount(0L)
+        .responsivenessCount(0L)
+        .photographyCount(0L)
+        .mannerCount(0L)
+        .navigationCount(0L)
+        .humorCount(0L)
+        .adaptabilityCount(0L)
+        .build();
+  }
 
   public void changeEmailAuth() {
     this.emailAuth = true;
+  }
+
+  public void changeAlarmStatus() {
+    this.alarmStatus = !this.alarmStatus;
+  }
+  public void changeStatus(MemberStatus status) {
+    this.status = status;
   }
 
   public void addPost(Post post){

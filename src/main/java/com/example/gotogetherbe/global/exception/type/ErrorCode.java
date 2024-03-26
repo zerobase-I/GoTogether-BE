@@ -32,7 +32,7 @@ public enum ErrorCode {
   NOT_SAME_ACCOMPANY_MEMBER(HttpStatus.BAD_REQUEST, "같은 동행에 참여한 회원이 아닙니다."),
   WRONG_DESTINATION(HttpStatus.BAD_REQUEST, "잘못된 설정된 채팅방 목적지입니다."),
   NOT_MEMBER_COMMENT(HttpStatus.BAD_REQUEST, "회원의 댓글이 아닙니다."),
-
+  NOT_WAITING_ACCOMPANY(HttpStatus.BAD_REQUEST, "대기중인 동행 요청이 아닙니다."),
   KAKAO_ENTER_ADDITIONAL_INFORMATION(HttpStatus.BAD_REQUEST, "추가 정보를 입력해주세요"),
   /**
    * 401 Unauthorized
