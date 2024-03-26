@@ -1,6 +1,8 @@
 package com.example.gotogetherbe.accompany.request.controller;
 
 import com.example.gotogetherbe.accompany.request.dto.AccompanyStatusDto;
+import com.example.gotogetherbe.accompany.request.dto.ReceiveAccompanyDto;
+import com.example.gotogetherbe.accompany.request.dto.SendAccompanyDto;
 import com.example.gotogetherbe.accompany.request.service.AccompanyStatusService;
 import com.example.gotogetherbe.auth.config.LoginUser;
 import java.util.List;
@@ -34,12 +36,12 @@ public class AccompanyRequestController {
     }
 
     @GetMapping("/send")
-    public ResponseEntity<List<AccompanyStatusDto>> sentAccompanyRequest(@LoginUser String username) {
+    public ResponseEntity<List<SendAccompanyDto>> sentAccompanyRequest(@LoginUser String username) {
         return ResponseEntity.ok(accompanyStatusService.getSentAccompanyRequests(username));
     }
 
     @GetMapping("/receive")
-    public ResponseEntity<List<AccompanyStatusDto>> receivedAccompanyRequest(@LoginUser String username) {
+    public ResponseEntity<List<ReceiveAccompanyDto>> receivedAccompanyRequest(@LoginUser String username) {
         return ResponseEntity.ok(accompanyStatusService.getReceivedAccompanyRequests(username));
     }
 
