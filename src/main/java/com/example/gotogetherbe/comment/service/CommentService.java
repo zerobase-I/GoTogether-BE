@@ -51,7 +51,7 @@ public class CommentService {
             .build());
 
     Member postAuthor = getMemberOrThrowById(post.getMember().getId());
-    eventPublishService.publishEvent(postId, postAuthor, COMMENT);
+    eventPublishService.publishEvent(post, postAuthor, COMMENT);
 
     return CommentDto.from(comment);
   }

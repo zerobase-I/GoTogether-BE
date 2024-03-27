@@ -77,7 +77,7 @@ public class SchedulerService {
     for (Long memberId : memberIds) {
       Member member = memberRepository.findById(memberId)
           .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
-      eventPublishService.publishEvent(post.getId(), member, REVIEW_WRITING_SUGGESTION);
+      eventPublishService.publishEvent(post, member, REVIEW_WRITING_SUGGESTION);
     }
   }
 }

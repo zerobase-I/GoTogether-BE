@@ -19,6 +19,8 @@ public class NotificationDto {
 
     private Long postId;
 
+    private String postTitle;
+
     private Long memberId;
 
     private NotificationType type;
@@ -31,6 +33,7 @@ public class NotificationDto {
         return NotificationDto.builder()
             .id(notification.getId())
             .postId(notification.getPostId())
+            .postTitle(notification.getPostTitle())
             .memberId(notification.getMember().getId())
             .type(notification.getType())
             .status(notification.getStatus())

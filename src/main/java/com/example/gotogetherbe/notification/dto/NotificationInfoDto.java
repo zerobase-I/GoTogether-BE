@@ -21,6 +21,8 @@ public class NotificationInfoDto {
 
     private Long postId;
 
+    private String postTitle;
+
     private NotificationStatus status;
 
     public Notification of() {
@@ -28,6 +30,7 @@ public class NotificationInfoDto {
             .member(this.member)
             .type(this.type)
             .postId(this.postId)
+            .postTitle(this.postTitle)
             .status(this.status)
             .build();
     }

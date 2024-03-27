@@ -1,12 +1,11 @@
 package com.example.gotogetherbe.accompany.review.service;
 
-import static com.example.gotogetherbe.accompany.request.type.AccompanyStatus.PARTICIPATING;
+import static com.example.gotogetherbe.accompany.request.type.AccompanyStatus.COMPLETED;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.DUPLICATE_REVIEW;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.POST_NOT_FOUND;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.UNCOMPLETED_ACCOMPANY;
 import static com.example.gotogetherbe.global.exception.type.ErrorCode.USER_NOT_FOUND;
 import static com.example.gotogetherbe.notification.type.NotificationType.NEW_REVIEW;
-import static com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus.COMPLETED;
 
 import com.example.gotogetherbe.accompany.request.entity.Accompany;
 import com.example.gotogetherbe.accompany.request.repository.AccompanyRepository;
@@ -21,6 +20,7 @@ import com.example.gotogetherbe.member.repository.MemberRepository;
 import com.example.gotogetherbe.member.service.MemberAssessmentService;
 import com.example.gotogetherbe.notification.service.EventPublishService;
 import com.example.gotogetherbe.post.entity.Post;
+import com.example.gotogetherbe.post.entity.type.PostRecruitmentStatus;
 import com.example.gotogetherbe.post.repository.PostRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,7 +58,7 @@ public class ReviewService {
         verifyDuplicationReview(post, reviewer);
 
         List<Accompany> accompanies = accompanyRepository.findAllByPostIdAndStatus(postId,
-            PARTICIPATING);
+            COMPLETED);
         List<Member> members = getParticipantsExcludingReviewer(reviewer, accompanies);
 
         return members.stream().map(MemberInfoDto::from).collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class ReviewService {
         memberAssessmentService.updateMemberAssessment(savedReviews);
 
         for (Review review : savedReviews) {
-            eventPublishService.publishEvent(post.getId(), review.getTargetMember(), NEW_REVIEW);
+            eventPublishService.publishEvent(post, review.getTargetMember(), NEW_REVIEW);
         }
 
         return savedReviews.stream().map(ReviewDto::from).toList();
@@ -105,7 +105,7 @@ public class ReviewService {
     }
 
     private static void verifyCompletedStatus(Post post) {
-        if (post.getRecruitmentStatus() != COMPLETED) {
+        if (post.getRecruitmentStatus() != PostRecruitmentStatus.COMPLETED) {
             throw new GlobalException(UNCOMPLETED_ACCOMPANY);
         }
     }

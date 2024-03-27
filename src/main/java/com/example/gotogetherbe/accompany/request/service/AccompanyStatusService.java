@@ -62,7 +62,7 @@ public class AccompanyStatusService {
 
         Accompany accompany = makeAccompanyStatus(requestMember, post);
 
-        eventPublishService.publishEvent(post.getId(), requestedMember, ACCOMPANY_REQUEST);
+        eventPublishService.publishEvent(post, requestedMember, ACCOMPANY_REQUEST);
 
         return AccompanyStatusDto.from(accompanyRepository.save(accompany), null);
     }
@@ -110,7 +110,7 @@ public class AccompanyStatusService {
         postRepository.save(post);
 
         Member requestMember = getMemberById(accompany.getRequestMember().getId());
-        eventPublishService.publishEvent(post.getId(), requestMember, ACCOMPANY_REQUEST_APPROVAL);
+        eventPublishService.publishEvent(post, requestMember, ACCOMPANY_REQUEST_APPROVAL);
 
         Long chatRoomId = getChatRoomId(post);
 
@@ -129,7 +129,8 @@ public class AccompanyStatusService {
         accompany.updateRequestStatus(REJECTED);
 
         Member requestMember = getMemberById(accompany.getRequestMember().getId());
-        eventPublishService.publishEvent(accompany.getPost().getId(), requestMember, ACCOMPANY_REQUEST_REJECT);
+        Post post = getOrElseThrow(accompany.getPost().getId());
+        eventPublishService.publishEvent(post, requestMember, ACCOMPANY_REQUEST_REJECT);
 
         return AccompanyStatusDto.from(accompanyRepository.save(accompany), null);
     }
