@@ -36,7 +36,7 @@ public class ChatMessageService {
         .chatRoomId(chatRoomId)
         .content(request.getContent())
         .createdAt(request.getCreatedAt())
-        .nickname(member.getNickname())
+        .nickname(request.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
         .build();
   }
@@ -58,7 +58,7 @@ public class ChatMessageService {
         .chatRoomId(chatRoomId)
         .content(content)
         .createdAt(request.getCreatedAt())
-        .nickname(member.getNickname())
+        .nickname(request.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
         .build();
   }
@@ -80,7 +80,7 @@ public class ChatMessageService {
         .chatRoomId(chatRoomId)
         .content(content)
         .createdAt(request.getCreatedAt())
-        .nickname(member.getNickname())
+        .nickname(request.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
         .build();
   }
