@@ -37,7 +37,7 @@ public class ChatMessage {
   @Column(columnDefinition = "TEXT")
   private String content;
 
-  @Column(nullable = false)
+  @Column
   private LocalDateTime createdAt;
 
   public void updateChatRoom(ChatRoom chatRoom) {

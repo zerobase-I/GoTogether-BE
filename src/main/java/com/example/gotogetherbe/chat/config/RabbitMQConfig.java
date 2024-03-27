@@ -97,10 +97,7 @@ public class RabbitMQConfig {
    */
   @Bean
   public MessageConverter jsonMessageConverter() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-    objectMapper.registerModule(new JavaTimeModule());
-    return new Jackson2JsonMessageConverter(objectMapper);
+    return new Jackson2JsonMessageConverter();
   }
 
   /**
