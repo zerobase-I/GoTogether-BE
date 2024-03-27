@@ -35,10 +35,9 @@ public class ChatMessageService {
         .email(member.getEmail())
         .chatRoomId(chatRoomId)
         .content(request.getContent())
-        .createdAt(LocalDateTime.now())
+        .createdAt(request.getCreatedAt())
         .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
-        .timeStamp(request.getTimeStamp())
         .build();
   }
 
@@ -58,10 +57,9 @@ public class ChatMessageService {
         .email(member.getEmail())
         .chatRoomId(chatRoomId)
         .content(content)
-        .createdAt(LocalDateTime.now())
+        .createdAt(request.getCreatedAt())
         .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
-        .timeStamp(request.getTimeStamp())
         .build();
   }
 
@@ -81,10 +79,9 @@ public class ChatMessageService {
         .email(member.getEmail())
         .chatRoomId(chatRoomId)
         .content(content)
-        .createdAt(LocalDateTime.now())
+        .createdAt(request.getCreatedAt())
         .nickname(member.getNickname())
         .profileImageUrl(member.getProfileImageUrl())
-        .timeStamp(request.getTimeStamp())
         .build();
   }
 
