@@ -1,6 +1,7 @@
 package com.example.gotogetherbe.chat.entity;
 
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,13 +27,12 @@ public class ChatMessage {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   @JoinColumn(name = "chatRoom_id")
   private ChatRoom chatRoom;
 
-  @ManyToOne
-  @JoinColumn(name = "chat_member_id")
-  private ChatMember chatMember;
+  @Column(nullable = false)
+  private Long chatMemberId;
 
   @Column(columnDefinition = "TEXT")
   private String content;
@@ -44,7 +44,7 @@ public class ChatMessage {
     this.chatRoom = chatRoom;
   }
 
-  public void updateChatMember(ChatMember chatMember) {
-    this.chatMember = chatMember;
+  public void updateChatMember(Long chatMemberId) {
+    this.chatMemberId = chatMemberId;
   }
 }

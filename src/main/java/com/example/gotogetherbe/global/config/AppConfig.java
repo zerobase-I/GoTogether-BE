@@ -3,6 +3,8 @@ package com.example.gotogetherbe.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PostConstruct;
+import java.util.TimeZone;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +16,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class AppConfig {
+  @PostConstruct
+  void started() {
+    // 애플리케이션의 기본 타임존 설정
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+  }
   @Bean
   public ObjectMapper objectMapper() {
     ObjectMapper objectMapper = new ObjectMapper();

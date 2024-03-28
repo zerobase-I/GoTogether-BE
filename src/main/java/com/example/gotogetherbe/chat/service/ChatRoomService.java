@@ -125,7 +125,7 @@ public class ChatRoomService {
    *
    * @param email  로그인한 사용자 이메일
    * @param chatRoomId 채팅방 아이디
-   * @return 내가 참여중인 채팅방 목록
+   * @return 내가 참여중인 채팅방 메세지 목록
    */
   public List<ChatMessageDto> getChatRoomMessage(String email, Long chatRoomId) {
     Member member = memberRepository.findByEmail(email)
@@ -137,7 +137,7 @@ public class ChatRoomService {
 
     List<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(chatRoomId);
 
-    return messages.stream().map(ChatMessageDto::from).collect(Collectors.toList());
+    return messages.stream().map(chatMessage -> ChatMessageDto.from(chatMessage, member)).collect(Collectors.toList());
   }
 
   /**

@@ -1,6 +1,7 @@
 package com.example.gotogetherbe.chat.dto;
 
 import com.example.gotogetherbe.chat.entity.ChatMessage;
+import com.example.gotogetherbe.member.entitiy.Member;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDto {
+  private Long id;
   private String email;
   private Long chatRoomId;
   private String content;
@@ -22,17 +24,18 @@ public class ChatMessageDto {
   public ChatMessage toEntity() {
     return ChatMessage.builder()
         .content(this.content)
-        .createdAt(this.createdAt)
+        .createdAt(this.createdAt.plusHours(9))
         .build();
   }
 
-  public static ChatMessageDto from(ChatMessage chatMessage) {
+  public static ChatMessageDto from(ChatMessage chatMessage, Member member) {
     return ChatMessageDto.builder()
-        .email(chatMessage.getChatMember().getMember().getEmail())
+        .id(chatMessage.getId())
+        .email(member.getEmail())
         .chatRoomId(chatMessage.getChatRoom().getId())
         .content(chatMessage.getContent())
-        .nickname(chatMessage.getChatMember().getMember().getNickname())
-        .profileImageUrl(chatMessage.getChatMember().getMember().getProfileImageUrl())
+        .nickname(member.getNickname())
+        .profileImageUrl(member.getProfileImageUrl())
         .createdAt(chatMessage.getCreatedAt())
         .build();
   }

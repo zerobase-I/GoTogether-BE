@@ -71,7 +71,8 @@ dependencies {
 	// Rabbit MQ
 	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
-
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.4'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'

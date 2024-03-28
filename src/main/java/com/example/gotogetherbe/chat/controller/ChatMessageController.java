@@ -33,8 +33,7 @@ public class ChatMessageController {
   }
 
   @MessageMapping("/chat/{chatRoomId}")
-  public void sendMessage(@Payload ChatMessageDto request
-      ,@DestinationVariable("chatRoomId") Long chatRoomId) {
+  public void sendMessage(@Payload ChatMessageDto request,@DestinationVariable("chatRoomId") Long chatRoomId) {
     rabbitTemplate.convertAndSend(ChatConstant.CHAT_EXCHANGE_NAME,"room." + chatRoomId,
         chatMessageService.chatMessage(request, chatRoomId));
   }
