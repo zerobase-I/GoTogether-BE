@@ -28,14 +28,14 @@ public class ChatMessageDto {
         .build();
   }
 
-  public static ChatMessageDto from(ChatMessage chatMessage, Member member) {
+  public static ChatMessageDto from(ChatMessage chatMessage) {
     return ChatMessageDto.builder()
         .id(chatMessage.getId())
-        .email(member.getEmail())
+        .email(chatMessage.getChatMember().getMember().getEmail())
         .chatRoomId(chatMessage.getChatRoom().getId())
         .content(chatMessage.getContent())
-        .nickname(member.getNickname())
-        .profileImageUrl(member.getProfileImageUrl())
+        .nickname(chatMessage.getChatMember().getMember().getNickname())
+        .profileImageUrl(chatMessage.getChatMember().getMember().getProfileImageUrl())
         .createdAt(chatMessage.getCreatedAt())
         .build();
   }

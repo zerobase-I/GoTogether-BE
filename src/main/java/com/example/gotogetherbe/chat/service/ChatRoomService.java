@@ -137,7 +137,7 @@ public class ChatRoomService {
 
     List<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(chatRoomId);
 
-    return messages.stream().map(chatMessage -> ChatMessageDto.from(chatMessage, member)).collect(Collectors.toList());
+    return messages.stream().map(ChatMessageDto::from).collect(Collectors.toList());
   }
 
   /**

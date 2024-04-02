@@ -95,7 +95,7 @@ public class ChatMessageService {
     chatMemberRepository.findByChatRoomIdAndMemberId(response.getChatRoomId(), member.getId())
         .ifPresent(e -> {
           ChatMessage message = response.toEntity();
-          message.updateChatMember(e.getId());
+          message.updateChatMember(e);
           message.updateChatRoom(e.getChatRoom());
 
           chatMessageRepository.save(message);

@@ -31,8 +31,9 @@ public class ChatMessage {
   @JoinColumn(name = "chatRoom_id")
   private ChatRoom chatRoom;
 
-  @Column(nullable = false)
-  private Long chatMemberId;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "chatMember_id")
+  private ChatMember chatMember;
 
   @Column(columnDefinition = "TEXT")
   private String content;
@@ -44,7 +45,7 @@ public class ChatMessage {
     this.chatRoom = chatRoom;
   }
 
-  public void updateChatMember(Long chatMemberId) {
-    this.chatMemberId = chatMemberId;
+  public void updateChatMember(ChatMember chatMember) {
+    this.chatMember = chatMember;
   }
 }
