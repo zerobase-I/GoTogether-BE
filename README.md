@@ -1,4 +1,4 @@
-![image](https://github.com/zerobase-I/GoTogether-BE/assets/141619188/996ab947-ba09-4901-8be0-e6ee5a93f80b)## 소개
+## 소개
 여행을 함께 하고 싶은 사람들을 찾아보세요! 같이 가요~
 
 ✅  여행지, 일정, MBTI 등 여러 조건을 고려하여 적절한 동행자를 찾아보세요.
